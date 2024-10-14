@@ -5,11 +5,41 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WPFComponents"
         mc:Ignorable="d"
-        Title="Настройки SkyAI" Height="450" Width="800"
+        Title="Настройки SkyAI" Height="550" Width="440"
         Background="#141414" BorderBrush="#FF141414" 
         OpacityMask="#FF141414" >
     <Grid Cursor="">
-        <Button Content="Open settings" Width="200" Click="Button_Click"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="0.5*"/>
+            <RowDefinition Height="2*"/>
+            <RowDefinition Height="0.2*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Margin="10" Orientation="Horizontal">
+            <TextBlock Text="SkyAI" FontSize="36" FontWeight="Bold" VerticalAlignment="Center"
+                     Foreground="White" HorizontalAlignment="Center"/>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+            <TextBlock Text="Settings" PreviewMouseDown="Button_Click"
+                Foreground="White" FontSize="18" FontWeight="Bold" Margin="10"
+                Background="#FF141414" VerticalAlignment="Center" Cursor="Cross"/>
+
+            <TextBlock Text="Docs" Margin="10"
+                    Foreground="White" FontSize="18" FontWeight="Bold"
+                     Background="#FF141414" VerticalAlignment="Center"/>
+        </StackPanel>
+
+        <MediaElement Source="C:\\Users\\turap\\source\\repos\\WPFComponents\\WPFComponents\\Media\\wave.mp4" Grid.Row="1"
+              Visibility="Visible" LoadedBehavior="Play"
+              UnloadedBehavior="Manual" Margin="20"
+              ScrubbingEnabled="True" MediaFailed="MediaElement_MediaFailed" Opacity="0.3"/>
+
+
+        <Grid Grid.Row="2">
+            <TextBlock Text="Developed by COMMAND_NAME" Foreground="White"
+                       FontWeight="Bold" VerticalAlignment="Center" 
+                       HorizontalAlignment="Right" Margin="10"/>
+        </Grid>
+        
     </Grid>
-    
 </Window>

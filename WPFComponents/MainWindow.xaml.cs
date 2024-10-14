@@ -41,7 +41,11 @@ namespace WPFComponents
         {
             SettingWindow settingWindow = new SettingWindow(Settings);
             settingWindow.Show();
-            this.Close();
         }
+        private void MediaElement_MediaFailed(object sender, ExceptionRoutedEventArgs e)
+        {
+            MessageBox.Show($"Ошибка воспроизведения видео: {e.ErrorException.Message}");
+        }
+
     }
 }
