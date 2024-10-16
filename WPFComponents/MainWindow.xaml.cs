@@ -20,6 +20,8 @@ namespace WPFComponents
     {
         public ObservableCollection<SettingItem> Settings { get; set; }
 
+        private AudioWebSocketClient audioWebSocketClient;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -33,14 +35,30 @@ namespace WPFComponents
                 new SettingItem("Always on top", "Поверх других окон — это быстрый и простой способ закрепить окна сверху", true),
                 new SettingItem("Awake", "Поддерживай свой компьютер в активном состоянии", true),
             };
+            audioWebSocketClient = new AudioWebSocketClient("ws://localhost:5000");
+
+            audioWebSocketClient.OnPartialTextReceived += (partialText) =>
+            {
+                Dispatcher.Invoke(() =>
+                {
+                    // Добавляем новый частичный текст к уже существующему в TextBox
+                    RecognitionTextBox.Text += partialText + " ";
+                });
+            };
+
 
             this.DataContext = this;
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private async void Button_Click(object sender, RoutedEventArgs e)
         {
-            SettingWindow settingWindow = new SettingWindow(Settings);
-            settingWindow.Show();
+            await audioWebSocketClient.ConnectAsync();
+            await audioWebSocketClient.StartRecognitionAsync();
+
+            // Запускаем получение результатов распознавания
+            await Task.Run(async () => await audioWebSocketClient.ReceiveRecognitionResultAsync());
+            //SettingWindow settingWindow = new SettingWindow(Settings);
+            //settingWindow.Show();
         }
         private void MediaElement_MediaFailed(object sender, ExceptionRoutedEventArgs e)
         {

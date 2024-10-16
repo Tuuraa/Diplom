@@ -40,6 +40,7 @@
                        FontWeight="Bold" VerticalAlignment="Center" 
                        HorizontalAlignment="Right" Margin="10"/>
         </Grid>
-        
+        <TextBox x:Name="RecognitionTextBox" Width="400" Height="200" TextWrapping="Wrap" Margin="18,147,22,48" Grid.Row="1" />
+
     </Grid>
 </Window>
