@@ -41,6 +41,7 @@
                        HorizontalAlignment="Right" Margin="10"/>
         </Grid>
         <TextBox x:Name="RecognitionTextBox" Width="400" Height="200" TextWrapping="Wrap" Margin="18,147,22,48" Grid.Row="1" />
+        <Button Content="Stop" HorizontalAlignment="Left" Margin="180,35,0,0" VerticalAlignment="Top" Click="Button_Click_1"/>
 
     </Grid>
 </Window>
