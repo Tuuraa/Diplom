@@ -11,6 +11,7 @@ namespace WPFComponents.Model
         private ClientWebSocket webSocket;
         private WaveInEvent waveIn;
         private const int BufferSize = 4096;
+        private int _index = 0;
 
         public event Action<string> OnPartialTextReceived;
 
@@ -68,8 +69,8 @@ namespace WPFComponents.Model
                 var result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
                 if (result.MessageType == WebSocketMessageType.Text)
                 {
-                    string receivedText = Encoding.UTF8.GetString(buffer, 0, result.Count);
-
+                    string receivedText = Encoding.UTF8.GetString(buffer, _index, result.Count);
+                    _index += result.Count;
                     // Генерация события при получении частичного текста
                     OnPartialTextReceived?.Invoke(receivedText);
                 }
