@@ -24,7 +24,7 @@ namespace WPFComponents.Model
             
             return commandType switch
             {
-                "PressKeyCommand" => JsonSerializer.Deserialize<PressKeyCommand>(rootElement.GetRawText(), options),
+                "PreцssKeyCommand" => JsonSerializer.Deserialize<PressKeyCommand>(rootElement.GetRawText(), options),
                 "OpenAppCommand" => JsonSerializer.Deserialize<OpenAppCommand>(rootElement.GetRawText(), options),
                 _ => throw new NotSupportedException($"Тип команды '{commandType}' не поддерживается.")
             };
