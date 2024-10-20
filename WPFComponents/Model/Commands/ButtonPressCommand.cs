@@ -1,51 +1,57 @@
-﻿using System.Windows;
+﻿using System.Text.Json.Serialization;
+using System.Windows;
 using WindowsInput;
 using WindowsInput.Native;
 using WPFComponents.Model.Interfaces;
 
 namespace WPFComponents.Model.Commands
 {
-    internal class PressKeyCommand : ICommandAction
+    internal class PressKeyCommand : CommandBase
     {
-        private string _key { get; set; }
-        private InputSimulator _inputSimulator;
+        public string CommandType => "PressKeyCommand";
+        public string Key { get; set; }
 
-        public PressKeyCommand(string key)
+        [JsonIgnore]
+        private readonly InputSimulator _inputSimulator;
+
+        [JsonConstructor]
+        public PressKeyCommand()
         {
-            _key = key;
-            _inputSimulator = new InputSimulator(); // Инициализация InputSimulator
+            _inputSimulator = new InputSimulator();
         }
 
-        public bool CanExecute()
+        public PressKeyCommand(string key) : this()
         {
-            // Проверка на наличие корректного ключа
-            return GetVirtualKeyCode(_key) != null;
+            Key = key;
         }
 
-        public void Execute()
+        public override bool CanExecute()
+        {
+            return GetVirtualKeyCode(Key) != null;
+        }
+
+        public override void Execute()
         {
             try
             {
-                // Получение VirtualKeyCode для нажатия
-                VirtualKeyCode? keyCode = GetVirtualKeyCode(_key);
+                VirtualKeyCode? keyCode = GetVirtualKeyCode(Key);
 
-                if (keyCode != null)
+                if (keyCode.HasValue)
                 {
-                    _inputSimulator.Keyboard.KeyPress((VirtualKeyCode)keyCode);
-                    MessageBox.Show($"Нажата клавиша: {_key}");
+                    _inputSimulator.Keyboard.KeyPress(keyCode.Value);
+                    MessageBox.Show($"Нажата клавиша: {Key}");
                 }
                 else
                 {
-                    MessageBox.Show($"Неизвестная клавиша: {_key}");
+                    MessageBox.Show($"Неизвестная клавиша: {Key}");
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка при нажатии клавиши {_key}: {ex.Message}");
+                MessageBox.Show($"Ошибка при нажатии клавиши {Key}: {ex.Message}");
             }
         }
 
-        // Преобразование строки клавиши в VirtualKeyCode
         private VirtualKeyCode? GetVirtualKeyCode(string key)
         {
             return key.ToUpper() switch

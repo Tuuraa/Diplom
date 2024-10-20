@@ -1,28 +1,32 @@
 ﻿using System.IO;
+using System.Text.Json.Serialization;
 using System.Windows;
-using WPFComponents.Model.Interfaces;
 
 namespace WPFComponents.Model.Commands
 {
-    internal class OpenAppCommand : ICommandAction
+    internal class OpenAppCommand : CommandBase
     {
-        private string _pathToexe {  get; set; }
+        public string CommandType => "OpenAppCommand";
+        public string PathToExe { get; private set; }
 
+        [JsonConstructor]
         public OpenAppCommand(string appName)
         {
-            _pathToexe = appName;
-        }
-        public bool CanExecute()
-        {
-            return true;
-            if (File.Exists(_pathToexe)) return true;
-            return false;
+            if (string.IsNullOrEmpty(appName))
+                throw new ArgumentException("Имя приложения не может быть пустым", nameof(appName));
+            PathToExe = appName;
         }
 
-        public void Execute()
+        public override bool CanExecute()
         {
-            //Process.Start(_pathToexe);
-            MessageBox.Show(_pathToexe);
+            return File.Exists(PathToExe);
+        }
+
+        public override void Execute()
+        {
+            // Замените на запуск приложения
+            MessageBox.Show($"Запуск приложения: {PathToExe}");
+            // Process.Start(PathToExe);
         }
     }
 }

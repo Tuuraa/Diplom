@@ -44,23 +44,7 @@ namespace WPFComponents
 
             voiceCommandProcessor.RegisterCommand(pressKeyCommand);
 
-            var newsShowCommand = new Command
-            {
-                Id = 2,
-                Name = "ShowNews",
-                Phrase = "Покажи новости",
-                Action = new NewsShowCommand()
-            };
-
-            voiceCommandProcessor.RegisterCommand(newsShowCommand);
-
-            var typeWordCommand = new Command
-            {
-                Id = 2,
-                Name = "TypeWord",
-                Phrase = "напечатай слово",
-                Action = new PrintWordCommand("Пример")
-            };
+            voiceCommandProcessor.CommandSerializer();
 
             Settings = new ObservableCollection<SettingItem>
             {
@@ -84,7 +68,8 @@ namespace WPFComponents
 
             audioWebSocketClient.SilenceDetected += OnSilenceDetected;
 
-
+            bool isSuccesSerialize = voiceCommandProcessor.CommandSerializer();
+            MessageBox.Show(isSuccesSerialize.ToString());
 
             this.DataContext = this;
         }
@@ -99,9 +84,9 @@ namespace WPFComponents
             await audioWebSocketClient.StartRecognitionAsync();
 
             // Запускаем получение результатов распознавания
-            await Task.Run(async () => await audioWebSocketClient.ReceiveRecognitionResultAsync());
-            //SettingWindow settingWindow = new SettingWindow(Settings);
-            //settingWindow.Show();
+            //await Task.Run(async () => await audioWebSocketClient.ReceiveRecognitionResultAsync());
+            SettingWindow settingWindow = new SettingWindow(Settings);
+            settingWindow.Show();
         }
         private void MediaElement_MediaFailed(object sender, ExceptionRoutedEventArgs e)
         {

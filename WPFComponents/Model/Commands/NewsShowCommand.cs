@@ -7,6 +7,7 @@ namespace WPFComponents.Model.Commands
 {
     internal class NewsShowCommand : ICommandAction
     {
+        private readonly Uri _uri = new Uri("https://news.google.com/?hl=ru");
         public bool CanExecute()
         {
             try
@@ -29,7 +30,7 @@ namespace WPFComponents.Model.Commands
         {
             ProcessStartInfo psi = new ProcessStartInfo
             {
-                FileName = "https://news.google.com/?hl=ru",
+                FileName = _uri.AbsoluteUri,
                 UseShellExecute = true // Это позволит системе открыть URL в браузере по умолчанию
             };
 
