@@ -19,15 +19,18 @@ namespace WPFComponents.Model
             var jsonDocument = JsonDocument.ParseValue(ref reader);
             var rootElement = jsonDocument.RootElement;
 
-            string? commandType = rootElement.GetProperty("CommandType").GetString();
+            string? commandType = rootElement.GetProperty("commandType").GetString();
 
             
-            return commandType switch
+            switch (commandType)
             {
-                "PressKeyCommand" => JsonSerializer.Deserialize<PressKeyCommand>(rootElement.GetRawText(), options),
-                "OpenAppCommand" => JsonSerializer.Deserialize<OpenAppCommand>(rootElement.GetRawText(), options),
-                _ => throw new NotSupportedException($"Тип команды '{commandType}' не поддерживается.")
-            };
+                case "OpenAppCommand":
+                    return JsonSerializer.Deserialize<OpenAppCommand>(rootElement.GetRawText(), options);
+                case "PressKeyCommand":
+                    return JsonSerializer.Deserialize<PressKeyCommand>(rootElement.GetRawText(), options);
+                default:
+                    throw new NotSupportedException($"Command type {commandType} is not supported.");
+            }
         }
 
         public override void Write(Utf8JsonWriter writer, ICommandAction value, JsonSerializerOptions options)
