@@ -1,8 +1,11 @@
 ﻿using NAudio.CoreAudioApi;
+using NAudio.Wave;
 using System.Collections.ObjectModel;
 using System.Windows;
+using System.Windows.Media;
 using WPFComponents.Model;
 using WPFComponents.Model.Commands;
+using WPFComponents.Utils;
 
 namespace WPFComponents
 {
@@ -14,16 +17,23 @@ namespace WPFComponents
         public ObservableCollection<SettingItem> Settings { get; set; }
 
         private VoiceCommandProcessor voiceCommandProcessor;
-
         private AudioWebSocketClient audioWebSocketClient;
+        private SoundWave soundWave;
+
+        private WaveInEvent waveIn;
+        private List<double> samples = new List<double>();
+        private const int SampleRate = 44100;
+        private const double SensitivityFactor = 1.5;
+        private const double HeightMultiplier = 2.0;
 
         public MainWindow()
         {
             InitializeComponent();
+            soundWave = new SoundWave(MyCanvas, waveLine);
 
             voiceCommandProcessor = new VoiceCommandProcessor();
 
-            voiceCommandProcessor.ProcessVoiceCommand("тест");
+            //voiceCommandProcessor.ProcessVoiceCommand("тест");
             // Создание и регистрация команд
             /*var openAppCommand = new Command
             (
@@ -77,7 +87,7 @@ namespace WPFComponents
             //voiceCommandProcessor.ProcessVoiceCommand(RecognitionTextBox.Text);
         }
 
-        private async void Button_Click(object sender, RoutedEventArgs e)
+        private async void OpenSettings(object sender, RoutedEventArgs e)
         {
             await audioWebSocketClient.ConnectAsync();
             await audioWebSocketClient.StartRecognitionAsync();
@@ -97,5 +107,6 @@ namespace WPFComponents
             await audioWebSocketClient.DisconnectAsync();
             voiceCommandProcessor.ProcessVoiceCommand(RecognitionTextBox.Text);
         }
+
     }
 }
