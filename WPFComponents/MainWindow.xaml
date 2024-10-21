@@ -21,11 +21,11 @@
             <RowDefinition Height="0.94*"/>
         </Grid.RowDefinitions>
 
-        <Border CornerRadius="20" Grid.RowSpan="2"
+        <Border CornerRadius="15" Grid.RowSpan="2"
                 Background="#141414" />
 
         <Image Source="C:\Users\turap\source\repos\Diplom\WPFComponents\Media\Icons\close_window.png"
-               Width="30" Height="30" HorizontalAlignment="Right" VerticalAlignment="Center"
+               Width="26" Height="26" HorizontalAlignment="Right" VerticalAlignment="Center"
                PreviewMouseDown="CloseApp" Cursor="Hand" Margin="0 10 10 0"/>
 
         <Grid Margin="10 0 10 20" Grid.Row="1" Cursor="">
