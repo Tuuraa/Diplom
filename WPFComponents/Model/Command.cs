@@ -11,4 +11,13 @@ public partial class Command
     public string Phrase { get; set; } = null!;
 
     public ICommandAction Action { get; set; } = null!;
+
+    public Command(int id, string name, string phrase, ICommandAction action)
+    {
+        Id = id;
+        Name = name;
+        Phrase = phrase;
+        Action = action;
+    }
+
 }

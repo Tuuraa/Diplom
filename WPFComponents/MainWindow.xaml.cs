@@ -23,28 +23,27 @@ namespace WPFComponents
 
             voiceCommandProcessor = new VoiceCommandProcessor();
 
+            voiceCommandProcessor.ProcessVoiceCommand("тест");
             // Создание и регистрация команд
-            var openAppCommand = new Command
-            {
-                Id = 1,
-                Name = "OpenApp",
-                Phrase = "тест",
-                Action = new OpenAppCommand("MyApp")
-            };
+            /*var openAppCommand = new Command
+            (
+                id: 1,
+                name: "OpenApp",
+                phrase: "тест",
+                action: new OpenAppCommand("MyApp", "OpenAppCommand")
+            );
 
-            voiceCommandProcessor.RegisterCommand(openAppCommand);
+            voiceCommandProcessor.RegisterCommand(openAppCommand);*/
 
-            var pressKeyCommand = new Command
-            {
-                Id = 2,
-                Name = "PressKey",
-                Phrase = "нажми на клавишу A",
-                Action = new PressKeyCommand("A")
-            };
+            /*var pressKeyCommand = new Command
+            (
+                id: 3,
+                name: "Press B",
+                phrase: "нажми на клавишу B",
+                action: new PressKeyCommand("B", "PressKeyCommand")
+            );
 
-            voiceCommandProcessor.RegisterCommand(pressKeyCommand);
-
-            voiceCommandProcessor.CommandSerializer();
+            voiceCommandProcessor.RegisterCommand(pressKeyCommand);*/
 
             Settings = new ObservableCollection<SettingItem>
             {
@@ -69,7 +68,7 @@ namespace WPFComponents
             audioWebSocketClient.SilenceDetected += OnSilenceDetected;
 
             bool isSuccesSerialize = voiceCommandProcessor.CommandSerializer();
-            MessageBox.Show(isSuccesSerialize.ToString());
+            
 
             this.DataContext = this;
         }

@@ -4,17 +4,27 @@ using System.IO;
 using System.Text.Json;
 using System.Windows;
 using FuzzySharp;
+using WPFComponents.Model.Commands;
+using WPFComponents.Model.Interfaces;
+using WPFComponents.Model.Utils;
 
 namespace WPFComponents.Model
 {
     public class VoiceCommandProcessor
     {
-        private readonly Dictionary<string, Command> _commandsMap = new Dictionary<string, Command>();
-        private readonly string _filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "Media", "commands.json");
+        private readonly Dictionary<string, Command> _commandsMap = 
+            new Dictionary<string, Command>();
+        private readonly string _filePath = 
+            Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "Media", "commands.json");
 
         public VoiceCommandProcessor()
         {
-            DeserializeCommand();
+            List<Command> commandList = DeserializeCommand();
+
+            foreach (Command command in commandList)
+            {
+                RegisterCommand(command);
+            }
         }
 
         // Регистрация команды
@@ -22,15 +32,11 @@ namespace WPFComponents.Model
         {
             _commandsMap[command.Phrase] = command;
 
-            /*var succes = CommandSerializer();
+            var succes = CommandSerializer();
 
-            if (!succes)
-            {
-                //Обработка ошибки сериализации
-            }*/
+            if (!succes) throw new Exception("Ошибка сериализации команды");
         }
 
-        // Обработка распознанной голосовой фразы
         public void ProcessVoiceCommand(string recognizedPhrase)
         {
             // Попытка точного соответствия
@@ -114,7 +120,7 @@ namespace WPFComponents.Model
             }
         }
 
-        private List<CommandBase> DeserializeCommand()
+        private List<Command> DeserializeCommand()
         {
             try
             {
@@ -123,32 +129,41 @@ namespace WPFComponents.Model
                 var options = new JsonSerializerOptions
                 {
                     Converters = { new CommandActionConverter() },
-                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+                    PropertyNameCaseInsensitive = true,
                 };
 
-                List<CommandBase> commands = JsonSerializer.Deserialize<List<CommandBase>>(json, options);
+                var commands = JsonSerializer.Deserialize<List<Command>>(json, options);
+                var result = new List<Command>();
 
-                if (commands != null && commands.Count > 0)
+                if (commands != null)
                 {
                     foreach (var command in commands)
                     {
-                        MessageBox.Show($"type: {command.GetType()}");
+                        result.Add(DefineTypeOfCommand(command.Action.GetType(), command));
                     }
                 }
-                else
-                {
-                    MessageBox.Show("Команды не найдены или пусты.");
-                }
+
+                return result;
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"{ex.Message}");
+                throw new Exception(ex.Message);
             }
-
-            return null;
+;
         }
 
+        private Command DefineTypeOfCommand(Type commandType, Command command) =>
+            commandType.Name switch
+            {
+                nameof(OpenAppCommand) => 
+                    new Command(command.Id, command.Name, command.Phrase, (OpenAppCommand)command.Action),
 
+                nameof(PressKeyCommand) => 
+                    new Command(command.Id, command.Name, command.Phrase, (PressKeyCommand)command.Action),
 
+                _ => throw new ArgumentException($"Неизвестный тип команды {commandType.Name}")
+            };
+
+        public override string ToString() => $"{_commandsMap.Count}";
     }
 }

@@ -1,10 +1,10 @@
 ﻿using WPFComponents.Model.Interfaces;
 
-namespace WPFComponents.Model
+namespace WPFComponents.Model.Utils
 {
     internal class CommandRegistry
     {
-        private static readonly Dictionary<string, ICommandAction> _commandTypes 
+        private static readonly Dictionary<string, ICommandAction> _commandTypes
             = new Dictionary<string, ICommandAction>();
 
         public static void Add(string name, ICommandAction command)
