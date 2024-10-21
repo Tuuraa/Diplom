@@ -2,6 +2,7 @@
 using NAudio.Wave;
 using System.Collections.ObjectModel;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Media;
 using WPFComponents.Model;
 using WPFComponents.Model.Commands;
@@ -109,6 +110,14 @@ namespace WPFComponents
         {
             await audioWebSocketClient.DisconnectAsync();
             voiceCommandProcessor.ProcessVoiceCommand(RecognitionTextBox.Text);
+        }
+
+        private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ButtonState == MouseButtonState.Pressed)
+            {
+                this.DragMove();
+            }
         }
 
     }

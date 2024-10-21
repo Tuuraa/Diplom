@@ -7,11 +7,12 @@
         mc:Ignorable="d"
         Title="Настройки SkyAI" 
         Height="550" 
-        Width="440"
+        Width="420"
         Background="Transparent"
         AllowsTransparency="True"
         WindowStartupLocation="CenterScreen"
-        WindowStyle="None">
+        WindowStyle="None"
+        MouseLeftButtonDown="Window_MouseLeftButtonDown">
 
     <Grid Cursor="">
 
