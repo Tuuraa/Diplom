@@ -5,42 +5,71 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WPFComponents"
         mc:Ignorable="d"
-        Title="Настройки SkyAI" Height="550" Width="440"
-        Background="#141414" BorderBrush="#FF141414" 
-        OpacityMask="#FF141414" >
+        Title="Настройки SkyAI" 
+        Height="550" 
+        Width="440"
+        Background="Transparent"
+        AllowsTransparency="True"
+        WindowStartupLocation="CenterScreen"
+        WindowStyle="None">
+
     <Grid Cursor="">
+
         <Grid.RowDefinitions>
-            <RowDefinition Height="0.5*"/>
-            <RowDefinition Height="2*"/>
-            <RowDefinition Height="0.2*"/>
+            <RowDefinition Height="0.06*"/>
+            <RowDefinition Height="0.94*"/>
         </Grid.RowDefinitions>
 
-        <StackPanel Margin="10" Orientation="Horizontal">
-            <TextBlock Text="SkyAI" FontSize="36" FontWeight="Bold" VerticalAlignment="Center"
-                     Foreground="White" HorizontalAlignment="Center"/>
-        </StackPanel>
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-            <TextBlock Text="Settings" PreviewMouseDown="OpenSettings"
-                Foreground="White" FontSize="18" FontWeight="Bold" Margin="10"
-                Background="#FF141414" VerticalAlignment="Center" Cursor="Hand"/>
+        <Border CornerRadius="20" Grid.RowSpan="2"
+                Background="#141414" />
 
-            <TextBlock Text="Docs" Margin="10" Cursor="Hand"
-                    Foreground="White" FontSize="18" FontWeight="Bold"
-                     Background="#FF141414" VerticalAlignment="Center"/>
-        </StackPanel>
+        <Image Source="C:\Users\turap\source\repos\Diplom\WPFComponents\Media\Icons\close_window.png"
+               Width="30" Height="30" HorizontalAlignment="Right" VerticalAlignment="Center"
+               PreviewMouseDown="CloseApp" Cursor="Hand" Margin="0 10 10 0"/>
 
-        <Canvas Name="MyCanvas" Background="#FF141414" Margin="40,10,40,10" Grid.Row="1">
-            <Polyline Name="waveLine" Stroke="White" 
-                      StrokeThickness="2"/>
-        </Canvas>
+        <Grid Margin="10 0 10 20" Grid.Row="1" Cursor="">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="0.5*"/>
+                <RowDefinition Height="2*"/>
+                <RowDefinition Height="0.2*"/>
+            </Grid.RowDefinitions>
 
-        <Grid Grid.Row="2">
-            <TextBlock Text="Developed by COMMAND_NAME" Foreground="White"
-                       FontWeight="Bold" VerticalAlignment="Center" 
-                       HorizontalAlignment="Right" Margin="10"/>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Margin="10 0 0 0" Text="SkyAI" FontSize="36" FontWeight="Bold" VerticalAlignment="Top"
+                       Foreground="White" HorizontalAlignment="Left" Grid.Column="0"/>
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" 
+                        VerticalAlignment="Top" Grid.Column="1" Margin="0 15 10 0">
+                <TextBlock Text="Settings" PreviewMouseDown="OpenSettings"
+                           Foreground="White" FontSize="18" FontWeight="Bold" 
+                           Margin="10,0,0,0" Cursor="Hand"/>
+
+                <TextBlock Text="Docs" Margin="10,0,0,0" Cursor="Hand"
+                           Foreground="White" FontSize="18" FontWeight="Bold"/>
+            </StackPanel>
+
+            <Canvas Name="MyCanvas" Background="#141414" 
+                    Margin="40,10,40,10" Grid.Row="1" Grid.ColumnSpan="2">
+                <Polyline Name="waveLine" Stroke="White" StrokeThickness="2" />
+            </Canvas>
+
+            <TextBox x:Name="RecognitionTextBox" Width="360" Height="120"
+                     TextWrapping="Wrap" Margin="20,0,20,20" Grid.Row="1"
+                     VerticalAlignment="Bottom" SelectionOpacity="0" Visibility="Hidden"/>
+
+            <Grid Grid.Row="2" Grid.ColumnSpan="2">
+
+                <Button Content="Stop" Width="100" Height="25"
+                        HorizontalAlignment="Left" VerticalAlignment="Center"
+                        Margin="0,10,0,0" Click="Button_Click_1"/>
+                <TextBlock Text="Developed by COMMAND_NAME" Foreground="White"
+                           FontWeight="Bold" VerticalAlignment="Center" 
+                           HorizontalAlignment="Right" Margin="10"/>
+            </Grid>
         </Grid>
-        <TextBox x:Name="RecognitionTextBox" Width="400" Height="200" TextWrapping="Wrap" Margin="18,147,22,48" Grid.Row="1" />
-        <Button Content="Stop" HorizontalAlignment="Left" Margin="180,35,0,0" VerticalAlignment="Top" Click="Button_Click_1"/>
-
     </Grid>
 </Window>
