@@ -15,6 +15,7 @@ namespace WPFComponents.Model.Commands
         [JsonIgnore]
         private readonly InputSimulator _inputSimulator;
 
+        [JsonConstructor]
         public PressKeyCommand(string key, string commandType)
         {
             CommandType = commandType;
