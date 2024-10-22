@@ -54,7 +54,7 @@
             </StackPanel>
 
             <Canvas Name="MyCanvas" Background="#141414" 
-                    Margin="40,10,40,10" Grid.Row="1" Grid.ColumnSpan="2">
+                    Margin="40,40,40,10" Grid.Row="1" Grid.ColumnSpan="2">
                 <Polyline Name="waveLine" Stroke="White" StrokeThickness="2" />
             </Canvas>
 
