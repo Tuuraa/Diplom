@@ -1,27 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+using WPFComponents.ViewModel;
 
 namespace WPFComponents.View
 {
-    /// <summary>
-    /// Логика взаимодействия для CommandRegister.xaml
-    /// </summary>
     public partial class CommandRegister : Window
     {
         public CommandRegister()
         {
             InitializeComponent();
+            DataContext = new CommandRegisterVM();
         }
+
+        protected override void OnMouseWheel(MouseWheelEventArgs e)
+        {
+            double scrollAmount = e.Delta > 0 ? -20 : 20;
+            scrollViewer.ScrollToVerticalOffset(scrollViewer.VerticalOffset + scrollAmount);
+            e.Handled = true;
+        }
+
     }
 }

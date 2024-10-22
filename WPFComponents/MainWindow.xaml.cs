@@ -7,6 +7,7 @@ using System.Windows.Media;
 using WPFComponents.Model;
 using WPFComponents.Model.Commands;
 using WPFComponents.Utils;
+using WPFComponents.View;
 
 namespace WPFComponents
 {
@@ -90,12 +91,12 @@ namespace WPFComponents
 
         private async void OpenSettings(object sender, RoutedEventArgs e)
         {
-            await audioWebSocketClient.ConnectAsync();
-            await audioWebSocketClient.StartRecognitionAsync();
+            /*await audioWebSocketClient.ConnectAsync();
+            await audioWebSocketClient.StartRecognitionAsync();*/
 
             // Запускаем получение результатов распознавания
             //await Task.Run(async () => await audioWebSocketClient.ReceiveRecognitionResultAsync());
-            SettingWindow settingWindow = new SettingWindow(Settings);
+            CommandRegister settingWindow = new();
             settingWindow.Show();
         }
 
