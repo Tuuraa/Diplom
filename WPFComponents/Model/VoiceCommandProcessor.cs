@@ -14,7 +14,7 @@ namespace WPFComponents.Model
 
         public VoiceCommandProcessor()
         {
-            DeserializeCommand();
+            //DeserializeCommand();
         }
 
         // Регистрация команды

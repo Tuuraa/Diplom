@@ -10,5 +10,5 @@ public partial class Command
 
     public string Phrase { get; set; } = null!;
 
-    public ICommandAction Action { get; set; } = null!;
+   public ICommandAction Action { get; set; } = null!;
 }

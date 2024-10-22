@@ -1,4 +1,5 @@
-﻿using NAudio.CoreAudioApi;
+﻿using Microsoft.VisualBasic.ApplicationServices;
+using NAudio.CoreAudioApi;
 using System.Collections.ObjectModel;
 using System.Windows;
 using WPFComponents.Model;
@@ -17,11 +18,17 @@ namespace WPFComponents
 
         private AudioWebSocketClient audioWebSocketClient;
 
+        ApplicationContext db = new ApplicationContext();
+
         public MainWindow()
         {
             InitializeComponent();
 
             voiceCommandProcessor = new VoiceCommandProcessor();
+
+            db.Database.EnsureCreated();
+
+            var test = db.Commands.Local;
 
             // Создание и регистрация команд
             var openAppCommand = new Command
@@ -31,6 +38,11 @@ namespace WPFComponents
                 Phrase = "тест",
                 Action = new OpenAppCommand("MyApp")
             };
+
+            db.Commands.Add(openAppCommand);
+            db.SaveChanges();
+
+            var test2 = db.Commands.Local.ToList();
 
             voiceCommandProcessor.RegisterCommand(openAppCommand);
 
