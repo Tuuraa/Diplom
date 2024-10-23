@@ -67,7 +67,7 @@
                 <Button Content="Stop" Width="100" Height="25"
                         HorizontalAlignment="Left" VerticalAlignment="Center"
                         Margin="0,10,0,0" Click="Button_Click_1"/>
-                <TextBlock Text="Developed by COMMAND_NAME" Foreground="White"
+                <TextBlock Text="Developed by ZXC Team" Foreground="White"
                            FontWeight="Bold" VerticalAlignment="Center" 
                            HorizontalAlignment="Right" Margin="10"/>
             </Grid>
