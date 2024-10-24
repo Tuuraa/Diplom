@@ -29,6 +29,13 @@ namespace WPFComponents
         public static readonly DependencyProperty IsEnabledProperty =
             DependencyProperty.Register("IsEnabled", typeof(bool), typeof(SettingElement), new PropertyMetadata(true));
 
+        public static readonly DependencyProperty WindowHeightProperty =
+            DependencyProperty.Register("WindowHeight", typeof(int), typeof(SettingElement), new PropertyMetadata(100));
+
+        public static readonly DependencyProperty WindowWidthProperty =
+            DependencyProperty.Register("WindowWidth", typeof(int), typeof(SettingElement), new PropertyMetadata(500));
+
+
         public string Header
         {
             get { return (string)GetValue(HeaderProperty); }
@@ -45,6 +52,18 @@ namespace WPFComponents
         {
             get { return (bool)GetValue(IsEnabledProperty); }
             set { SetValue(IsEnabledProperty, value); }
+        }
+
+        public int WindowHeight
+        {
+            get { return (int)GetValue(WindowHeightProperty); }
+            set { SetValue(WindowHeightProperty, value); }
+        }
+
+        public int WindowWidth
+        {
+            get { return (int)GetValue(WindowWidthProperty); }
+            set { SetValue(WindowWidthProperty, value); }
         }
 
         public SettingElement()

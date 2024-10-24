@@ -2,27 +2,25 @@
 using System.Windows;
 using WindowsInput;
 using WindowsInput.Native;
+using WPFComponents.Model.Abstract;
 using WPFComponents.Model.Interfaces;
 
 namespace WPFComponents.Model.Commands
 {
     internal class PressKeyCommand : CommandBase
     {
-        public string CommandType => "PressKeyCommand";
+        public string CommandType { get; set; }
         public string Key { get; set; }
 
         [JsonIgnore]
         private readonly InputSimulator _inputSimulator;
 
         [JsonConstructor]
-        public PressKeyCommand()
+        public PressKeyCommand(string key, string commandType)
         {
-            _inputSimulator = new InputSimulator();
-        }
-
-        public PressKeyCommand(string key) : this()
-        {
+            CommandType = commandType;
             Key = key;
+            _inputSimulator = new InputSimulator();
         }
 
         public override bool CanExecute()

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using WPFComponents.Model.Interfaces;
 
-namespace WPFComponents.Model
+namespace WPFComponents.Model.Abstract
 {
     internal abstract class CommandBase : ICommandAction
     {
@@ -15,8 +15,8 @@ namespace WPFComponents.Model
 
         public abstract void Execute();
 
-        public string SerializeCommand() => 
-            JsonSerializer.Serialize(this, this.GetType());
+        public string SerializeCommand() =>
+            JsonSerializer.Serialize(this, GetType());
 
         public CommandBase? DeserializeCommand(string json, Type commandType) =>
             JsonSerializer.Deserialize(json, commandType) as CommandBase;

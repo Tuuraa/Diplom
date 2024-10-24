@@ -1,9 +1,13 @@
-﻿using Microsoft.VisualBasic.ApplicationServices;
-using NAudio.CoreAudioApi;
+﻿using NAudio.CoreAudioApi;
+using NAudio.Wave;
 using System.Collections.ObjectModel;
 using System.Windows;
+using System.Windows.Input;
+using System.Windows.Media;
 using WPFComponents.Model;
 using WPFComponents.Model.Commands;
+using WPFComponents.Utils;
+using WPFComponents.View;
 
 namespace WPFComponents
 {
@@ -15,48 +19,43 @@ namespace WPFComponents
         public ObservableCollection<SettingItem> Settings { get; set; }
 
         private VoiceCommandProcessor voiceCommandProcessor;
-
         private AudioWebSocketClient audioWebSocketClient;
+        private SoundWave soundWave;
 
-        ApplicationContext db = new ApplicationContext();
+        private WaveInEvent waveIn;
+        private List<double> samples = new List<double>();
+        private const int SampleRate = 44100;
+        private const double SensitivityFactor = 1.5;
+        private const double HeightMultiplier = 2.0;
 
         public MainWindow()
         {
             InitializeComponent();
+            soundWave = new SoundWave(MyCanvas, waveLine);
 
             voiceCommandProcessor = new VoiceCommandProcessor();
 
-            db.Database.EnsureCreated();
-
-            var test = db.Commands.Local;
-
+            //voiceCommandProcessor.ProcessVoiceCommand("тест");
             // Создание и регистрация команд
-            var openAppCommand = new Command
-            {
-                Id = 1,
-                Name = "OpenApp",
-                Phrase = "тест",
-                Action = new OpenAppCommand("MyApp")
-            };
+            /*var openAppCommand = new Command
+            (
+                id: 1,
+                name: "OpenApp",
+                phrase: "тест",
+                action: new OpenAppCommand("MyApp", "OpenAppCommand")
+            );
 
-            db.Commands.Add(openAppCommand);
-            db.SaveChanges();
+            voiceCommandProcessor.RegisterCommand(openAppCommand);*/
 
-            var test2 = db.Commands.Local.ToList();
+            /*var pressKeyCommand = new Command
+            (
+                id: 3,
+                name: "Press B",
+                phrase: "нажми на клавишу B",
+                action: new PressKeyCommand("B", "PressKeyCommand")
+            );
 
-            voiceCommandProcessor.RegisterCommand(openAppCommand);
-
-            var pressKeyCommand = new Command
-            {
-                Id = 2,
-                Name = "PressKey",
-                Phrase = "нажми на клавишу A",
-                Action = new PressKeyCommand("A")
-            };
-
-            voiceCommandProcessor.RegisterCommand(pressKeyCommand);
-
-            voiceCommandProcessor.CommandSerializer();
+            voiceCommandProcessor.RegisterCommand(pressKeyCommand);*/
 
             Settings = new ObservableCollection<SettingItem>
             {
@@ -81,7 +80,7 @@ namespace WPFComponents
             audioWebSocketClient.SilenceDetected += OnSilenceDetected;
 
             bool isSuccesSerialize = voiceCommandProcessor.CommandSerializer();
-            MessageBox.Show(isSuccesSerialize.ToString());
+            
 
             this.DataContext = this;
         }
@@ -90,16 +89,19 @@ namespace WPFComponents
             //voiceCommandProcessor.ProcessVoiceCommand(RecognitionTextBox.Text);
         }
 
-        private async void Button_Click(object sender, RoutedEventArgs e)
+        private async void OpenSettings(object sender, RoutedEventArgs e)
         {
-            await audioWebSocketClient.ConnectAsync();
-            await audioWebSocketClient.StartRecognitionAsync();
+            /*await audioWebSocketClient.ConnectAsync();
+            await audioWebSocketClient.StartRecognitionAsync();*/
 
             // Запускаем получение результатов распознавания
             //await Task.Run(async () => await audioWebSocketClient.ReceiveRecognitionResultAsync());
-            SettingWindow settingWindow = new SettingWindow(Settings);
+            CommandRegister settingWindow = new();
             settingWindow.Show();
         }
+
+        private void CloseApp(object sender, RoutedEventArgs e) => this.Close();
+
         private void MediaElement_MediaFailed(object sender, ExceptionRoutedEventArgs e)
         {
             MessageBox.Show($"Ошибка воспроизведения видео: {e.ErrorException.Message}");
@@ -110,5 +112,14 @@ namespace WPFComponents
             await audioWebSocketClient.DisconnectAsync();
             voiceCommandProcessor.ProcessVoiceCommand(RecognitionTextBox.Text);
         }
+
+        private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ButtonState == MouseButtonState.Pressed)
+            {
+                this.DragMove();
+            }
+        }
+
     }
 }

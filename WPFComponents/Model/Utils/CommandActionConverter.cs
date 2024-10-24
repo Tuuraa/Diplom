@@ -4,11 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WPFComponents.Model
+namespace WPFComponents.Model.Utils
 {
     using System;
     using System.Text.Json;
     using System.Text.Json.Serialization;
+    using System.Windows;
     using WPFComponents.Model.Commands;
     using WPFComponents.Model.Interfaces;
 
@@ -16,21 +17,23 @@ namespace WPFComponents.Model
     {
         public override ICommandAction? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            var jsonDocument = JsonDocument.ParseValue(ref reader);
-            var rootElement = jsonDocument.RootElement;
+            var jsonObject = JsonDocument.ParseValue(ref reader).RootElement;
+            string? commandType = jsonObject.GetProperty("commandType").GetString();
 
-            string? commandType = rootElement.GetProperty("commandType").GetString();
-
-            
+            if (commandType == "OpenAppCommand")
+            {
+                return JsonSerializer.Deserialize<OpenAppCommand>(jsonObject.GetRawText(), options);
+            }
             switch (commandType)
             {
                 case "OpenAppCommand":
-                    return JsonSerializer.Deserialize<OpenAppCommand>(rootElement.GetRawText(), options);
+                    return JsonSerializer.Deserialize<OpenAppCommand>(jsonObject.GetRawText(), options);
                 case "PressKeyCommand":
-                    return JsonSerializer.Deserialize<PressKeyCommand>(rootElement.GetRawText(), options);
+                    return JsonSerializer.Deserialize<PressKeyCommand>(jsonObject.GetRawText(), options);
                 default:
-                    throw new NotSupportedException($"Command type {commandType} is not supported.");
+                    throw new Exception("Неизвестный тип команды");
             }
+            throw new NotSupportedException($"Command type {commandType} is not supported.");
         }
 
         public override void Write(Utf8JsonWriter writer, ICommandAction value, JsonSerializerOptions options)
