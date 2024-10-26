@@ -9,7 +9,7 @@ using WPFComponents.Model.Interfaces;
 
 namespace WPFComponents.Model.Abstract
 {
-    internal abstract class CommandBase : ICommandAction
+    public abstract class CommandBase : ICommandAction
     {
         public abstract bool CanExecute();
 

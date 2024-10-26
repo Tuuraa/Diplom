@@ -20,16 +20,12 @@ namespace WPFComponents.Model.Utils
             var jsonObject = JsonDocument.ParseValue(ref reader).RootElement;
             string? commandType = jsonObject.GetProperty("commandType").GetString();
 
-            if (commandType == "OpenAppCommand")
-            {
-                return JsonSerializer.Deserialize<OpenAppCommand>(jsonObject.GetRawText(), options);
-            }
             switch (commandType)
             {
                 case "OpenAppCommand":
                     return JsonSerializer.Deserialize<OpenAppCommand>(jsonObject.GetRawText(), options);
-                case "PressKeyCommand":
-                    return JsonSerializer.Deserialize<PressKeyCommand>(jsonObject.GetRawText(), options);
+                case "NewsShowCommand":
+                    return JsonSerializer.Deserialize<NewsShowCommand>(jsonObject.GetRawText(), options);
                 default:
                     throw new Exception("Неизвестный тип команды");
             }
@@ -38,17 +34,22 @@ namespace WPFComponents.Model.Utils
 
         public override void Write(Utf8JsonWriter writer, ICommandAction value, JsonSerializerOptions options)
         {
+            string commandType = value.GetType().Name;
+            writer.WriteStartObject();
+            writer.WriteString("commandType", commandType);
             switch (value)
             {
                 case PressKeyCommand pressKeyCommand:
-                    JsonSerializer.Serialize(writer, pressKeyCommand, options);
+                    writer.WriteString("key", pressKeyCommand.Key);
+                    //JsonSerializer.Serialize(writer, pressKeyCommand, options);
                     break;
-                case OpenAppCommand openAppCommand:
-                    JsonSerializer.Serialize(writer, openAppCommand, options);
+                case NewsShowCommand newsShowcommand:
+                    //JsonSerializer.Serialize(writer, newsShowcommand, options);
                     break;
                 default:
                     throw new NotSupportedException($"Тип команды '{value.GetType()}' не поддерживается для сериализации.");
             }
+            writer.WriteEndObject();
         }
     }
 

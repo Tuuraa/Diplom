@@ -4,6 +4,8 @@ using System.IO;
 using System.Text.Json;
 using System.Windows;
 using FuzzySharp;
+using WPFComponents.Model.Abstract;
+using WPFComponents.Model.Utils;
 
 namespace WPFComponents.Model
 {
@@ -20,7 +22,10 @@ namespace WPFComponents.Model
         // Регистрация команды
         public void RegisterCommand(Command command)
         {
-            _commandsMap[command.Phrase] = command;
+            foreach (var phrase in command.Phrases)
+            {
+                _commandsMap[phrase] = command;
+            }
 
             /*var succes = CommandSerializer();
 
@@ -114,7 +119,7 @@ namespace WPFComponents.Model
             }
         }
 
-        private List<CommandBase> DeserializeCommand()
+        public List<CommandBase> DeserializeCommand()
         {
             try
             {

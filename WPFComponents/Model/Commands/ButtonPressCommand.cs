@@ -7,7 +7,7 @@ using WPFComponents.Model.Interfaces;
 
 namespace WPFComponents.Model.Commands
 {
-    internal class PressKeyCommand : CommandBase
+    internal class PressKeyCommand : ICommandAction
     {
         public string CommandType { get; set; }
         public string Key { get; set; }
@@ -23,12 +23,12 @@ namespace WPFComponents.Model.Commands
             _inputSimulator = new InputSimulator();
         }
 
-        public override bool CanExecute()
+        public bool CanExecute()
         {
             return GetVirtualKeyCode(Key) != null;
         }
 
-        public override void Execute()
+        public void Execute()
         {
             try
             {

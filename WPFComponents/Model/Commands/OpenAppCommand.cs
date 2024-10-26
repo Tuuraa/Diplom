@@ -2,15 +2,14 @@
 using System.Text.Json.Serialization;
 using System.Windows;
 using WPFComponents.Model.Abstract;
+using WPFComponents.Model.Interfaces;
 
 namespace WPFComponents.Model.Commands
 {
-    internal class OpenAppCommand : CommandBase
+    internal class OpenAppCommand : ICommandAction
     {
         public string CommandType { get; set; }
         public string PathToExe { get; set; }
-
-        [JsonConstructor]
         public OpenAppCommand(string pathToExe, string commandType)
         {
             CommandType = commandType;
@@ -18,13 +17,13 @@ namespace WPFComponents.Model.Commands
         }
 
         //TODO: убрать return true
-        public override bool CanExecute()
+        public bool CanExecute()
         {
             return true;
             return File.Exists(PathToExe);
         }
 
-        public override void Execute()
+        public void Execute()
         {
             // Замените на запуск приложения
             MessageBox.Show($"Запуск приложения: {PathToExe}");

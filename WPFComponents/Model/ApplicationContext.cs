@@ -1,31 +1,47 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.VisualBasic.ApplicationServices;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 using WPFComponents.Model.Interfaces;
+using WPFComponents.Model.Utils;
 
 namespace WPFComponents.Model
 {
     public class ApplicationContext : DbContext
     {
-        public DbSet<Command> Commands { get; set; } = null!;
+        public DbSet<Command> Commands { get; set; }
+        public DbSet<Scenario> Scenarios { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlite("Data Source=DataBase.db");
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Определяем модель
-            modelBuilder.Entity<Command>()
-                .Property(c => c.Action)
+            var options = new JsonSerializerOptions
+            {
+                WriteIndented = true,
+                Converters = { new CommandActionConverter() }, // Ваш кастомный конвертер
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase // Политика именования
+            };
+
+
+            modelBuilder.Entity<Scenario>()
+                .Property(s => s.Phrases)
                 .HasConversion(
-                    v => JsonSerializer.Serialize(v, new JsonSerializerOptions()), // сериализация ICommandAction
-                    v => JsonSerializer.Deserialize<ICommandAction>(v, new JsonSerializerOptions())! // десериализация
+                    v => JsonSerializer.Serialize(v, new JsonSerializerOptions()),
+                    v => JsonSerializer.Deserialize<List<string>>(v, new JsonSerializerOptions())!
                 );
+
+            modelBuilder.Entity<Command>()
+                    .Property(c => c.Action)
+                    .HasConversion(
+                    v => JsonSerializer.Serialize(v, options), // сериализация ICommandAction
+                    v => JsonSerializer.Deserialize<ICommandAction>(v, options)! // десериализация
+                );
+
+            modelBuilder.Entity<Scenario>()
+                .HasMany(s => s.Commands)
+                .WithOne()
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

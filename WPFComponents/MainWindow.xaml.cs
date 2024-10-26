@@ -1,11 +1,17 @@
 ﻿using NAudio.CoreAudioApi;
 using NAudio.Wave;
 using System.Collections.ObjectModel;
+using System.Data;
+using System.Runtime.InteropServices;
+using System.Text;
+using System.Text.Json;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using WPFComponents.Model;
 using WPFComponents.Model.Commands;
+using WPFComponents.Model.Interfaces;
+using WPFComponents.Model.Utils;
 using WPFComponents.Utils;
 using WPFComponents.View;
 
@@ -17,6 +23,7 @@ namespace WPFComponents
     public partial class MainWindow : Window
     {
         public ObservableCollection<SettingItem> Settings { get; set; }
+        ApplicationContext db = new ApplicationContext();
 
         private VoiceCommandProcessor voiceCommandProcessor;
         private AudioWebSocketClient audioWebSocketClient;
@@ -28,6 +35,28 @@ namespace WPFComponents
         private const double SensitivityFactor = 1.5;
         private const double HeightMultiplier = 2.0;
 
+        #region Эту хуйню перенести потом в класс комманды для работы с окнами
+        private ActiveWindowManager windowManager;
+
+        /// <summary>
+        /// Метод тестовый закрывает активное окно на момент запуска !!!Может закрыть VS
+        /// </summary>
+        private void CheckActiveWindow()
+        {
+            string activeWindowTitle = windowManager.GetActiveWindowTitle();
+            if (!string.IsNullOrEmpty(activeWindowTitle))
+            {
+                MessageBox.Show("Текущее активное окно: " + activeWindowTitle);
+
+                // Сворачивание активного окна
+                //windowManager.MinimizeActiveWindow();
+
+                // Закрытие активного окна
+                 windowManager.CloseActiveWindow();
+            }
+        }
+        #endregion
+
         public MainWindow()
         {
             InitializeComponent();
@@ -35,27 +64,19 @@ namespace WPFComponents
 
             voiceCommandProcessor = new VoiceCommandProcessor();
 
-            //voiceCommandProcessor.ProcessVoiceCommand("тест");
-            // Создание и регистрация команд
-            /*var openAppCommand = new Command
-            (
-                id: 1,
-                name: "OpenApp",
-                phrase: "тест",
-                action: new OpenAppCommand("MyApp", "OpenAppCommand")
-            );
+            //windowManager = new ActiveWindowManager();
 
-            voiceCommandProcessor.RegisterCommand(openAppCommand);*/
+            //CheckActiveWindow();
 
-            /*var pressKeyCommand = new Command
-            (
-                id: 3,
-                name: "Press B",
-                phrase: "нажми на клавишу B",
-                action: new PressKeyCommand("B", "PressKeyCommand")
-            );
+            db.Database.EnsureCreated();
 
-            voiceCommandProcessor.RegisterCommand(pressKeyCommand);*/
+            var coms = db.Commands.ToList();
+
+            voiceCommandProcessor.RegisterCommand(coms.First());
+
+            voiceCommandProcessor.ProcessVoiceCommand("Открой новости");
+
+            var stop = 5;
 
             Settings = new ObservableCollection<SettingItem>
             {
@@ -78,11 +99,6 @@ namespace WPFComponents
             };
 
             audioWebSocketClient.SilenceDetected += OnSilenceDetected;
-
-            bool isSuccesSerialize = voiceCommandProcessor.CommandSerializer();
-            
-
-            this.DataContext = this;
         }
         private void OnSilenceDetected(object sender, EventArgs e)
         {
