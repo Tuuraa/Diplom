@@ -27,6 +27,7 @@ namespace WPFComponents.Model.Utils
                 case "NewsShowCommand":
                     return JsonSerializer.Deserialize<NewsShowCommand>(jsonObject.GetRawText(), options);
                 case "MoveMouseCommand":
+                    return JsonSerializer.Deserialize<MoveMouseCommand>(jsonObject.GetRawText(), options);
                     int x = jsonObject.GetProperty("X").GetInt32();
                     int y = jsonObject.GetProperty("Y").GetInt32();
                     bool click = jsonObject.GetProperty("Click").GetBoolean();

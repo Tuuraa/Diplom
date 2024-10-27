@@ -114,16 +114,6 @@ namespace WPFComponents
             //voiceCommandProcessor.ProcessVoiceCommand("Открой новости");
 
             var stop = 5;
-
-            Settings = new ObservableCollection<SettingItem>
-            {
-                new SettingItem("Расширенная вкладка", "Открыть окно для расширенной вкладки", false),
-                new SettingItem("Always on top", "Поверх других окон — это быстрый и простой способ закрепить окна сверху", true),
-                new SettingItem("Awake", "Поддерживай свой компьютер в активном состоянии", true),
-                new SettingItem("Расширенная вкладка", "Открыть окно для расширенной вкладки", false),
-                new SettingItem("Always on top", "Поверх других окон — это быстрый и простой способ закрепить окна сверху", true),
-                new SettingItem("Awake", "Поддерживай свой компьютер в активном состоянии", true),
-            };
             audioWebSocketClient = new AudioWebSocketClient("ws://localhost:5000");
 
             audioWebSocketClient.OnPartialTextReceived += (partialText) =>
@@ -131,7 +121,8 @@ namespace WPFComponents
                 Dispatcher.Invoke(() =>
                 {
                     // Добавляем новый частичный текст к уже существующему в TextBox
-                    RecognitionTextBox.Text += partialText + " ";
+                    //RecognitionTextBox.Text += partialText + " ";
+                    MessageBox.Show(partialText);
                 });
             };
 
