@@ -16,7 +16,6 @@ namespace WPFComponents.Model
 
         public VoiceCommandProcessor()
         {
-            //DeserializeCommand();
         }
 
         // Регистрация команды
@@ -27,12 +26,17 @@ namespace WPFComponents.Model
                 _commandsMap[phrase] = command;
             }
 
-            /*var succes = CommandSerializer();
+        }
 
-            if (!succes)
+        public void RegisterCommand(List<Command> commands)
+        {
+            foreach (var command in commands)
             {
-                //Обработка ошибки сериализации
-            }*/
+                foreach (var phrase in command.Phrases)
+                {
+                    _commandsMap[phrase] = command;
+                }
+            }
         }
 
         // Обработка распознанной голосовой фразы
@@ -83,7 +87,7 @@ namespace WPFComponents.Model
                 var score = Fuzz.Ratio(entry.Key, recognizedPhrase);
 
                 // Устанавливаем порог, например 80
-                if (score > 80 && score > highestScore)
+                if (score > 65 && score > highestScore)
                 {
                     highestScore = score;
                     bestMatchCommand = entry.Value;

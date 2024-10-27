@@ -70,11 +70,48 @@ namespace WPFComponents
 
             db.Database.EnsureCreated();
 
+            #region CommandsAddToDB
+            //var wordAc = new PrintWordCommand("привет");
+
+            //var printWord = new Command
+            //{
+            //    Name = "PrintHello",
+            //    Phrases = new List<string> { "Напечатай привет", "Напиши привет" },
+            //    Action = new PrintWordCommand("привет"),
+            //    Type = wordAc.GetType().Name
+            //};
+
+            //var butAc = new PressKeyCommand("X", "");
+            //var butpress = new Command
+            //{
+            //    Name = "Press X",
+            //    Phrases = new List<string> { "Нажми X" },
+            //    Action = butAc,
+            //    Type = butAc.GetType().Name
+            //};
+
+            //var mouseAc = new MoveMouseCommand(100, 100, false, "MoveMouseCommand");
+            //var mouse = new Command
+            //{
+            //    Name = "Mouse",
+            //    Phrases = new List<string> { "Мышь на 100 и 100" },
+            //    Action = mouseAc,
+            //    Type = mouseAc.GetType().Name
+            //};
+
+            //db.Commands.Add(printWord);
+            //db.Commands.Add(butpress);
+            //db.Commands.Add(mouse);
+            //db.SaveChanges();
+            #endregion
+
             var coms = db.Commands.ToList();
 
-            voiceCommandProcessor.RegisterCommand(coms.First());
+            voiceCommandProcessor.RegisterCommand(coms);
 
-            voiceCommandProcessor.ProcessVoiceCommand("Открой новости");
+            //voiceCommandProcessor.RegisterCommand(coms.First());
+
+            //voiceCommandProcessor.ProcessVoiceCommand("Открой новости");
 
             var stop = 5;
 
@@ -99,6 +136,8 @@ namespace WPFComponents
             };
 
             audioWebSocketClient.SilenceDetected += OnSilenceDetected;
+
+            
         }
         private void OnSilenceDetected(object sender, EventArgs e)
         {
@@ -137,5 +176,11 @@ namespace WPFComponents
             }
         }
 
+        private async void Button_Click(object sender, RoutedEventArgs e)
+        {
+            await audioWebSocketClient.ConnectAsync();
+            await audioWebSocketClient.StartRecognitionAsync();
+            await Task.Run(async () => await audioWebSocketClient.ReceiveRecognitionResultAsync());
+        }
     }
 }

@@ -6,19 +6,19 @@ namespace WPFComponents.Model.Commands
 {
     internal class PrintWordCommand : ICommandAction
     {
-        private readonly string _word;
+        public readonly string Word;
         private readonly InputSimulator _inputSimulator;
 
         public PrintWordCommand(string word)
         {
-            _word = word;
+            Word = word;
             _inputSimulator = new InputSimulator();
         }
 
         public bool CanExecute()
         {
             // Добавьте здесь проверку условий, если требуется
-            return !string.IsNullOrEmpty(_word);
+            return !string.IsNullOrEmpty(Word);
         }
 
         public void Execute()
@@ -30,7 +30,7 @@ namespace WPFComponents.Model.Commands
             }
 
             // Используем InputSimulator для печати слова по буквам
-            foreach (char letter in _word)
+            foreach (char letter in Word)
             {
                 _inputSimulator.Keyboard.TextEntry(letter);
             }

@@ -26,6 +26,17 @@ namespace WPFComponents.Model.Utils
                     return JsonSerializer.Deserialize<OpenAppCommand>(jsonObject.GetRawText(), options);
                 case "NewsShowCommand":
                     return JsonSerializer.Deserialize<NewsShowCommand>(jsonObject.GetRawText(), options);
+                case "MoveMouseCommand":
+                    int x = jsonObject.GetProperty("X").GetInt32();
+                    int y = jsonObject.GetProperty("Y").GetInt32();
+                    bool click = jsonObject.GetProperty("Click").GetBoolean();
+                    return new MoveMouseCommand(x, y, click, commandType);
+                case "PressKeyCommand":
+                    string key = jsonObject.GetProperty("key").GetString() ?? string.Empty;
+                    return new PressKeyCommand(key, commandType);
+                case "PrintWordCommand":
+                    string word = jsonObject.GetProperty("Word").GetString() ?? string.Empty;
+                    return new PrintWordCommand(word);
                 default:
                     throw new Exception("Неизвестный тип команды");
             }
@@ -45,6 +56,14 @@ namespace WPFComponents.Model.Utils
                     break;
                 case NewsShowCommand newsShowcommand:
                     //JsonSerializer.Serialize(writer, newsShowcommand, options);
+                    break;
+                case MoveMouseCommand moveMouseCommand:
+                    writer.WriteNumber("X", moveMouseCommand.X);
+                    writer.WriteNumber("Y", moveMouseCommand.Y);
+                    writer.WriteBoolean("Click", moveMouseCommand.Click);
+                    break;
+                case PrintWordCommand printWordCommand:
+                    writer.WriteString("Word", printWordCommand.Word);
                     break;
                 default:
                     throw new NotSupportedException($"Тип команды '{value.GetType()}' не поддерживается для сериализации.");
