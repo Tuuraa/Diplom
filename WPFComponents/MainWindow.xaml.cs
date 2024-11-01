@@ -1,17 +1,8 @@
-﻿using NAudio.CoreAudioApi;
-using NAudio.Wave;
+﻿using NAudio.Wave;
 using System.Collections.ObjectModel;
-using System.Data;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Text.Json;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media;
 using WPFComponents.Model;
-using WPFComponents.Model.Commands;
-using WPFComponents.Model.Interfaces;
-using WPFComponents.Model.Utils;
 using WPFComponents.Utils;
 using WPFComponents.View;
 
@@ -109,10 +100,6 @@ namespace WPFComponents
 
             voiceCommandProcessor.RegisterCommand(coms);
 
-            //voiceCommandProcessor.RegisterCommand(coms.First());
-
-            //voiceCommandProcessor.ProcessVoiceCommand("Открой новости");
-
             var stop = 5;
 
             Settings = new ObservableCollection<SettingItem>
@@ -146,11 +133,6 @@ namespace WPFComponents
 
         private async void OpenSettings(object sender, RoutedEventArgs e)
         {
-            /*await audioWebSocketClient.ConnectAsync();
-            await audioWebSocketClient.StartRecognitionAsync();*/
-
-            // Запускаем получение результатов распознавания
-            //await Task.Run(async () => await audioWebSocketClient.ReceiveRecognitionResultAsync());
             CommandRegister settingWindow = new();
             settingWindow.Show();
         }
