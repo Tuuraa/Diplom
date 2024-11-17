@@ -125,9 +125,20 @@ namespace WPFComponents.Model
         {
             if (webSocket.State == WebSocketState.Open)
             {
-                await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Закрытие", CancellationToken.None);
+                await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "close", CancellationToken.None);
                 webSocket.Dispose();
                 waveIn?.Dispose();
+            }
+        }
+
+        public async Task StopRec()
+        {
+            if (webSocket.State == WebSocketState.Open)
+            {
+                byte[] stopMessage = Encoding.UTF8.GetBytes("stoprec");
+                await webSocket.SendAsync(new ArraySegment<byte>(stopMessage), WebSocketMessageType.Text, true, CancellationToken.None);
+                //webSocket.Dispose();
+                //waveIn?.Dispose();
             }
         }
     }

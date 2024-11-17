@@ -137,7 +137,10 @@ namespace WPFComponents
             settingWindow.Show();
         }
 
-        private void CloseApp(object sender, RoutedEventArgs e) => this.Close();
+        private void CloseApp(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
 
         private void MediaElement_MediaFailed(object sender, ExceptionRoutedEventArgs e)
         {
@@ -146,7 +149,7 @@ namespace WPFComponents
 
         private async void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            await audioWebSocketClient.DisconnectAsync();
+            await audioWebSocketClient.StopRec();
             voiceCommandProcessor.ProcessVoiceCommand(RecognitionTextBox.Text);
         }
 
@@ -163,6 +166,11 @@ namespace WPFComponents
             await audioWebSocketClient.ConnectAsync();
             await audioWebSocketClient.StartRecognitionAsync();
             await Task.Run(async () => await audioWebSocketClient.ReceiveRecognitionResultAsync());
+        }
+
+        private async void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            await audioWebSocketClient.DisconnectAsync();
         }
     }
 }

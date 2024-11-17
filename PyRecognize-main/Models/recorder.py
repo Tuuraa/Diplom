@@ -7,7 +7,6 @@ from config import config
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-
 class RecorderConfig:
     def __init__(self, keyword_paths: str = None) -> None:
         self.keywords = [word for word in pvporcupine.KEYWORDS]
@@ -49,14 +48,14 @@ class Recorder:
         except Exception as e:
             logger.error(f"An error occurred during recording: {e}")
         finally:
-            self.stop_and_cleanup()
+            await self.stop_and_cleanup()
 
-    def stop(self) -> None:
+    async def stop(self) -> None:
         logger.info("Stopping recording...")
         self.is_recording = False
-        self.stop_and_cleanup()
+        await self.stop_and_cleanup()
 
-    def stop_and_cleanup(self) -> None:
+    async def stop_and_cleanup(self) -> None:
         if self.recorder.is_recording:
             self.recorder.stop()
         self.porcupine.delete()
