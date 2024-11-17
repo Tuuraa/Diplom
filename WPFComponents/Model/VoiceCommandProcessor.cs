@@ -12,7 +12,6 @@ namespace WPFComponents.Model
     public class VoiceCommandProcessor
     {
         private readonly Dictionary<string, Command> _commandsMap = new Dictionary<string, Command>();
-        private readonly string _filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "Media", "commands.json");
 
         public VoiceCommandProcessor()
         {
@@ -96,68 +95,5 @@ namespace WPFComponents.Model
 
             return bestMatchCommand;
         }
-
-        //Сериализация новых команд
-        public bool CommandSerializer()
-        {
-            try
-            {
-                List<Command> commands = _commandsMap.Values.ToList();
-
-                var options = new JsonSerializerOptions
-                {
-                    WriteIndented = true,
-                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                    Converters = { new CommandActionConverter() }
-                };
-
-                string json = JsonSerializer.Serialize(commands, options);
-                File.WriteAllText(_filePath, json);
-
-                return true;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("ex is " + ex.Message);
-                return false;
-            }
-        }
-
-        public List<CommandBase> DeserializeCommand()
-        {
-            try
-            {
-                string json = File.ReadAllText(_filePath);
-
-                var options = new JsonSerializerOptions
-                {
-                    Converters = { new CommandActionConverter() },
-                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-                };
-
-                List<CommandBase> commands = JsonSerializer.Deserialize<List<CommandBase>>(json, options);
-
-                if (commands != null && commands.Count > 0)
-                {
-                    foreach (var command in commands)
-                    {
-                        MessageBox.Show($"type: {command.GetType()}");
-                    }
-                }
-                else
-                {
-                    MessageBox.Show("Команды не найдены или пусты.");
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"{ex.Message}");
-            }
-
-            return null;
-        }
-
-
-
     }
 }

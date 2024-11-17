@@ -14,7 +14,7 @@ namespace WPFComponents
     public partial class MainWindow : Window
     {
         public ObservableCollection<SettingItem> Settings { get; set; }
-        ApplicationContext db = new ApplicationContext();
+        private ApplicationContext db = new ApplicationContext();
 
         private VoiceCommandProcessor voiceCommandProcessor;
         WebSocketServer socketServer = new WebSocketServer();
@@ -27,7 +27,7 @@ namespace WPFComponents
         private const double SensitivityFactor = 1.5;
         private const double HeightMultiplier = 2.0;
 
-        private List<string> ReceiveText;
+        //private List<string> ReceiveText;
 
         #region Эту хуйню перенести потом в класс комманды для работы с окнами
         private ActiveWindowManager windowManager;
@@ -60,7 +60,6 @@ namespace WPFComponents
             soundWave = new SoundWave(MyCanvas, waveLine);
 
             voiceCommandProcessor = new VoiceCommandProcessor();
-            ReceiveText = new List<string>();
 
             //windowManager = new ActiveWindowManager();
 
@@ -107,44 +106,22 @@ namespace WPFComponents
 
             voiceCommandProcessor.RegisterCommand(coms);
 
-            //voiceCommandProcessor.RegisterCommand(coms.First());
-
-            //voiceCommandProcessor.ProcessVoiceCommand("Открой новости");
-
             var stop = 5;
 
             socketServer.OnTextReceived += (partialText) =>
             {
                 Dispatcher.Invoke(() =>
                 {
-                    // Добавляем новый частичный текст к уже существующему в TextBox
-                    //RecognitionTextBox.Text += partialText + " ";
-                    ReceiveText.Add(partialText);
-                    MessageBox.Show(partialText);
+                    voiceCommandProcessor.ProcessVoiceCommand(partialText);
                 });
             };
-
-            //socketServer.SilenceDetected += OnSilenceDetected;
-
-
-            //InitializeSpeechRecognition();
 
         }
 
         private async void StartServer() => await socketServer.StartAsync("http://localhost:5001/");
 
-        private void OnSilenceDetected(object sender, EventArgs e)
-        {
-            //voiceCommandProcessor.ProcessVoiceCommand(RecognitionTextBox.Text);
-        }
-
         private async void OpenSettings(object sender, RoutedEventArgs e)
         {
-            /*await audioWebSocketClient.ConnectAsync();
-            await audioWebSocketClient.StartRecognitionAsync();*/
-
-            // Запускаем получение результатов распознавания
-            //await Task.Run(async () => await audioWebSocketClient.ReceiveRecognitionResultAsync());
             CommandRegister settingWindow = new();
             settingWindow.Show();
         }
@@ -172,21 +149,5 @@ namespace WPFComponents
                 this.DragMove();
             }
         }
-
-        private async void Button_Click(object sender, RoutedEventArgs e)
-        {
-            InitializeSpeechRecognition();
-            /*await audioWebSocketClient.ConnectAsync();
-            await audioWebSocketClient.StartRecognitionAsync();
-            await Task.Run(async () => await audioWebSocketClient.ReceiveRecognitionResultAsync());*/
-        }
-
-        private async void InitializeSpeechRecognition()
-        {
-            /*await audioWebSocketClient.ConnectAsync();
-            await audioWebSocketClient.StartRecognitionAsync();
-            await Task.Run(async () => await audioWebSocketClient.ReceiveRecognitionResultAsync());*/
-        }
-
     }
 }
