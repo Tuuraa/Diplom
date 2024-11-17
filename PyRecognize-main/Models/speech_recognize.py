@@ -1,5 +1,5 @@
 from typing import AsyncGenerator
-import pyaudio, json, time
+import pyaudio, json
 import asyncio
 
 from vosk import Model, KaldiRecognizer
