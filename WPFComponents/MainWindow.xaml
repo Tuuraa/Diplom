@@ -60,7 +60,7 @@
             </Canvas>
 
             <TextBox x:Name="RecognitionTextBox" Width="360" Height="120"
-                     TextWrapping="Wrap" Margin="20,0,20,20" Grid.Row="1"
+                     TextWrapping="Wrap" Margin="20,0,20,20" Grid.RowSpan="2"
                      VerticalAlignment="Bottom" SelectionOpacity="0" Visibility="Hidden"/>
 
             <Grid Grid.Row="2" Grid.ColumnSpan="2">
