@@ -7,7 +7,7 @@ namespace WPFComponents.Model.Commands
 {
     internal class NewsShowCommand : ICommandAction
     {
-        private readonly Uri _uri = new Uri("https://news.google.com/?hl=ru");
+        private readonly Uri _uri = new Uri("https://panorama.pub/");
         public bool CanExecute()
         {
             try

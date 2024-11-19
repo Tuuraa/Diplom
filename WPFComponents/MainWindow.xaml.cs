@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
 using WPFComponents.Model;
+using WPFComponents.Model.Commands;
 using WPFComponents.Utils;
 using WPFComponents.View;
 
@@ -13,6 +14,7 @@ namespace WPFComponents
     /// </summary>
     public partial class MainWindow : Window
     {
+        #region Props
         public ObservableCollection<SettingItem> Settings { get; set; }
         private ApplicationContext db = new ApplicationContext();
 
@@ -26,29 +28,6 @@ namespace WPFComponents
         private const int SampleRate = 44100;
         private const double SensitivityFactor = 1.5;
         private const double HeightMultiplier = 2.0;
-
-        //private List<string> ReceiveText;
-
-        #region Эту хуйню перенести потом в класс комманды для работы с окнами
-        private ActiveWindowManager windowManager;
-
-        /// <summary>
-        /// Метод тестовый закрывает активное окно на момент запуска !!!Может закрыть VS
-        /// </summary>
-        private void CheckActiveWindow()
-        {
-            string activeWindowTitle = windowManager.GetActiveWindowTitle();
-            if (!string.IsNullOrEmpty(activeWindowTitle))
-            {
-                MessageBox.Show("Текущее активное окно: " + activeWindowTitle);
-
-                // Сворачивание активного окна
-                //windowManager.MinimizeActiveWindow();
-
-                // Закрытие активного окна
-                windowManager.CloseActiveWindow();
-            }
-        }
         #endregion
 
 
@@ -60,10 +39,6 @@ namespace WPFComponents
             soundWave = new SoundWave(MyCanvas, waveLine);
 
             voiceCommandProcessor = new VoiceCommandProcessor();
-
-            //windowManager = new ActiveWindowManager();
-
-            //CheckActiveWindow();
 
             db.Database.EnsureCreated();
 
@@ -96,7 +71,16 @@ namespace WPFComponents
             //    Type = mouseAc.GetType().Name
             //};
 
-            //db.Commands.Add(printWord);
+            //var hidewindow = new HideWindowCommand();
+            //var windowcom = new Command
+            //{
+            //    Name = "HideWindow",
+            //    Phrases = new List<string> { "Сверни окно" },
+            //    Action = hidewindow,
+            //    Type = hidewindow.GetType().Name
+            //};
+
+            //db.Commands.Add(windowcom);
             //db.Commands.Add(butpress);
             //db.Commands.Add(mouse);
             //db.SaveChanges();

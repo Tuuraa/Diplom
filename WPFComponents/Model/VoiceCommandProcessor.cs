@@ -9,6 +9,10 @@ using WPFComponents.Model.Utils;
 
 namespace WPFComponents.Model
 {
+    /// <summary>
+    /// Класс который отвечает за регистраницию комманд при запуске приложения.
+    /// И обработку поступающих комманд в процессе работы приложения.
+    /// </summary>
     public class VoiceCommandProcessor
     {
         private readonly Dictionary<string, Command> _commandsMap = new Dictionary<string, Command>();
@@ -27,6 +31,10 @@ namespace WPFComponents.Model
 
         }
 
+        /// <summary>
+        /// Перегрузка для коллекции комманд
+        /// </summary>
+        /// <param name="commands"></param>
         public void RegisterCommand(List<Command> commands)
         {
             foreach (var command in commands)
@@ -38,7 +46,10 @@ namespace WPFComponents.Model
             }
         }
 
-        // Обработка распознанной голосовой фразы
+        /// <summary>
+        /// Обработка распознанной голосовой фразы
+        /// </summary>
+        /// <param name="recognizedPhrase"></param>
         public void ProcessVoiceCommand(string recognizedPhrase)
         {
             // Попытка точного соответствия
@@ -61,7 +72,11 @@ namespace WPFComponents.Model
             }
         }
 
-        // Метод для выполнения команды
+        /// <summary>
+        /// Метод для выполнения команды
+        /// </summary>
+        /// <param name="command"></param>
+        /// <param name="recognizedPhrase"></param>
         private void ExecuteCommand(Command command, string recognizedPhrase)
         {
             if (command.Action.CanExecute())
@@ -74,7 +89,11 @@ namespace WPFComponents.Model
             }
         }
 
-        // Метод для поиска команды с использованием нечеткого сравнения
+        /// <summary>
+        /// Метод для поиска команды с использованием нечеткого сравнения
+        /// </summary>
+        /// <param name="recognizedPhrase"></param>
+        /// <returns></returns>
         private Command FindBestFuzzyMatch(string recognizedPhrase)
         {
             Command bestMatchCommand = null;

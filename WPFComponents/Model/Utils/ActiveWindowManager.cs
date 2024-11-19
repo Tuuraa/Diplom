@@ -55,5 +55,6 @@ namespace WPFComponents.Model
                 PostMessage(handle, WM_CLOSE, IntPtr.Zero, IntPtr.Zero);
             }
         }
+
     }
 }

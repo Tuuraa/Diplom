@@ -2,6 +2,9 @@
 using System.Net.WebSockets;
 using System.Text;
 
+/// <summary>
+/// Класс для общения с питононом для распознования речи
+/// </summary>
 class WebSocketServer
 {
     private HttpListener _httpListener;
