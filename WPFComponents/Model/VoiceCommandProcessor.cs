@@ -5,6 +5,7 @@ using System.Text.Json;
 using System.Windows;
 using FuzzySharp;
 using WPFComponents.Model.Abstract;
+using WPFComponents.Model.Commands;
 using WPFComponents.Model.Utils;
 
 namespace WPFComponents.Model
@@ -17,8 +18,37 @@ namespace WPFComponents.Model
     {
         private readonly Dictionary<string, Command> _commandsMap = new Dictionary<string, Command>();
 
+        private List<string> _templates = new List<string>();
+
+        private Dictionary<string,Scenario> scenarios = new Dictionary<string, Scenario>();
+
         public VoiceCommandProcessor()
         {
+            
+            _templates.Add("запусти сценарий");
+            Scenario scenario = new Scenario();
+            scenario.Phrases = new List<string> { "я дома" };
+            scenario.Name = "Дом";
+            scenario.Commands = new List<Command>();
+            var ac = new NewsShowCommand();
+            Command command = new Command();
+            command.Action = ac;
+
+            var ac1 = new OpenSiteCommand("https://habr.com/ru/flows/develop/news/");
+
+            Command command1 = new Command();
+            command1.Action = ac1;
+
+            var ac2 = new OpenAppCommand(@"C:\Users\ivank\AppData\Roaming\Telegram Desktop\Telegram.exe");
+
+            Command command2 = new Command();
+            command2.Action = ac2;
+
+            scenario.Commands.Add(command);
+            scenario.Commands.Add(command1);
+            scenario.Commands.Add(command2);
+
+            scenarios.Add("я дома",scenario);
         }
 
         // Регистрация команды
@@ -52,7 +82,14 @@ namespace WPFComponents.Model
         /// <param name="recognizedPhrase"></param>
         public void ProcessVoiceCommand(string recognizedPhrase)
         {
-            // Попытка точного соответствия
+            if(recognizedPhrase.StartsWith("запусти сценарий", StringComparison.OrdinalIgnoreCase))
+            {
+                var bestScenario = FindBestFuzzyMatchScenario(recognizedPhrase.Substring("запусти сценарий".Length).Trim());
+                if (bestScenario != null) {
+                    ExecuteScenario(bestScenario);
+                }
+                return;
+            }
             if (_commandsMap.ContainsKey(recognizedPhrase))
             {
                 ExecuteCommand(_commandsMap[recognizedPhrase], recognizedPhrase);
@@ -113,6 +150,35 @@ namespace WPFComponents.Model
             }
 
             return bestMatchCommand;
+        }
+
+        private Scenario FindBestFuzzyMatchScenario(string recognizedPhrase)
+        {
+            Scenario bestMatchCommand = null;
+            int highestScore = 0;
+
+            foreach (var entry in scenarios)
+            {
+                // Оценка похожести фраз с помощью библиотеки FuzzySharp
+                var score = Fuzz.Ratio(entry.Key, recognizedPhrase);
+
+                // Устанавливаем порог, например 80
+                if (score > 65 && score > highestScore)
+                {
+                    highestScore = score;
+                    bestMatchCommand = entry.Value;
+                }
+            }
+
+            return bestMatchCommand;
+        }
+
+        private void ExecuteScenario(Scenario scenario)
+        {
+            foreach(var command in scenario.Commands)
+            {
+                ExecuteCommand(command,scenario.Name);
+            }
         }
     }
 }

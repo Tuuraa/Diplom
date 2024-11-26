@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Diagnostics;
+using System.IO;
 using System.Text.Json.Serialization;
 using System.Windows;
 using WPFComponents.Model.Abstract;
@@ -10,24 +11,24 @@ namespace WPFComponents.Model.Commands
     {
         public string CommandType { get; set; }
         public string PathToExe { get; set; }
-        public OpenAppCommand(string pathToExe, string commandType)
+        public OpenAppCommand(string pathToExe)
         {
-            CommandType = commandType;
+            //CommandType = commandType;
             PathToExe = pathToExe;
         }
 
         //TODO: убрать return true
         public bool CanExecute()
         {
-            return true;
+            //return true;
             return File.Exists(PathToExe);
         }
 
         public void Execute()
         {
             // Замените на запуск приложения
-            MessageBox.Show($"Запуск приложения: {PathToExe}");
-            // Process.Start(PathToExe);
+            //MessageBox.Show($"Запуск приложения: {PathToExe}");
+            Process.Start(PathToExe);
         }
     }
 }
