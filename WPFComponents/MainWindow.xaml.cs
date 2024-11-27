@@ -26,7 +26,6 @@ namespace WPFComponents
         private const int SampleRate = 44100;
         private const double SensitivityFactor = 1.5;
         private const double HeightMultiplier = 2.0;
-        #endregion
 
 
         public MainWindow()
