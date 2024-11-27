@@ -4,6 +4,7 @@ using System.IO;
 using System.Text.Json;
 using System.Windows;
 using FuzzySharp;
+using WindowsDesktop;
 using WPFComponents.Model.Abstract;
 using WPFComponents.Model.Commands;
 using WPFComponents.Model.Utils;
@@ -49,6 +50,32 @@ namespace WPFComponents.Model
             scenario.Commands.Add(command2);
 
             scenarios.Add("я дома",scenario);
+
+            Scenario work = new Scenario();
+            work.Phrases = new List<string> { "работа" };
+            work.Name = "Работа";
+            work.Commands = new List<Command>();
+            var work1 = new OpenAppCommand(@"C:\Users\ivank\Downloads\Отчёт по лаборатоной работе №4 (1).docx");
+            var work2 = new OpenAppCommand(@"C:\Users\ivank\AppData\Roaming\Telegram Desktop\Telegram.exe");
+            var work3 = new OpenSiteCommand(@"https://metanit.com/");
+
+            Command command5 = new Command();
+            command5.Action = work3;
+            work.Commands.Add(command5);
+
+            Command command3 = new Command();
+            command3.Action = work1;
+
+            //work.Commands.Add(command3);
+
+            Command command4 = new Command();
+            command4.Action = work2;
+            work.Commands.Add(command4);
+
+            
+
+            scenarios.Add("работа",work);
+            
         }
 
         // Регистрация команды
@@ -175,7 +202,9 @@ namespace WPFComponents.Model
 
         private void ExecuteScenario(Scenario scenario)
         {
-            foreach(var command in scenario.Commands)
+            var newDesktop = VirtualDesktop.Create();
+            newDesktop.Switch();
+            foreach (var command in scenario.Commands)
             {
                 ExecuteCommand(command,scenario.Name);
             }
