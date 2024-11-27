@@ -38,6 +38,8 @@ namespace WPFComponents.Model.Utils
                 case "PrintWordCommand":
                     string word = jsonObject.GetProperty("Word").GetString() ?? string.Empty;
                     return new PrintWordCommand(word);
+                case "HideWindowCommand":
+                    return new HideWindowCommand();
                 default:
                     throw new Exception("Неизвестный тип команды");
             }
@@ -65,6 +67,8 @@ namespace WPFComponents.Model.Utils
                     break;
                 case PrintWordCommand printWordCommand:
                     writer.WriteString("Word", printWordCommand.Word);
+                    break;
+                case HideWindowCommand hideWindowCommand:
                     break;
                 default:
                     throw new NotSupportedException($"Тип команды '{value.GetType()}' не поддерживается для сериализации.");

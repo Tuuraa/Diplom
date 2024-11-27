@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
 using WPFComponents.Model;
+using WPFComponents.Model.Commands;
 using WPFComponents.Utils;
 using WPFComponents.View;
 
@@ -25,29 +26,6 @@ namespace WPFComponents
         private const int SampleRate = 44100;
         private const double SensitivityFactor = 1.5;
         private const double HeightMultiplier = 2.0;
-
-        private List<string> ReceiveText;
-
-        #region Эту хуйню перенести потом в класс комманды для работы с окнами
-        private ActiveWindowManager windowManager;
-
-        /// <summary>
-        /// Метод тестовый закрывает активное окно на момент запуска !!!Может закрыть VS
-        /// </summary>
-        private void CheckActiveWindow()
-        {
-            string activeWindowTitle = windowManager.GetActiveWindowTitle();
-            if (!string.IsNullOrEmpty(activeWindowTitle))
-            {
-                MessageBox.Show("Текущее активное окно: " + activeWindowTitle);
-
-                // Сворачивание активного окна
-                //windowManager.MinimizeActiveWindow();
-
-                // Закрытие активного окна
-                windowManager.CloseActiveWindow();
-            }
-        }
         #endregion
 
 
@@ -59,11 +37,6 @@ namespace WPFComponents
             soundWave = new SoundWave(MyCanvas, waveLine);
 
             voiceCommandProcessor = new VoiceCommandProcessor();
-            ReceiveText = new List<string>();
-
-            //windowManager = new ActiveWindowManager();
-
-            //CheckActiveWindow();
 
             db.Database.EnsureCreated();
 
@@ -96,7 +69,16 @@ namespace WPFComponents
             //    Type = mouseAc.GetType().Name
             //};
 
-            //db.Commands.Add(printWord);
+            //var hidewindow = new HideWindowCommand();
+            //var windowcom = new Command
+            //{
+            //    Name = "HideWindow",
+            //    Phrases = new List<string> { "Сверни окно" },
+            //    Action = hidewindow,
+            //    Type = hidewindow.GetType().Name
+            //};
+
+            //db.Commands.Add(windowcom);
             //db.Commands.Add(butpress);
             //db.Commands.Add(mouse);
             //db.SaveChanges();
@@ -106,44 +88,22 @@ namespace WPFComponents
 
             voiceCommandProcessor.RegisterCommand(coms);
 
-            //voiceCommandProcessor.RegisterCommand(coms.First());
-
-            //voiceCommandProcessor.ProcessVoiceCommand("Открой новости");
-
             var stop = 5;
 
             socketServer.OnTextReceived += (partialText) =>
             {
                 Dispatcher.Invoke(() =>
                 {
-                    // Добавляем новый частичный текст к уже существующему в TextBox
-                    //RecognitionTextBox.Text += partialText + " ";
-                    ReceiveText.Add(partialText);
-                    MessageBox.Show(partialText);
+                    voiceCommandProcessor.ProcessVoiceCommand(partialText);
                 });
             };
-
-            //socketServer.SilenceDetected += OnSilenceDetected;
-
-
-            //InitializeSpeechRecognition();
 
         }
 
         private async void StartServer() => await socketServer.StartAsync("http://localhost:5001/");
 
-        private void OnSilenceDetected(object sender, EventArgs e)
-        {
-            //voiceCommandProcessor.ProcessVoiceCommand(RecognitionTextBox.Text);
-        }
-
         private async void OpenSettings(object sender, RoutedEventArgs e)
         {
-            /*await audioWebSocketClient.ConnectAsync();
-            await audioWebSocketClient.StartRecognitionAsync();*/
-
-            // Запускаем получение результатов распознавания
-            //await Task.Run(async () => await audioWebSocketClient.ReceiveRecognitionResultAsync());
             CommandRegister settingWindow = new();
             settingWindow.Show();
         }
@@ -171,21 +131,5 @@ namespace WPFComponents
                 this.DragMove();
             }
         }
-
-        private async void Button_Click(object sender, RoutedEventArgs e)
-        {
-            InitializeSpeechRecognition();
-            /*await audioWebSocketClient.ConnectAsync();
-            await audioWebSocketClient.StartRecognitionAsync();
-            await Task.Run(async () => await audioWebSocketClient.ReceiveRecognitionResultAsync());*/
-        }
-
-        private async void InitializeSpeechRecognition()
-        {
-            /*await audioWebSocketClient.ConnectAsync();
-            await audioWebSocketClient.StartRecognitionAsync();
-            await Task.Run(async () => await audioWebSocketClient.ReceiveRecognitionResultAsync());*/
-        }
-
     }
 }
