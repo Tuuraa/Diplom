@@ -8,7 +8,8 @@
         xmlns:loc="clr-namespace:WPFComponents"
         mc:Ignorable="d"
         Background="#202020"
-        Title="CommandRegister" Height="600" Width="860">
+        Title="CommandRegister" Height="600" Width="860"
+        >
     <Grid>
 
         <Grid.ColumnDefinitions>
@@ -18,10 +19,8 @@
 
         <StackPanel Grid.Column="0">
             <Menu>
-                <Grid HorizontalAlignment="Center"
-                      Width="80">
-                    <TextBlock Text="Общее" 
-                               Foreground="White"/>
+                <Grid HorizontalAlignment="Center" Width="80">
+                    <TextBlock Text="Общее" Foreground="White"/>
                 </Grid>
             </Menu>
 

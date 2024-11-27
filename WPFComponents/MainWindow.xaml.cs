@@ -13,7 +13,6 @@ namespace WPFComponents
     /// </summary>
     public partial class MainWindow : Window
     {
-        public ObservableCollection<SettingItem> Settings { get; set; }
         ApplicationContext db = new ApplicationContext();
 
         private VoiceCommandProcessor voiceCommandProcessor;
