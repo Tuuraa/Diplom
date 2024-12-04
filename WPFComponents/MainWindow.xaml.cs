@@ -1,8 +1,12 @@
 ﻿using Microsoft.Toolkit.Uwp.Notifications;
 using NAudio.Wave;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using WPFComponents.Model;
 using WPFComponents.Model.Commands;
 using WPFComponents.Utils;
@@ -22,13 +26,6 @@ namespace WPFComponents
         //private AudioWebSocketClient audioWebSocketClient;
         private SoundWave soundWave;
 
-        private WaveInEvent waveIn;
-        private List<double> samples = new List<double>();
-        private const int SampleRate = 44100;
-        private const double SensitivityFactor = 1.5;
-        private const double HeightMultiplier = 2.0;
-
-
         public MainWindow()
         {
             StartServer();
@@ -36,9 +33,16 @@ namespace WPFComponents
             InitializeComponent();
             soundWave = new SoundWave(MyCanvas, waveLine);
 
-            voiceCommandProcessor = new VoiceCommandProcessor();
-
             db.Database.EnsureCreated();
+
+            /*string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            string imagePath = Path.Combine(appDataPath, "WPFComponents", "Media", "Icons", "close_window.png");*/
+
+            string location = string.Join("\\", new List<string>(System.Reflection.Assembly.
+                GetExecutingAssembly().Location.Split("\\")).Take(6)) + "\\WPFComponents\\Media\\";
+
+            SetImgConfig(exitImg, location + "Icons\\close_window.png");
+            SetImgConfig(isActiveMicro, location + "micro_off.png");
 
             #region CommandsAddToDB
             //var wordAc = new PrintWordCommand("привет");
@@ -86,18 +90,37 @@ namespace WPFComponents
 
             var coms = db.Commands.ToList();
 
-            voiceCommandProcessor.RegisterCommand(coms);
+            voiceCommandProcessor = new VoiceCommandProcessor(coms);
 
-            var stop = 5;
+            //voiceCommandProcessor.RegisterCommand(coms);
 
-            socketServer.OnTextReceived += (partialText) =>
+            socketServer.OnTextReceived += (message) =>
             {
                 Dispatcher.Invoke(() =>
                 {
-                    voiceCommandProcessor.ProcessVoiceCommand(partialText);
+                    if (message == "success")
+                    {
+                        soundWave.StartMicrophone();
+                        SetImgConfig(isActiveMicro, location + "micro_on.png", height: 22);
+                    }
+                    else
+                    {
+                        voiceCommandProcessor.ProcessVoiceCommand(message);
+                        soundWave.StopMicrophone();
+                        SetImgConfig(isActiveMicro, location + "micro_off.png");
+                    }
+
                 });
             };
 
+        }
+
+        private void SetImgConfig(Image img, string sourse, double height = 25,  double width = 25)
+        {
+            img.Height = height;
+            img.Width = width;
+
+            img.Source = new BitmapImage(new Uri(sourse));
         }
 
         private async void StartServer() => await socketServer.StartAsync("http://localhost:5001/");
@@ -117,42 +140,12 @@ namespace WPFComponents
 
         private async void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            var groqClient = new GroqApiClient("https://api.groq.com/openai/v1/chat/completions", "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");
-
-            try
-            {
-                string inputMessage = "Tell me a joke.";
-                string model = "llama3-8b-8192";
-                double temperature = 1.0;
-                int maxTokens = 1024;
-
-                var response = await groqClient.SendQueryAsync(
-                    inputMessage,
-                    model,
-                    temperature,
-                    maxTokens,
-                    topP: 1.0,
-                    stream: false,
-                    responseFormat: "json_object"
-                );
-
-                Console.WriteLine($"Response: {response}");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error: {ex.Message}");
-            }
             /*MessageBox.Show(audioWebSocketClient.GetWebSocketCurrentState().ToString());
             MessageBox.Show(string.Join(" ", ReceiveText));
 
             await audioWebSocketClient.DisconnectAsync();
             voiceCommandProcessor.ProcessVoiceCommand(RecognitionTextBox.Text);*/
-            new ToastContentBuilder()
-            .AddArgument("action", "viewConversation")
-            .AddArgument("conversationId", 9813)
-            .AddText("Andrew sent you a picture")
-            .AddText("Check this out, The Enchantments in Washington!")
-            .Show(); 
+            
         }
 
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)

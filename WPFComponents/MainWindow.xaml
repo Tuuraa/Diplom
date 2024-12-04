@@ -25,9 +25,9 @@
         <Border CornerRadius="15" Grid.RowSpan="2"
                 Background="FloralWhite" />
 
-        <Image Source="C:\Users\turap\source\repos\Diplom\WPFComponents\Media\Icons\close_window.png"
+        <Image Source="pack://application:,,,/WPFComponents;component/Media/Icons/close_window.png"
                Width="26" Height="26" HorizontalAlignment="Right" VerticalAlignment="Center"
-               PreviewMouseDown="CloseApp" Cursor="Hand" Margin="0 10 10 0"/>
+               PreviewMouseDown="CloseApp" Cursor="Hand" Margin="0 10 10 0" x:Name="exitImg"/>
 
         <Grid Margin="10 0 10 20" Grid.Row="1" Cursor="">
             <Grid.RowDefinitions>
@@ -63,10 +63,11 @@
                      TextWrapping="Wrap" Margin="20,0,20,20" Grid.RowSpan="2"
                      VerticalAlignment="Bottom" SelectionOpacity="0" Visibility="Hidden"/>
 
-            <Grid Grid.Row="2" Grid.ColumnSpan="2">
+            <Grid Grid.Row="2" Grid.ColumnSpan="2" Cursor="">
 
-                <Button Content="Stop" Width="100" Height="25" FontSize="10" Click="Button_Click_1"/>
-                <TextBlock Text="Developed by ZXC Team" Foreground="Black"
+                <Image Source="pack://application:,,,/WPFComponents;component/Media/Icons/close_window.png" HorizontalAlignment="Left"
+                       Margin="15 0 0 0" Height="30" x:Name="isActiveMicro"/>
+                <TextBlock x:Name="devTeam" Text="Developed by ZXC Team" Foreground="Black"
                            FontWeight="Bold" VerticalAlignment="Center" 
                            HorizontalAlignment="Right" Margin="10"/>
                 

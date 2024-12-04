@@ -59,7 +59,15 @@ class Recorder:
     async def run(self) -> None:
         await self.start_recording()
 
+    async def send_message(self, message: str) -> None:
+        try:
+            async with websockets.connect(websocket_url) as websocket:
+                await websocket.send(message)
+        except Exception as e:
+            logger.error(f"Error while sending data over WebSocket: {e}")
+
     async def process(self) -> None:
+        await self.send_message("success")
         logger.info("I'm listening...")
         result = await self.vosk_model.run()
         logger.info(f"Processed: {result}")

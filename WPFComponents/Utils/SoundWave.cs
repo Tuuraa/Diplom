@@ -12,8 +12,8 @@ namespace WPFComponents.Utils
         private List<double> samples = new List<double>();
 
         private const int SampleRate = 44100;
-        private const double SensitivityFactor = 1.5;
-        private const double HeightMultiplier = 2.0;
+        private double SensitivityFactor;
+        private double HeightMultiplier;
 
         private Canvas soundCanvas;
         private Polyline waveLine;
@@ -23,16 +23,27 @@ namespace WPFComponents.Utils
             soundCanvas = canvas;
             this.waveLine = waveline;
 
-            StartMicrophone();
+            waveIn = new WaveInEvent();
+            waveIn.WaveFormat = new WaveFormat(SampleRate, 1);
+            waveIn.DataAvailable += OnDataAvailable;
+
             CompositionTarget.Rendering += OnRender;
+
+            waveIn.StartRecording();
+
+            // ебанный костыль, но пока как то так
+            SetSensivivity();
+            
         }
 
-        private void StartMicrophone()
+        public void StartMicrophone() => SetSensivivity(0.9, 1.5);
+
+        public void StopMicrophone() => SetSensivivity();
+
+        private void SetSensivivity(double sense = 0, double height = 0)
         {
-            waveIn = new WaveInEvent();
-            waveIn.WaveFormat = new WaveFormat(SampleRate, 1); // Моно
-            waveIn.DataAvailable += OnDataAvailable;
-            waveIn.StartRecording();
+            SensitivityFactor = sense;
+            HeightMultiplier = height;
         }
 
         private void OnDataAvailable(object sender, WaveInEventArgs e)
@@ -54,19 +65,18 @@ namespace WPFComponents.Utils
             int width = (int)soundCanvas.ActualWidth;
             double height = soundCanvas.ActualHeight;
 
-            // Подготовка точек для визуализации
             PointCollection points = new PointCollection();
             for (int i = 0; i < width; i++)
             {
                 int index = (int)((i / (double)width) * samples.Count);
-                double y = (height / 2) + (samples[index] * (height / 2) * SensitivityFactor * HeightMultiplier); // Увеличение высоты
+                double y = (height / 2) + (samples[index] * (height / 2) * SensitivityFactor * HeightMultiplier);
+
                 points.Add(new Point(i, y));
             }
 
             waveLine.Points = points;
-
-            // Очищаем старые значения для следующего обновления
             samples.Clear();
         }
+
     }
 }
