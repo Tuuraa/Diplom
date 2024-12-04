@@ -29,7 +29,7 @@ namespace WPFComponents.Model
                 messages = new[]
                 {
             new { role = "system", content = "Provide the response in JSON format." },
-            new { role = "user", content = inputMessage }
+            new { role = "user", content = "Отвечай на русском" + inputMessage }
         },
                 model,
                 temperature,
@@ -68,9 +68,26 @@ namespace WPFComponents.Model
                 .GetProperty("content")
                 .GetString();
 
+           // string firstPropertyValue = GetFirstPropertyValue(content);
+
             return content;
 
         }
+
+        static string GetFirstPropertyValue(string json)
+        {
+            using (JsonDocument doc = JsonDocument.Parse(json))
+            {
+                JsonElement root = doc.RootElement;
+
+                // Получаем первое свойство
+                JsonProperty firstProperty = root.EnumerateObject().First();
+
+                // Возвращаем значение первого свойства
+                return firstProperty.Value.GetString();
+            }
+        }
+
 
 
     }

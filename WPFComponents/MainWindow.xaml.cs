@@ -36,8 +36,6 @@ namespace WPFComponents
             InitializeComponent();
             soundWave = new SoundWave(MyCanvas, waveLine);
 
-            voiceCommandProcessor = new VoiceCommandProcessor();
-
             db.Database.EnsureCreated();
 
             #region CommandsAddToDB
@@ -86,7 +84,9 @@ namespace WPFComponents
 
             var coms = db.Commands.ToList();
 
-            voiceCommandProcessor.RegisterCommand(coms);
+            voiceCommandProcessor = new VoiceCommandProcessor(coms);
+
+            //voiceCommandProcessor.RegisterCommand(coms);
 
             var stop = 5;
 
@@ -117,42 +117,12 @@ namespace WPFComponents
 
         private async void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            var groqClient = new GroqApiClient("https://api.groq.com/openai/v1/chat/completions", "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");
-
-            try
-            {
-                string inputMessage = "Tell me a joke.";
-                string model = "llama3-8b-8192";
-                double temperature = 1.0;
-                int maxTokens = 1024;
-
-                var response = await groqClient.SendQueryAsync(
-                    inputMessage,
-                    model,
-                    temperature,
-                    maxTokens,
-                    topP: 1.0,
-                    stream: false,
-                    responseFormat: "json_object"
-                );
-
-                Console.WriteLine($"Response: {response}");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error: {ex.Message}");
-            }
             /*MessageBox.Show(audioWebSocketClient.GetWebSocketCurrentState().ToString());
             MessageBox.Show(string.Join(" ", ReceiveText));
 
             await audioWebSocketClient.DisconnectAsync();
             voiceCommandProcessor.ProcessVoiceCommand(RecognitionTextBox.Text);*/
-            new ToastContentBuilder()
-            .AddArgument("action", "viewConversation")
-            .AddArgument("conversationId", 9813)
-            .AddText("Andrew sent you a picture")
-            .AddText("Check this out, The Enchantments in Washington!")
-            .Show(); 
+            
         }
 
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
