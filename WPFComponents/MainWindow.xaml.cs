@@ -116,6 +116,31 @@ namespace WPFComponents
 
         private async void Button_Click_1(object sender, RoutedEventArgs e)
         {
+            var groqClient = new GroqApiClient("https://api.groq.com/openai/v1/chat/completions", "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");
+
+            try
+            {
+                string inputMessage = "Tell me a joke.";
+                string model = "llama3-8b-8192";
+                double temperature = 1.0;
+                int maxTokens = 1024;
+
+                var response = await groqClient.SendQueryAsync(
+                    inputMessage,
+                    model,
+                    temperature,
+                    maxTokens,
+                    topP: 1.0,
+                    stream: false,
+                    responseFormat: "json_object"
+                );
+
+                Console.WriteLine($"Response: {response}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
             /*MessageBox.Show(audioWebSocketClient.GetWebSocketCurrentState().ToString());
             MessageBox.Show(string.Join(" ", ReceiveText));
 
