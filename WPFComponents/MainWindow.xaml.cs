@@ -1,4 +1,5 @@
-﻿using NAudio.Wave;
+﻿using Microsoft.Toolkit.Uwp.Notifications;
+using NAudio.Wave;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
@@ -146,6 +147,12 @@ namespace WPFComponents
 
             await audioWebSocketClient.DisconnectAsync();
             voiceCommandProcessor.ProcessVoiceCommand(RecognitionTextBox.Text);*/
+            new ToastContentBuilder()
+            .AddArgument("action", "viewConversation")
+            .AddArgument("conversationId", 9813)
+            .AddText("Andrew sent you a picture")
+            .AddText("Check this out, The Enchantments in Washington!")
+            .Show(); 
         }
 
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
