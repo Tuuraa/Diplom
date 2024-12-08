@@ -23,7 +23,7 @@
         </Grid.RowDefinitions>
 
         <Border CornerRadius="15" Grid.RowSpan="2"
-                Background="FloralWhite" />
+                Background="Black" />
 
         <Image Source="C:\Users\turap\source\repos\Diplom\WPFComponents\Media\Icons\close_window.png"
                Width="26" Height="26" HorizontalAlignment="Right" VerticalAlignment="Center"
@@ -54,9 +54,9 @@
                            Foreground="Black" FontSize="18" FontWeight="Bold"/>
             </StackPanel>
 
-            <Canvas x:Name="MyCanvas" Background="FloralWhite" 
+            <Canvas x:Name="MyCanvas" Background="Black" 
                     Margin="40,40,40,10" Grid.Row="1" Grid.ColumnSpan="2">
-                <Polyline x:Name="waveLine" Stroke="Black" StrokeThickness="2" />
+                <Polyline x:Name="waveLine" Stroke="FloralWhite" StrokeThickness="2" />
             </Canvas>
 
             <TextBox x:Name="RecognitionTextBox" Width="360" Height="120"

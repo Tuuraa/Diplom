@@ -15,28 +15,29 @@ namespace WPFComponents
     /// </summary>
     public partial class MainWindow : Window
     {
-        ApplicationContext db = new ApplicationContext();
+        private readonly ApplicationContext _db = new();
+        private VoiceCommandProcessor _voiceCommandProcessor;
+        private readonly WebSocketServer _socketServer = new();
+        private readonly SoundWave _soundWave;
 
-        private VoiceCommandProcessor voiceCommandProcessor;
-        WebSocketServer socketServer = new WebSocketServer();
-        //private AudioWebSocketClient audioWebSocketClient;
-        private SoundWave soundWave;
-
-        private WaveInEvent waveIn;
-        private List<double> samples = new List<double>();
+        // Поля для работы с аудио
+        private readonly WaveInEvent _waveIn;
+        private readonly List<double> _samples = new();
         private const int SampleRate = 44100;
         private const double SensitivityFactor = 1.5;
         private const double HeightMultiplier = 2.0;
 
-
         public MainWindow()
         {
-            StartServer();
-
             InitializeComponent();
-            soundWave = new SoundWave(MyCanvas, waveLine);
+            _soundWave = new SoundWave(MyCanvas, waveLine);
 
-            db.Database.EnsureCreated();
+            ScenarioBuilder scenario = new ScenarioBuilder();
+            scenario.Show();
+
+            InitializeDatabase();
+            InitializeVoiceCommandProcessor();
+            InitializeWebSocketServer();
 
             #region CommandsAddToDB
             //var wordAc = new PrintWordCommand("привет");
@@ -81,38 +82,6 @@ namespace WPFComponents
             //db.Commands.Add(mouse);
             //db.SaveChanges();
             #endregion
-
-            var coms = db.Commands.ToList();
-
-            voiceCommandProcessor = new VoiceCommandProcessor(coms);
-
-            //voiceCommandProcessor.RegisterCommand(coms);
-
-            var stop = 5;
-
-            socketServer.OnTextReceived += (partialText) =>
-            {
-                Dispatcher.Invoke(() =>
-                {
-                    voiceCommandProcessor.ProcessVoiceCommand(partialText);
-                });
-            };
-
-        }
-
-        private async void StartServer() => await socketServer.StartAsync("http://localhost:5001/");
-
-        private async void OpenSettings(object sender, RoutedEventArgs e)
-        {
-            CommandRegister settingWindow = new();
-            settingWindow.Show();
-        }
-
-        private void CloseApp(object sender, RoutedEventArgs e) => this.Close();
-
-        private void MediaElement_MediaFailed(object sender, ExceptionRoutedEventArgs e)
-        {
-            MessageBox.Show($"Ошибка воспроизведения видео: {e.ErrorException.Message}");
         }
 
         private async void Button_Click_1(object sender, RoutedEventArgs e)
@@ -122,15 +91,82 @@ namespace WPFComponents
 
             await audioWebSocketClient.DisconnectAsync();
             voiceCommandProcessor.ProcessVoiceCommand(RecognitionTextBox.Text);*/
-            
+
         }
 
+        #region Инициализация компонентов
+
+        /// <summary>
+        /// Инициализация базы данных.
+        /// </summary>
+        private void InitializeDatabase()
+        {
+            _db.Database.EnsureCreated();
+        }
+
+        /// <summary>
+        /// Инициализация процессора голосовых команд.
+        /// </summary>
+        private void InitializeVoiceCommandProcessor()
+        {
+            var commands = _db.Commands.ToList();
+            _voiceCommandProcessor = new VoiceCommandProcessor(commands);
+        }
+
+        /// <summary>
+        /// Запуск WebSocket сервера и обработка входящих сообщений.
+        /// </summary>
+        private async void InitializeWebSocketServer()
+        {
+            _socketServer.OnTextReceived += ProcessVoiceCommand;
+            await _socketServer.StartAsync("http://localhost:5001/");
+        }
+
+        #endregion
+
+        #region Обработчики событий
+
+        /// <summary>
+        /// Открытие окна настроек.
+        /// </summary>
+        private void OpenSettings(object sender, RoutedEventArgs e)
+        {
+            var settingWindow = new CommandRegister();
+            settingWindow.Show();
+        }
+
+        /// <summary>
+        /// Закрытие приложения.
+        /// </summary>
+        private void CloseApp(object sender, RoutedEventArgs e) => Close();
+
+        /// <summary>
+        /// Обработка ошибок воспроизведения медиа.
+        /// </summary>
+        private void MediaElement_MediaFailed(object sender, ExceptionRoutedEventArgs e)
+        {
+            MessageBox.Show($"Ошибка воспроизведения видео: {e.ErrorException.Message}");
+        }
+
+        /// <summary>
+        /// Перемещение окна по клику мыши.
+        /// </summary>
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ButtonState == MouseButtonState.Pressed)
             {
-                this.DragMove();
+                DragMove();
             }
         }
+
+        /// <summary>
+        /// Обработка входящего текста с WebSocket.
+        /// </summary>
+        private void ProcessVoiceCommand(string partialText)
+        {
+            Dispatcher.Invoke(() => _voiceCommandProcessor.ProcessVoiceCommand(partialText));
+        }
+
+        #endregion
     }
 }
