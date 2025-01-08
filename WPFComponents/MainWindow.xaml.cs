@@ -94,6 +94,8 @@ namespace WPFComponents
 
             //voiceCommandProcessor.RegisterCommand(coms);
 
+            var stop = 5;
+
             socketServer.OnTextReceived += (message) =>
             {
                 Dispatcher.Invoke(() =>
