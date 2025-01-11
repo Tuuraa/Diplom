@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Input;
 using WPFComponents.Model;
 using WPFComponents.Model.Commands;
+using WPFComponents.Model.Utils;
 using WPFComponents.Utils;
 using WPFComponents.View;
 
@@ -15,29 +16,31 @@ namespace WPFComponents
     /// </summary>
     public partial class MainWindow : Window
     {
-        private readonly ApplicationContext _db = new();
+        private readonly ApplicationContext _db;
         private VoiceCommandProcessor _voiceCommandProcessor;
         private readonly WebSocketServer _socketServer = new();
         private readonly SoundWave _soundWave;
 
-        // Поля для работы с аудио
-        private readonly WaveInEvent _waveIn;
-        private readonly List<double> _samples = new();
-        private const int SampleRate = 44100;
-        private const double SensitivityFactor = 1.5;
-        private const double HeightMultiplier = 2.0;
 
-        public MainWindow()
+
+        public MainWindow(ApplicationContext context, ILoggerService loggerService)
         {
             InitializeComponent();
             _soundWave = new SoundWave(MyCanvas, waveLine);
+            _db = context;
 
-            ScenarioBuilder scenario = new ScenarioBuilder();
-            scenario.Show();
+            //ScenarioBuilder scenario = new ScenarioBuilder();
+            //scenario.Show();
 
             InitializeDatabase();
             InitializeVoiceCommandProcessor();
             InitializeWebSocketServer();
+
+            LogStart(loggerService);
+
+            var logs = _db.Logs.ToArray();
+            var stop = 5;
+
 
             #region CommandsAddToDB
             //var wordAc = new PrintWordCommand("привет");
@@ -77,11 +80,21 @@ namespace WPFComponents
             //    Type = hidewindow.GetType().Name
             //};
 
-            //db.Commands.Add(windowcom);
-            //db.Commands.Add(butpress);
-            //db.Commands.Add(mouse);
-            //db.SaveChanges();
+            //_db.Commands.Add(windowcom);
+            //_db.Commands.Add(butpress);
+            //_db.Commands.Add(mouse);
+            //_db.SaveChanges();
             #endregion
+        }
+
+        private async void LogStart(ILoggerService loggerService)
+        {
+            await loggerService.LogToDatabaseAsync(
+                "MainWindowLoaded",
+                "MainWindow initialized",
+                "Success");
+
+            //MessageBox.Show("Log entry successfully added!");
         }
 
         private async void Button_Click_1(object sender, RoutedEventArgs e)

@@ -9,18 +9,20 @@ namespace WPFComponents.Model
     {
         public DbSet<Command> Commands { get; set; }
         public DbSet<Scenario> Scenarios { get; set; }
+        public DbSet<LogEntry> Logs { get; set; }
+
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite("Data Source=DataBase.db");
+            optionsBuilder.UseSqlite(@"Data Source=C:\DiplomUI\WPFComponents\DataBase.db");
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             var options = new JsonSerializerOptions
             {
                 WriteIndented = true,
-                Converters = { new CommandActionConverter() }, // Ваш кастомный конвертер
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase // Политика именования
+                Converters = { new CommandActionConverter() }, 
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             };
 
 
@@ -42,6 +44,9 @@ namespace WPFComponents.Model
                 .HasMany(s => s.Commands)
                 .WithOne()
                 .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<LogEntry>().ToTable("Logs");
+
         }
     }
 }

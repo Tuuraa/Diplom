@@ -1,4 +1,5 @@
-﻿using Microsoft.Toolkit.Uwp.Notifications;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Toolkit.Uwp.Notifications;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,6 +7,7 @@ using System.Speech.Synthesis;
 using System.Windows;
 using WindowsDesktop;
 using WPFComponents.Model.Commands;
+using WPFComponents.Model.Utils;
 
 namespace WPFComponents.Model
 {
@@ -202,12 +204,14 @@ namespace WPFComponents.Model
                 .ToArray();
         }
 
-        private void ExecuteCommand(Command command, string recognizedPhrase)
+        private async void ExecuteCommand(Command command, string recognizedPhrase)
         {
             if (command.Action.CanExecute())
             {
                 command.Action.Execute();
-                NotifyUserSuccess(command.Name);
+                var _loggerService = ((App)Application.Current).ServiceProvider.GetRequiredService<ILoggerService>();
+                await _loggerService.LogToDatabaseAsync(recognizedPhrase,command.Name, "success");
+                //NotifyUserSuccess(command.Name);
             }
             else
             {
@@ -226,7 +230,7 @@ namespace WPFComponents.Model
 
         private void NotifyUserFail(string message)
         {
-            new SpeechSynthesizer().SpeakAsync(message);
+            //new SpeechSynthesizer().SpeakAsync(message);
             new ToastContentBuilder()
             .AddArgument("action", "viewConversation")
             .AddArgument("conversationId", 9813)
