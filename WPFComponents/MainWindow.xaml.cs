@@ -28,6 +28,8 @@ namespace WPFComponents
 
         public MainWindow()
         {
+            var c = new Constructor();
+            c.Show();
             StartServer();
 
             InitializeComponent();
@@ -41,8 +43,8 @@ namespace WPFComponents
             string location = string.Join("\\", new List<string>(System.Reflection.Assembly.
                 GetExecutingAssembly().Location.Split("\\")).Take(6)) + "\\WPFComponents\\Media\\";
 
-            SetImgConfig(exitImg, location + "Icons\\close_window.png");
-            SetImgConfig(isActiveMicro, location + "micro_off.png");
+            //SetImgConfig(exitImg, location + "Icons\\close_window.png");
+            //SetImgConfig(isActiveMicro, location + "micro_off.png");
 
             #region CommandsAddToDB
             //var wordAc = new PrintWordCommand("привет");
@@ -103,13 +105,13 @@ namespace WPFComponents
                     if (message == "success")
                     {
                         soundWave.StartMicrophone();
-                        SetImgConfig(isActiveMicro, location + "micro_on.png", height: 22);
+                        //SetImgConfig(isActiveMicro, location + "micro_on.png", height: 22);
                     }
                     else
                     {
                         voiceCommandProcessor.ProcessVoiceCommand(message);
                         soundWave.StopMicrophone();
-                        SetImgConfig(isActiveMicro, location + "micro_off.png");
+                        //SetImgConfig(isActiveMicro, location + "micro_off.png");
                     }
 
                 });

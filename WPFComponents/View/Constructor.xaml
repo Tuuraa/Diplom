@@ -1,0 +1,56 @@
+﻿<Window x:Class="WPFComponents.View.Constructor"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:nodify="https://miroiu.github.io/nodify"
+        xmlns:local="clr-namespace:WPFComponents.ViewModel"
+        mc:Ignorable="d"
+        Title="Constructor" Height="450" Width="800">
+    <Grid>
+        <StackPanel Grid.Column="0" Background="LightGray">
+            <TextBlock Text="Элементы" FontWeight="Bold" Margin="10" />
+            <ListBox x:Name="ElementsListBox"
+         ItemsSource="{Binding AvailableElements}"
+         DisplayMemberPath="Title"
+         Margin="10"
+         PreviewMouseLeftButtonDown="ElementsListBox_PreviewMouseLeftButtonDown" />
+        </StackPanel>
+
+        <nodify:NodifyEditor ItemsSource="{Binding Nodes}"
+                             Connections="{Binding Connections}" Margin="135,0,0,0" AllowDrop="True" Drop="NodifyEditor_Drop">
+
+            <nodify:NodifyEditor.ItemTemplate>
+                <DataTemplate DataType="{x:Type local:NodeViewModel}">
+                    <nodify:Node Header="{Binding Title}"
+                                 Input="{Binding Input}"
+                                 Output="{Binding Output}"
+                                 
+                                 >
+                        <nodify:Node.InputConnectorTemplate>
+                            <DataTemplate DataType="{x:Type local:ConnectorViewModel}">
+                                <nodify:NodeInput Header="{Binding Title}" 
+                                                  IsConnected="{Binding IsConnected, Mode=TwoWay}"
+                                                  Anchor="{Binding Anchor, Mode=TwoWay}" PendingConnectionStarted="NodeInput_PendingConnectionStarted" PendingConnectionCompleted="NodeInput_PendingConnectionCompleted" />
+                            </DataTemplate>
+                        </nodify:Node.InputConnectorTemplate>
+                        <nodify:Node.OutputConnectorTemplate>
+                            <DataTemplate DataType="{x:Type local:ConnectorViewModel}">
+                                <nodify:NodeOutput Header="{Binding Title}" 
+                                                   IsConnected="{Binding IsConnected, Mode=TwoWay}"
+                                                   Anchor="{Binding Anchor, Mode=TwoWay}" PendingConnectionCompleted="NodeOutput_PendingConnectionCompleted" PendingConnectionStarted="NodeOutput_PendingConnectionStarted" />
+                            </DataTemplate>
+                        </nodify:Node.OutputConnectorTemplate>
+                    </nodify:Node>
+                </DataTemplate>
+            </nodify:NodifyEditor.ItemTemplate>
+
+            <nodify:NodifyEditor.ConnectionTemplate>
+                <DataTemplate DataType="{x:Type local:ConnectionViewModel}">
+                    <nodify:LineConnection Source="{Binding Source.Anchor}" 
+                                           Target="{Binding Target.Anchor}" />
+                </DataTemplate>
+            </nodify:NodifyEditor.ConnectionTemplate>
+        </nodify:NodifyEditor>
+    </Grid>
+</Window>

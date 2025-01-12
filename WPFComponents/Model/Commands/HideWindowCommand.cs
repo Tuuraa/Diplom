@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WPFComponents.Model.Interfaces;
+using WPFComponents.Model.Utils;
 
 namespace WPFComponents.Model.Commands
 {
