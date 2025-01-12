@@ -12,7 +12,7 @@ namespace WPFComponents.ViewModel
     class CommandRegisterVM : INotifyPropertyChanged
     {
         private readonly string _settingsPath = "C:\\Users\\turap\\source\\repos\\Diplom\\WPFComponents\\settings.json";
-        private Dictionary<string, bool?> _settings;
+        private Dictionary<string, bool?>? _settings;
 
         private ObservableCollection<SettingControlItem> settingControlItems;
         public ObservableCollection<SettingControlItem> SettingControlItems
@@ -62,6 +62,10 @@ namespace WPFComponents.ViewModel
                             });
                         },
                         SettingTitle="OpenSteam"
+                    },
+                    new SettingControlItem("Темная тема", "Запускает темную тему для данного приложения", _settings["DarkMode"])
+                    {
+                        SettingTitle="DarkMode"
                     },
                     new SettingControlItem("FanzyZones", "Описание 3", true),
                     new SettingControlItem("File Lock Smith", "Описание 4", true),

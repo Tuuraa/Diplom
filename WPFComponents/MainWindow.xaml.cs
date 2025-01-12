@@ -1,16 +1,13 @@
-﻿using Microsoft.Toolkit.Uwp.Notifications;
-using NAudio.Wave;
-using System.Collections.ObjectModel;
-using System.IO;
+﻿using NAudio.Wave;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Forms;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using WPFComponents.Model;
-using WPFComponents.Model.Commands;
 using WPFComponents.Utils;
 using WPFComponents.View;
+using Application = System.Windows.Application;
 
 namespace WPFComponents
 {
@@ -19,7 +16,8 @@ namespace WPFComponents
     /// </summary>
     public partial class MainWindow : Window
     {
-        ApplicationContext db = new ApplicationContext();
+        WPFComponents.Model.ApplicationContext db = new();
+        private NotifyIconService _notifyIconService;
 
         private VoiceCommandProcessor voiceCommandProcessor;
         WebSocketServer socketServer = new WebSocketServer();
@@ -115,9 +113,13 @@ namespace WPFComponents
                 });
             };
 
+
+            _notifyIconService = new NotifyIconService(location, this);
+
         }
 
-        private void SetImgConfig(Image img, string sourse, double height = 25,  double width = 25)
+
+        private void SetImgConfig(Image img, string sourse, double height = 25, double width = 25)
         {
             img.Height = height;
             img.Width = width;
@@ -133,11 +135,15 @@ namespace WPFComponents
             settingWindow.Show();
         }
 
-        private void CloseApp(object sender, RoutedEventArgs e) => this.Close();
+        private void CloseApp(object sender, RoutedEventArgs e)
+        {
+            Hide();
+            WindowState = WindowState.Minimized; 
+        }
 
         private void MediaElement_MediaFailed(object sender, ExceptionRoutedEventArgs e)
         {
-            MessageBox.Show($"Ошибка воспроизведения видео: {e.ErrorException.Message}");
+            //MessageBox.Show($"Ошибка воспроизведения видео: {e.ErrorException.Message}");
         }
 
         private async void Button_Click_1(object sender, RoutedEventArgs e)
@@ -147,7 +153,7 @@ namespace WPFComponents
 
             await audioWebSocketClient.DisconnectAsync();
             voiceCommandProcessor.ProcessVoiceCommand(RecognitionTextBox.Text);*/
-            
+
         }
 
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
