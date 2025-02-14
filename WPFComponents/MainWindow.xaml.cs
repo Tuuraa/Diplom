@@ -1,9 +1,14 @@
 ﻿using Microsoft.Toolkit.Uwp.Notifications;
+using NAudio.CoreAudioApi;
 using NAudio.Wave;
+using OpenAI;
+using OpenAI.Assistants;
+using System.ClientModel;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -19,7 +24,7 @@ namespace WPFComponents
     /// </summary>
     public partial class MainWindow : Window
     {
-        ApplicationContext db = new ApplicationContext();
+        Model.ApplicationContext db = new Model.ApplicationContext();
 
         private VoiceCommandProcessor voiceCommandProcessor;
         WebSocketServer socketServer = new WebSocketServer();

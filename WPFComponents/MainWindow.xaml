@@ -24,10 +24,7 @@
 
         <Border CornerRadius="15" Grid.RowSpan="2"
                 Background="FloralWhite" />
-
-        <Image Source="pack://application:,,,/WPFComponents;component/Media/Icons/close_window.png"
-               Width="26" Height="26" HorizontalAlignment="Right" VerticalAlignment="Center"
-               PreviewMouseDown="CloseApp" Cursor="Hand" Margin="0 10 10 0" x:Name="exitImg"/>
+        <ui:SymbolIcon  PreviewMouseDown="CloseApp" Cursor="Hand" Symbol="DismissCircle12" FontSize="25" Margin="371,0,0,0"></ui:SymbolIcon>
 
         <Grid Margin="10 0 10 20" Grid.Row="1" Cursor="">
             <Grid.RowDefinitions>

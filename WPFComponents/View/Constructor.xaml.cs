@@ -34,23 +34,24 @@ namespace WPFComponents.View
             {
                 var editor = (NodifyEditor)sender;
 
-                var dropPosition = e.GetPosition((IInputElement)sender);
+                // Получаем позицию сброса относительно NodifyEditor
+                var dropPosition = e.GetPosition(editor);
 
-                // Добавляем узел на рабочую область
+                // Создаем новый узел с корректной позицией
                 var newNode = new NodeViewModel
                 {
                     Title = droppedNode.Title,
                     Location = new Point(dropPosition.X, dropPosition.Y)
                 };
 
-                //var viewModel = (ConstructorVM)editor.DataContext;
+                // Добавляем новый узел в коллекцию
                 if (DataContext is ConstructorVM vm)
                 {
                     vm.Nodes.Add(newNode);
                 }
-                    
             }
         }
+
         private void ListBox_PreviewMouseMove(object sender, MouseEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed)

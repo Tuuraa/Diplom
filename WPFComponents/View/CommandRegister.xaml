@@ -10,7 +10,7 @@
         Background="#202020"
         Title="CommandRegister" Height="600" Width="860"
         >
-    <Grid>
+    <Grid Background="{wpfui:ThemeResource SolidBackgroundFillColorBaseBrush}">
 
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="0.25*"/>
@@ -20,7 +20,7 @@
         <StackPanel Grid.Column="0">
             <Menu>
                 <Grid HorizontalAlignment="Center" Width="80">
-                    <TextBlock Text="Общее" Foreground="White"/>
+                    <TextBlock Text="Общее" Foreground="{wpfui:ThemeResource AccentTextFillColorPrimaryBrush}"/>
                 </Grid>
             </Menu>
 
@@ -28,7 +28,7 @@
                 <Grid HorizontalAlignment="Center"
                       Width="80">
                     <TextBlock Text="Нейросеть" 
-                               Foreground="White"/>
+                               Foreground="{wpfui:ThemeResource AccentTextFillColorPrimaryBrush}"/>
                 </Grid>
             </Menu>
 
@@ -36,7 +36,7 @@
                 <Grid HorizontalAlignment="Center"
                       Width="80">
                     <TextBlock Text="Команды" 
-                               Foreground="White"/>
+                               Foreground="{wpfui:ThemeResource AccentTextFillColorPrimaryBrush}"/>
                 </Grid>
             </Menu>
 
@@ -44,7 +44,7 @@
                 <Grid HorizontalAlignment="Center"
                       Width="80">
                     <TextBlock Text="Прочее" 
-                               Foreground="White"/>
+                               Foreground="{wpfui:ThemeResource AccentTextFillColorPrimaryBrush}"/>
                 </Grid>
             </Menu>
         </StackPanel>
@@ -57,11 +57,12 @@
             </Grid.RowDefinitions>
 
             <TextBlock Text="Общее" 
-                       Foreground="White"
+                       Foreground="{wpfui:ThemeResource AccentTextFillColorPrimaryBrush}"
                        FontSize="26" FontWeight="Bold"
                        Margin="15 15 0 0"/>
 
             <ScrollViewer x:Name="scrollViewer" VerticalScrollBarVisibility="Auto" 
+                          Background="{wpfui:ThemeResource CardBackgroundFillColorDefault}"
                PanningMode="Both" Grid.Row="1"
                CanContentScroll="True">
                 <ListBox  HorizontalAlignment="Left"
@@ -75,8 +76,8 @@
                             <Setter Property="Template">
                                 <Setter.Value>
                                     <ControlTemplate TargetType="ListBoxItem">
-                                        <Border Background="{TemplateBinding Background}" 
-                                            BorderBrush="{TemplateBinding BorderBrush}">
+                                        <Border Background="{wpfui:ThemeResource CardBackgroundFillColorDefault}" 
+                                            BorderBrush="{wpfui:ThemeResource CardBackgroundFillColorDefault}">
                                             <ContentPresenter />
                                         </Border>
                                     </ControlTemplate>
