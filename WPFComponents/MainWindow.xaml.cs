@@ -1,9 +1,6 @@
 ﻿using Microsoft.Toolkit.Uwp.Notifications;
 using NAudio.CoreAudioApi;
 using NAudio.Wave;
-using OpenAI;
-using OpenAI.Assistants;
-using System.ClientModel;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Windows;
@@ -11,6 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using WPFComponents.Model;
 using WPFComponents.Model.Commands;
@@ -24,6 +22,7 @@ namespace WPFComponents
     /// </summary>
     public partial class MainWindow : Window
     {
+        private double _originalLeft, _originalTop;
         Model.ApplicationContext db = new Model.ApplicationContext();
 
         private VoiceCommandProcessor voiceCommandProcessor;
@@ -33,8 +32,6 @@ namespace WPFComponents
 
         public MainWindow()
         {
-            var c = new Constructor();
-            c.Show();
             StartServer();
 
             InitializeComponent();
@@ -42,14 +39,8 @@ namespace WPFComponents
 
             db.Database.EnsureCreated();
 
-            /*string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            string imagePath = Path.Combine(appDataPath, "WPFComponents", "Media", "Icons", "close_window.png");*/
-
             string location = string.Join("\\", new List<string>(System.Reflection.Assembly.
                 GetExecutingAssembly().Location.Split("\\")).Take(6)) + "\\WPFComponents\\Media\\";
-
-            //SetImgConfig(exitImg, location + "Icons\\close_window.png");
-            //SetImgConfig(isActiveMicro, location + "micro_off.png");
 
             #region CommandsAddToDB
             //var wordAc = new PrintWordCommand("привет");
@@ -99,10 +90,6 @@ namespace WPFComponents
 
             voiceCommandProcessor = new VoiceCommandProcessor(coms);
 
-            //voiceCommandProcessor.RegisterCommand(coms);
-
-            var stop = 5;
-
             socketServer.OnTextReceived += (message) =>
             {
                 Dispatcher.Invoke(() =>
@@ -140,21 +127,53 @@ namespace WPFComponents
             settingWindow.Show();
         }
 
-        private void CloseApp(object sender, RoutedEventArgs e) => this.Close();
+        private void MinimizeToTray(object sender, RoutedEventArgs e)
+        {
+            _originalLeft = this.Left;
+            _originalTop = this.Top;
+
+            var screenWidth = SystemParameters.WorkArea.Width;
+            var screenHeight = SystemParameters.WorkArea.Height;
+
+            var trayLeft = screenWidth - 50; // Перемещение в угол экрана
+            var trayTop = screenHeight - 10;
+
+            var moveX = new DoubleAnimation(this.Left, trayLeft, TimeSpan.FromSeconds(0.5));
+            var moveY = new DoubleAnimation(this.Top, trayTop, TimeSpan.FromSeconds(0.5)) { EasingFunction = new QuadraticEase() };
+            var fadeOut = new DoubleAnimation(1, 0, TimeSpan.FromSeconds(0.5));
+
+            moveY.Completed += (s, e) => this.Visibility = Visibility.Hidden;
+
+            this.BeginAnimation(Window.LeftProperty, moveX);
+            this.BeginAnimation(Window.TopProperty, moveY);
+            this.BeginAnimation(Window.OpacityProperty, fadeOut);
+
+            this.TrayIcon.Visibility = Visibility.Visible;
+        }
 
         private void MediaElement_MediaFailed(object sender, ExceptionRoutedEventArgs e)
         {
-            MessageBox.Show($"Ошибка воспроизведения видео: {e.ErrorException.Message}");
+            System.Windows.MessageBox.Show($"Ошибка воспроизведения видео: {e.ErrorException.Message}");
         }
 
         private async void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            /*MessageBox.Show(audioWebSocketClient.GetWebSocketCurrentState().ToString());
-            MessageBox.Show(string.Join(" ", ReceiveText));
-
-            await audioWebSocketClient.DisconnectAsync();
-            voiceCommandProcessor.ProcessVoiceCommand(RecognitionTextBox.Text);*/
             
+        }
+
+        private void TrayIcon_TrayMouseDoubleClick(object sender, RoutedEventArgs e)
+        {
+            this.Visibility = Visibility.Visible;
+            this.TrayIcon.Visibility = Visibility.Hidden;
+            this.Opacity = 0;
+
+            var moveX = new DoubleAnimation(SystemParameters.WorkArea.Width - 50, _originalLeft, TimeSpan.FromSeconds(0.5));
+            var moveY = new DoubleAnimation(SystemParameters.WorkArea.Height - 10, _originalTop, TimeSpan.FromSeconds(0.5)) { EasingFunction = new QuadraticEase() };
+            var fadeIn = new DoubleAnimation(0, 1, TimeSpan.FromSeconds(0.5));
+
+            this.BeginAnimation(Window.LeftProperty, moveX);
+            this.BeginAnimation(Window.TopProperty, moveY);
+            this.BeginAnimation(Window.OpacityProperty, fadeIn);
         }
 
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)

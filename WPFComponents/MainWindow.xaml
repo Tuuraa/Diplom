@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WPFComponents"
+        xmlns:tb="http://www.hardcodet.net/taskbar"
         xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml" x:Class="WPFComponents.MainWindow"
         mc:Ignorable="d"
         Title="Настройки SkyAI" 
@@ -15,6 +16,10 @@
         WindowStyle="None"
         MouseLeftButtonDown="Window_MouseLeftButtonDown">
 
+    <Window.RenderTransform>
+        <ScaleTransform x:Name="WindowScale" ScaleX="1" ScaleY="1" />
+    </Window.RenderTransform>
+
     <Grid Cursor="">
 
         <Grid.RowDefinitions>
@@ -24,7 +29,7 @@
 
         <Border CornerRadius="15" Grid.RowSpan="2"
                 Background="FloralWhite" />
-        <ui:SymbolIcon  PreviewMouseDown="CloseApp" Cursor="Hand" Symbol="DismissCircle12" FontSize="25" Margin="371,0,0,0"></ui:SymbolIcon>
+        <ui:SymbolIcon PreviewMouseDown="MinimizeToTray" Cursor="Hand" Symbol="DismissCircle12" FontSize="25" Margin="371,0,0,0"></ui:SymbolIcon>
 
         <Grid Margin="10 0 10 20" Grid.Row="1" Cursor="">
             <Grid.RowDefinitions>
@@ -70,5 +75,26 @@
                 
             </Grid>
         </Grid>
+        <tb:TaskbarIcon
+              Name="TrayIcon"
+              Visibility="Hidden"
+              IconSource="Media/Icons/wave.ico"
+              ToolTipText="hello world"
+              TrayMouseDoubleClick="TrayIcon_TrayMouseDoubleClick">
+            <tb:TaskbarIcon.TrayPopup>
+                <Border
+                  Background="FloralWhite"
+                  BorderBrush="Black"
+                  BorderThickness="2"
+                  CornerRadius="4"
+                  Width="160"
+                  Height="40">
+                    <Button
+                    Content="Click Me!"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center" />
+                </Border>
+            </tb:TaskbarIcon.TrayPopup>
+        </tb:TaskbarIcon>
     </Grid>
 </Window>
