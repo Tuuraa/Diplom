@@ -3,12 +3,13 @@ using System.Text.Json;
 using WPFComponents.Model.Interfaces;
 using WPFComponents.Model.Utils;
 
-namespace WPFComponents.Model
+namespace WPFComponents.DB
 {
     public class ApplicationContext : DbContext
     {
         public DbSet<Command> Commands { get; set; }
         public DbSet<Scenario> Scenarios { get; set; }
+        public DbSet<LogEntry> Logs { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

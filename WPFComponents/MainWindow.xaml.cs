@@ -10,8 +10,10 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
+using WPFComponents.DB;
 using WPFComponents.Model;
 using WPFComponents.Model.Commands;
+using WPFComponents.Services;
 using WPFComponents.Utils;
 using WPFComponents.View;
 
@@ -23,9 +25,9 @@ namespace WPFComponents
     public partial class MainWindow : Window
     {
         private double _originalLeft, _originalTop;
-        Model.ApplicationContext db = new Model.ApplicationContext();
+        DB.ApplicationContext db = new DB.ApplicationContext();
 
-        private VoiceCommandProcessor voiceCommandProcessor;
+        private VoiceCommandProcessor _voiceCommandProcessor;
         WebSocketServer socketServer = new WebSocketServer();
         //private AudioWebSocketClient audioWebSocketClient;
         private SoundWave soundWave;
@@ -88,7 +90,8 @@ namespace WPFComponents
 
             var coms = db.Commands.ToList();
 
-            voiceCommandProcessor = new VoiceCommandProcessor(coms);
+            _voiceCommandProcessor = new ();
+            _voiceCommandProcessor.RegisterCommand(coms);
 
             socketServer.OnTextReceived += (message) =>
             {
@@ -101,7 +104,7 @@ namespace WPFComponents
                     }
                     else
                     {
-                        voiceCommandProcessor.ProcessVoiceCommand(message);
+                        _voiceCommandProcessor.ProcessVoiceCommand(message);
                         soundWave.StopMicrophone();
                         //SetImgConfig(isActiveMicro, location + "micro_off.png");
                     }
@@ -147,8 +150,6 @@ namespace WPFComponents
             this.BeginAnimation(Window.LeftProperty, moveX);
             this.BeginAnimation(Window.TopProperty, moveY);
             this.BeginAnimation(Window.OpacityProperty, fadeOut);
-
-            this.TrayIcon.Visibility = Visibility.Visible;
         }
 
         private void MediaElement_MediaFailed(object sender, ExceptionRoutedEventArgs e)
@@ -164,7 +165,6 @@ namespace WPFComponents
         private void TrayIcon_TrayMouseDoubleClick(object sender, RoutedEventArgs e)
         {
             this.Visibility = Visibility.Visible;
-            this.TrayIcon.Visibility = Visibility.Hidden;
             this.Opacity = 0;
 
             var moveX = new DoubleAnimation(SystemParameters.WorkArea.Width - 50, _originalLeft, TimeSpan.FromSeconds(0.5));

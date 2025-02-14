@@ -2,7 +2,7 @@
 using WPFComponents.Model.Interfaces;
 using WPFComponents.Model.Utils;
 
-namespace WPFComponents.Model;
+namespace WPFComponents.DB;
 
 public class Command
 {

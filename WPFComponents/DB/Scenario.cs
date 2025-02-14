@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WPFComponents.Model
+namespace WPFComponents.DB
 {
     public class Scenario
     {

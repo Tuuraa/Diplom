@@ -5,7 +5,9 @@ using System.Linq;
 using System.Speech.Synthesis;
 using System.Windows;
 using WindowsDesktop;
+using WPFComponents.DB;
 using WPFComponents.Model.Commands;
+using WPFComponents.Services;
 
 namespace WPFComponents.Model
 {
@@ -15,10 +17,13 @@ namespace WPFComponents.Model
         private readonly Dictionary<string, Scenario> _scenarios = new();
         private readonly Dictionary<string, double[]> _tfidfVectors = new();
         private readonly HashSet<string> _vocabulary = new();
+        private readonly LoggerService _logger;
+
 
         public VoiceCommandProcessor()
         {
             //InitializeCommands();
+            //_logger = logger;
             InitializeScenarios();
             BuildVocabulary();
             ComputeTfIdfVectors();
@@ -26,6 +31,7 @@ namespace WPFComponents.Model
 
         public VoiceCommandProcessor(List<Command> commands)
         {
+            //_logger = logger;
             //InitializeCommands();
             RegisterCommand(commands);
             InitializeScenarios();
@@ -46,6 +52,8 @@ namespace WPFComponents.Model
                     _commandsMap[phrase] = command;
                 }
             }
+            BuildVocabulary();
+            ComputeTfIdfVectors();
         }
 
         //TODO: Удлаить и сделать через БД
@@ -138,33 +146,6 @@ namespace WPFComponents.Model
                 ExecuteScenario(bestMatchScenario);
                 return;
             }
-
-            var groqClient = new GroqApiClient("https://api.groq.com/openai/v1/chat/completions", "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");
-
-            try
-            {
-                string inputMessage = recognizedPhrase;
-                string model = "llama3-8b-8192";
-                double temperature = 1.0;
-                int maxTokens = 1024;
-
-                var response = await groqClient.SendQueryAsync(
-                    inputMessage,
-                    model,
-                    temperature,
-                    maxTokens,
-                    topP: 1.0,
-                    stream: false,
-                    responseFormat: "json_object"
-                );
-
-                NotifyUserAnswer(response);
-                
-            }
-            catch
-            {
-                NotifyUserFail($"Команда \"{recognizedPhrase}\" не найдена.");
-            }
         }
 
         private T FindBestMatch<T>(Dictionary<string, T> items, string input)
@@ -206,82 +187,22 @@ namespace WPFComponents.Model
         {
             if (command.Action.CanExecute())
             {
+                _logger.LogCommand(recognizedPhrase);
                 command.Action.Execute();
-                NotifyUserSuccess(command.Name);
             }
             else
             {
-                NotifyUserFail($"Команда \"{recognizedPhrase}\" не может быть выполнена.");
+                //NotifyUserFail($"Команда \"{recognizedPhrase}\" не может быть выполнена.");
             }
         }
 
         private void ExecuteScenario(Scenario scenario)
         {
             VirtualDesktop.Create().Switch();
+            _logger.LogCommand(scenario.Name);
             foreach (var command in scenario.Commands)
             {
                 ExecuteCommand(command, scenario.Name);
-            }
-        }
-
-        private void NotifyUserFail(string message)
-        {
-            new SpeechSynthesizer().SpeakAsync(message);
-            new ToastContentBuilder()
-            .AddArgument("action", "viewConversation")
-            .AddArgument("conversationId", 9813)
-            .AddText($"Ошибка выполнения комманды")
-            .Show();
-        }
-        private void NotifyUserSuccess(string message)
-        {
-            using (var synthesizer = new SpeechSynthesizer())
-            {
-                // Установить голос для русского языка
-                var russianVoice = synthesizer.GetInstalledVoices()
-                    .Select(v => v.VoiceInfo)
-                    .FirstOrDefault(v => v.Culture.Name.StartsWith("ru"));
-
-                if (russianVoice != null)
-                {
-                    synthesizer.SelectVoice(russianVoice.Name);
-                    synthesizer.Speak($"Комманда выполнена успешно {message}");
-                }
-                else
-                {
-                    Console.WriteLine("Русский голос не найден. Убедитесь, что он установлен в системе.");
-                }
-            }
-            new ToastContentBuilder()
-            .AddArgument("action", "viewConversation")
-            .AddArgument("conversationId", 9813)
-            .AddText($"Комманда выполнена успешно - {message}")
-            .AddInlineImage(new Uri(@"C:\Users\ivank\Downloads\chill-guy-my-new-character.gif"))
-            .Show();
-        }
-        private void NotifyUserAnswer(string message)
-        {
-            new ToastContentBuilder()
-            .AddArgument("action", "viewConversation")
-            .AddArgument("conversationId", 9813)
-            .AddText($"Ответ \n {message}")
-            .Show();
-            using (var synthesizer = new SpeechSynthesizer())
-            {
-                // Установить голос для русского языка
-                var russianVoice = synthesizer.GetInstalledVoices()
-                    .Select(v => v.VoiceInfo)
-                    .FirstOrDefault(v => v.Culture.Name.StartsWith("ru"));
-
-                if (russianVoice != null)
-                {
-                    synthesizer.SelectVoice(russianVoice.Name);
-                    synthesizer.Speak($"{message}");
-                }
-                else
-                {
-                    Console.WriteLine("Русский голос не найден. Убедитесь, что он установлен в системе.");
-                }
             }
         }
     }

@@ -3,7 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using WPFComponents.Model;
+using WPFComponents.DB;
 
 #nullable disable
 
@@ -17,7 +17,7 @@ namespace WPFComponents.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.10");
 
-            modelBuilder.Entity("WPFComponents.Model.Command", b =>
+            modelBuilder.Entity("WPFComponents.DB.Command", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -38,6 +38,10 @@ namespace WPFComponents.Migrations
                     b.Property<int?>("ScenarioId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ScenarioId");
@@ -45,7 +49,25 @@ namespace WPFComponents.Migrations
                     b.ToTable("Commands");
                 });
 
-            modelBuilder.Entity("WPFComponents.Model.Scenario", b =>
+            modelBuilder.Entity("WPFComponents.DB.LogEntry", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Command")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("Timestamp")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Logs");
+                });
+
+            modelBuilder.Entity("WPFComponents.DB.Scenario", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -64,15 +86,15 @@ namespace WPFComponents.Migrations
                     b.ToTable("Scenarios");
                 });
 
-            modelBuilder.Entity("WPFComponents.Model.Command", b =>
+            modelBuilder.Entity("WPFComponents.DB.Command", b =>
                 {
-                    b.HasOne("WPFComponents.Model.Scenario", null)
+                    b.HasOne("WPFComponents.DB.Scenario", null)
                         .WithMany("Commands")
                         .HasForeignKey("ScenarioId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("WPFComponents.Model.Scenario", b =>
+            modelBuilder.Entity("WPFComponents.DB.Scenario", b =>
                 {
                     b.Navigation("Commands");
                 });
