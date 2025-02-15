@@ -20,23 +20,17 @@ namespace WPFComponents.Model
         private readonly LoggerService _logger;
 
 
-        public VoiceCommandProcessor()
+        public VoiceCommandProcessor(LoggerService logger)
         {
-            //InitializeCommands();
-            //_logger = logger;
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             InitializeScenarios();
             BuildVocabulary();
             ComputeTfIdfVectors();
         }
-
-        public VoiceCommandProcessor(List<Command> commands)
+        public VoiceCommandProcessor(List<Command> commands, LoggerService logger)
+            : this(logger) 
         {
-            //_logger = logger;
-            //InitializeCommands();
             RegisterCommand(commands);
-            InitializeScenarios();
-            BuildVocabulary();
-            ComputeTfIdfVectors();
         }
 
         /// <summary>

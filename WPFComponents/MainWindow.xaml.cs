@@ -1,5 +1,6 @@
 ﻿using Microsoft.Toolkit.Uwp.Notifications;
 using NAudio.CoreAudioApi;
+using NAudio.MediaFoundation;
 using NAudio.Wave;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -25,72 +26,28 @@ namespace WPFComponents
     public partial class MainWindow : Window
     {
         private double _originalLeft, _originalTop;
-        DB.ApplicationContext db = new DB.ApplicationContext();
+        DB.ApplicationContext _db;
 
         private VoiceCommandProcessor _voiceCommandProcessor;
         WebSocketServer socketServer = new WebSocketServer();
         //private AudioWebSocketClient audioWebSocketClient;
         private SoundWave soundWave;
 
-        public MainWindow()
+        public MainWindow(VoiceCommandProcessor processor, DB.ApplicationContext db)
         {
             StartServer();
-
+            _db = db;
             InitializeComponent();
             soundWave = new SoundWave(MyCanvas, waveLine);
 
-            db.Database.EnsureCreated();
+            _db.Database.EnsureCreated();
 
             string location = string.Join("\\", new List<string>(System.Reflection.Assembly.
                 GetExecutingAssembly().Location.Split("\\")).Take(6)) + "\\WPFComponents\\Media\\";
 
-            #region CommandsAddToDB
-            //var wordAc = new PrintWordCommand("привет");
+            var coms = _db.Commands.ToList();
 
-            //var printWord = new Command
-            //{
-            //    Name = "PrintHello",
-            //    Phrases = new List<string> { "Напечатай привет", "Напиши привет" },
-            //    Action = new PrintWordCommand("привет"),
-            //    Type = wordAc.GetType().Name
-            //};
-
-            //var butAc = new PressKeyCommand("X", "");
-            //var butpress = new Command
-            //{
-            //    Name = "Press X",
-            //    Phrases = new List<string> { "Нажми X" },
-            //    Action = butAc,
-            //    Type = butAc.GetType().Name
-            //};
-
-            //var mouseAc = new MoveMouseCommand(100, 100, false, "MoveMouseCommand");
-            //var mouse = new Command
-            //{
-            //    Name = "Mouse",
-            //    Phrases = new List<string> { "Мышь на 100 и 100" },
-            //    Action = mouseAc,
-            //    Type = mouseAc.GetType().Name
-            //};
-
-            //var hidewindow = new HideWindowCommand();
-            //var windowcom = new Command
-            //{
-            //    Name = "HideWindow",
-            //    Phrases = new List<string> { "Сверни окно" },
-            //    Action = hidewindow,
-            //    Type = hidewindow.GetType().Name
-            //};
-
-            //db.Commands.Add(windowcom);
-            //db.Commands.Add(butpress);
-            //db.Commands.Add(mouse);
-            //db.SaveChanges();
-            #endregion
-
-            var coms = db.Commands.ToList();
-
-            _voiceCommandProcessor = new ();
+            _voiceCommandProcessor = processor;
             _voiceCommandProcessor.RegisterCommand(coms);
 
             socketServer.OnTextReceived += (message) =>

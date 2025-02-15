@@ -1,30 +1,34 @@
-﻿using System.Configuration;
-using System.Data;
-using System.Windows;
+﻿using System.Windows;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using WPFComponents.DB;
+using WPFComponents.Model;
 using WPFComponents.Services;
 
 namespace WPFComponents
 {
-    /// <summary>
-    /// Interaction logic for App.xaml
-    /// </summary>
     public partial class App : Application
     {
-        public static IServiceProvider ServiceProvider { get; private set; }
+        private ServiceProvider _serviceProvider;
+
         protected override void OnStartup(StartupEventArgs e)
         {
-            var serviceCollection = new ServiceCollection();
+            var services = new ServiceCollection();
 
+            // Добавляем зависимости в DI-контейнер
+            services.AddDbContext<ApplicationContext>(options =>
+     options.UseSqlite("Data Source=database.db"));
+            services.AddTransient<LoggerService>();
+            services.AddTransient<VoiceCommandProcessor>();
 
-            serviceCollection.AddSingleton<LoggerService>();
+            // Регистрируем MainWindow
+            services.AddTransient<MainWindow>();
 
-            ServiceProvider = serviceCollection.BuildServiceProvider();
+            _serviceProvider = services.BuildServiceProvider();
 
-
-            base.OnStartup(e);
+            // Получаем MainWindow через DI
+            var mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
+            mainWindow.Show();
         }
-
     }
-
 }

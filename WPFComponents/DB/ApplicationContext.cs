@@ -11,10 +11,11 @@ namespace WPFComponents.DB
         public DbSet<Scenario> Scenarios { get; set; }
         public DbSet<LogEntry> Logs { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        public ApplicationContext(DbContextOptions<ApplicationContext> options)
+        : base(options)
         {
-            optionsBuilder.UseSqlite("Data Source=DataBase.db");
         }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             var options = new JsonSerializerOptions

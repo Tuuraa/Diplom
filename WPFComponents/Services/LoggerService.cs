@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using WPFComponents.DB;
 
 namespace WPFComponents.Services
@@ -11,14 +9,9 @@ namespace WPFComponents.Services
     {
         private readonly ApplicationContext _context;
 
-        public LoggerService(ApplicationContext context)
+        public LoggerService(ApplicationContext context) // DI
         {
-            _context = new ApplicationContext();
-        }
-
-        public LoggerService()
-        {
-
+            _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
         public void LogCommand(string commandText)
@@ -27,10 +20,10 @@ namespace WPFComponents.Services
             _context.Logs.Add(log);
             _context.SaveChanges();
         }
+
         public List<LogEntry> GetLogs()
         {
             return _context.Logs.OrderByDescending(l => l.Timestamp).ToList();
         }
-
     }
 }
