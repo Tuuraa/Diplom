@@ -19,6 +19,7 @@ namespace WPFComponents
             services.AddDbContext<ApplicationContext>(options =>
      options.UseSqlite("Data Source=database.db"));
             services.AddTransient<LoggerService>();
+            services.AddTransient<LLMActionService>();
             services.AddTransient<VoiceCommandProcessor>();
 
             // Регистрируем MainWindow

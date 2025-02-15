@@ -11,7 +11,7 @@ namespace WPFComponents.Model.Commands
         {
             return true;
         }
-        public void Execute()
+        public async Task Execute()
         {
             var screen = ScreenCapture.CaptureDesktop();
             screen.Save(@"C:\temp\snippetsource.jpg", ImageFormat.Jpeg);

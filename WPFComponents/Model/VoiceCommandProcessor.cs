@@ -18,17 +18,19 @@ namespace WPFComponents.Model
         private readonly Dictionary<string, double[]> _tfidfVectors = new();
         private readonly HashSet<string> _vocabulary = new();
         private readonly LoggerService _logger;
+        private readonly LLMActionService _lLMActionService;
 
 
-        public VoiceCommandProcessor(LoggerService logger)
+        public VoiceCommandProcessor(LoggerService logger, LLMActionService actionService)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _lLMActionService = actionService;
             InitializeScenarios();
             BuildVocabulary();
             ComputeTfIdfVectors();
         }
-        public VoiceCommandProcessor(List<Command> commands, LoggerService logger)
-            : this(logger) 
+        public VoiceCommandProcessor(List<Command> commands, LoggerService logger, LLMActionService actionService)
+            : this(logger,actionService) 
         {
             RegisterCommand(commands);
         }
@@ -125,12 +127,20 @@ namespace WPFComponents.Model
             return dotProduct / (magnitudeA * magnitudeB);
         }
 
-        public async void ProcessVoiceCommand(string recognizedPhrase)
+        public async Task ProcessVoiceCommand(string recognizedPhrase)
         {
             var bestMatchCommand = FindBestMatch(_commandsMap, recognizedPhrase);
             if (bestMatchCommand != null)
             {
-                ExecuteCommand(bestMatchCommand, recognizedPhrase);
+                await ExecuteCommand(bestMatchCommand, recognizedPhrase);
+                return;
+            }
+
+            var code = await _lLMActionService.GenerateCodeAsync(recognizedPhrase);
+
+            if (!string.IsNullOrWhiteSpace(code))
+            {
+                await _lLMActionService.ExecuteGeneratedCodeAsync(code);
                 return;
             }
 
@@ -158,7 +168,7 @@ namespace WPFComponents.Model
                 }
             }
 
-            return highestSimilarity > 0.1 ? bestMatch : default; // Порог для релевантности
+            return highestSimilarity > 0.4 ? bestMatch : default; // Порог для релевантности
         }
 
         private double[] ComputeTfIdfVector(string input)
@@ -177,7 +187,7 @@ namespace WPFComponents.Model
                 .ToArray();
         }
 
-        private void ExecuteCommand(Command command, string recognizedPhrase)
+        private async Task ExecuteCommand(Command command, string recognizedPhrase)
         {
             if (command.Action.CanExecute())
             {

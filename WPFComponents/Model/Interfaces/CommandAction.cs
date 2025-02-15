@@ -3,6 +3,6 @@
     public interface ICommandAction
     {
         public bool CanExecute();
-        public void Execute();
+        public Task Execute();
     }
 }

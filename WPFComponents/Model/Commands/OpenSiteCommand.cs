@@ -21,7 +21,7 @@ namespace WPFComponents.Model.Commands
             return true;
         }
 
-        public void Execute()
+        public async Task Execute()
         {
             ProcessStartInfo psi = new ProcessStartInfo
             {

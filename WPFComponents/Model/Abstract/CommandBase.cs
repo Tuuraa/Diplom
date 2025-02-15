@@ -13,7 +13,7 @@ namespace WPFComponents.Model.Abstract
     {
         public abstract bool CanExecute();
 
-        public abstract void Execute();
+        public abstract Task Execute();
 
         public string SerializeCommand() =>
             JsonSerializer.Serialize(this, GetType());

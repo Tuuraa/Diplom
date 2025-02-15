@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Runtime.CompilerServices;
+using System.Text.Json.Serialization;
 using System.Windows;
 using WindowsInput;
 using WindowsInput.Native;
@@ -32,7 +33,7 @@ namespace WPFComponents.Model.Commands
             return X >= 0 && Y >= 0;
         }
 
-        public void Execute()
+        public async Task Execute()
         {
             try
             {

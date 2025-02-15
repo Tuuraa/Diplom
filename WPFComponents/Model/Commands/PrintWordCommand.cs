@@ -21,7 +21,7 @@ namespace WPFComponents.Model.Commands
             return !string.IsNullOrEmpty(Word);
         }
 
-        public void Execute()
+        public async Task Execute()
         {
             if (!CanExecute())
             {

@@ -20,7 +20,7 @@ namespace WPFComponents.Model.Commands
             }
             return false;
         }
-        public void Execute()
+        public async Task Execute()
         {
             ActiveWindowManager.MinimizeActiveWindow();
         }

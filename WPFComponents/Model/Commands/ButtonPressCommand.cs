@@ -27,7 +27,7 @@ namespace WPFComponents.Model.Commands
             return GetVirtualKeyCode(Key) != null;
         }
 
-        public void Execute()
+        public async Task Execute()
         {
             try
             {

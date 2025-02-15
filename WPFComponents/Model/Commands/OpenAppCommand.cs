@@ -24,7 +24,7 @@ namespace WPFComponents.Model.Commands
             return File.Exists(PathToExe);
         }
 
-        public void Execute()
+        public async Task Execute()
         {
             // Замените на запуск приложения
             //MessageBox.Show($"Запуск приложения: {PathToExe}");
