@@ -48,7 +48,7 @@ namespace WPFComponents
             var coms = _db.Commands.ToList();
 
             _voiceCommandProcessor = processor;
-            _voiceCommandProcessor.RegisterCommand(coms);
+            //_voiceCommandProcessor.RegisterCommand(coms);
 
             socketServer.OnTextReceived += (message) =>
             {

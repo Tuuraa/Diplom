@@ -13,49 +13,43 @@ namespace WPFComponents.Model
 {
     public class VoiceCommandProcessor
     {
-        private readonly Dictionary<string, Command> _commandsMap = new();
-        private readonly Dictionary<string, Scenario> _scenarios = new();
-        private readonly Dictionary<string, double[]> _tfidfVectors = new();
-        private readonly HashSet<string> _vocabulary = new();
+        private readonly CommandMatcher _commandMatcher;
+        //private readonly ScenarioMatcher _scenarioMatcher;
+        private readonly LLMActionService _llmService;
         private readonly LoggerService _logger;
-        private readonly LLMActionService _lLMActionService;
 
-
-        public VoiceCommandProcessor(LoggerService logger, LLMActionService actionService)
+        public VoiceCommandProcessor(
+            LoggerService logger,
+            LLMActionService llmService,
+            ApplicationContext context)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _lLMActionService = actionService;
-            InitializeScenarios();
-            BuildVocabulary();
-            ComputeTfIdfVectors();
-        }
-        public VoiceCommandProcessor(List<Command> commands, LoggerService logger, LLMActionService actionService)
-            : this(logger,actionService) 
-        {
-            RegisterCommand(commands);
+            _llmService = llmService;
+            var commands = context.Commands.ToList();
+            var commandsMap = ConvertCommandsToMap(commands);
+            var scenarios = InitializeScenarios();
+
+            _commandMatcher = new CommandMatcher(commandsMap);
+            //_scenarioMatcher = new ScenarioMatcher(scenarios);
         }
 
-        /// <summary>
-        /// Перегрузка для коллекции комманд
-        /// </summary>
-        /// <param name="commands"></param>
-        public void RegisterCommand(List<Command> commands)
+        private Dictionary<string, Command> ConvertCommandsToMap(List<Command> commands)
         {
+            var map = new Dictionary<string, Command>();
             foreach (var command in commands)
             {
                 foreach (var phrase in command.Phrases)
                 {
-                    _commandsMap[phrase] = command;
+                    map[phrase] = command;
                 }
             }
-            BuildVocabulary();
-            ComputeTfIdfVectors();
+            return map;
         }
 
-        //TODO: Удлаить и сделать через БД
-        private void InitializeScenarios()
+        private Dictionary<string, Scenario> InitializeScenarios()
         {
-            // Пример сценария
+            var scenarios = new Dictionary<string, Scenario>();
+
             var homeScenario = new Scenario
             {
                 Name = "Дом",
@@ -68,146 +62,94 @@ namespace WPFComponents.Model
                 }
             };
 
-            _scenarios["я дома"] = homeScenario;
-        }
-
-        private void BuildVocabulary()
-        {
-            foreach (var phrase in _commandsMap.Keys.Concat(_scenarios.Keys))
-            {
-                foreach (var word in Tokenize(phrase))
-                {
-                    _vocabulary.Add(word);
-                }
-            }
-        }
-
-        private void ComputeTfIdfVectors()
-        {
-            var documents = _commandsMap.Keys.Concat(_scenarios.Keys).ToList();
-            var documentCount = documents.Count;
-            var wordDocumentFrequency = new Dictionary<string, int>();
-
-            // Считаем частоту документов для каждого слова
-            foreach (var word in _vocabulary)
-            {
-                wordDocumentFrequency[word] = documents.Count(doc => Tokenize(doc).Contains(word));
-            }
-
-            // Рассчитываем TF-IDF для каждой команды/сценария
-            foreach (var document in documents)
-            {
-                var termFrequency = Tokenize(document)
-                    .GroupBy(word => word)
-                    .ToDictionary(group => group.Key, group => group.Count());
-
-                double[] tfidfVector = _vocabulary
-                    .Select(word =>
-                    {
-                        var tf = termFrequency.ContainsKey(word) ? termFrequency[word] : 0;
-                        var idf = Math.Log((double)documentCount / (1 + wordDocumentFrequency[word]));
-                        return tf * idf;
-                    })
-                    .ToArray();
-
-                _tfidfVectors[document] = tfidfVector;
-            }
-        }
-
-        private static IEnumerable<string> Tokenize(string text)
-        {
-            return text.ToLowerInvariant().Split(new[] { ' ', ',', '.', '!' }, StringSplitOptions.RemoveEmptyEntries);
-        }
-
-        private double ComputeCosineSimilarity(double[] vectorA, double[] vectorB)
-        {
-            var dotProduct = vectorA.Zip(vectorB, (a, b) => a * b).Sum();
-            var magnitudeA = Math.Sqrt(vectorA.Sum(a => a * a));
-            var magnitudeB = Math.Sqrt(vectorB.Sum(b => b * b));
-            return dotProduct / (magnitudeA * magnitudeB);
+            scenarios[homeScenario.Name] = homeScenario;
+            return scenarios;
         }
 
         public async Task ProcessVoiceCommand(string recognizedPhrase)
         {
-            var bestMatchCommand = FindBestMatch(_commandsMap, recognizedPhrase);
-            if (bestMatchCommand != null)
+            try
             {
-                await ExecuteCommand(bestMatchCommand, recognizedPhrase);
-                return;
+                // Обработка локальных команд
+                var commandResult = _commandMatcher.Match(recognizedPhrase);
+                if (commandResult.Confidence > 0.4)
+                {
+                    await ExecuteCommand(commandResult.Command, recognizedPhrase);
+                    return;
+                }
+
+                // Обработка сценариев
+                //var scenarioResult = _scenarioMatcher.Match(recognizedPhrase);
+                //if (scenarioResult.Confidence > 0.4)
+                //{
+                //    ExecuteScenario(scenarioResult.Scenario);
+                //    return;
+                //}
+
+                // Асинхронный вызов LLM без блокировки
+                _ = ProcessWithLLMAsync(recognizedPhrase);
+
+                // Уведомление пользователя
+                NotifyUser("Команда не распознана");
             }
-
-            var code = await _lLMActionService.GenerateCodeAsync(recognizedPhrase);
-
-            if (!string.IsNullOrWhiteSpace(code))
+            catch (Exception ex)
             {
-                await _lLMActionService.ExecuteGeneratedCodeAsync(code);
-                return;
-            }
-
-            var bestMatchScenario = FindBestMatch(_scenarios, recognizedPhrase);
-            if (bestMatchScenario != null)
-            {
-                ExecuteScenario(bestMatchScenario);
-                return;
+               // _logger.LogError($"Ошибка обработки команды: {ex.Message}");
             }
         }
 
-        private T FindBestMatch<T>(Dictionary<string, T> items, string input)
+        private async Task ProcessWithLLMAsync(string phrase)
         {
-            var inputVector = ComputeTfIdfVector(input);
-            double highestSimilarity = 0;
-            T bestMatch = default;
-
-            foreach (var (key, value) in items)
+            try
             {
-                var similarity = ComputeCosineSimilarity(inputVector, _tfidfVectors[key]);
-                if (similarity > highestSimilarity)
+                var code = await _llmService.GenerateCodeAsync(phrase);
+                if (!string.IsNullOrWhiteSpace(code))
                 {
-                    highestSimilarity = similarity;
-                    bestMatch = value;
+                    await _llmService.ExecuteGeneratedCodeAsync(code);
+                    //_logger.LogLLMAction(phrase, code);
                 }
             }
-
-            return highestSimilarity > 0.4 ? bestMatch : default; // Порог для релевантности
-        }
-
-        private double[] ComputeTfIdfVector(string input)
-        {
-            var termFrequency = Tokenize(input)
-                .GroupBy(word => word)
-                .ToDictionary(group => group.Key, group => group.Count());
-
-            return _vocabulary
-                .Select(word =>
-                {
-                    var tf = termFrequency.ContainsKey(word) ? termFrequency[word] : 0;
-                    var idf = Math.Log((double)_tfidfVectors.Count / (1 + _tfidfVectors.Values.Count(v => v[_vocabulary.ToList().IndexOf(word)] > 0)));
-                    return tf * idf;
-                })
-                .ToArray();
+            catch (Exception ex)
+            {
+                //_logger.LogError($"Ошибка LLM: {ex.Message}");
+            }
         }
 
         private async Task ExecuteCommand(Command command, string recognizedPhrase)
         {
             if (command.Action.CanExecute())
             {
-                _logger.LogCommand(recognizedPhrase);
-                command.Action.Execute();
+                //_logger.LogCommand(recognizedPhrase);
+                await Task.Run(() => command.Action.Execute());
             }
             else
             {
-                //NotifyUserFail($"Команда \"{recognizedPhrase}\" не может быть выполнена.");
+                NotifyUser($"Команда не может быть выполнена: {recognizedPhrase}");
             }
         }
 
         private void ExecuteScenario(Scenario scenario)
         {
-            VirtualDesktop.Create().Switch();
-            _logger.LogCommand(scenario.Name);
-            foreach (var command in scenario.Commands)
+            try
             {
-                ExecuteCommand(command, scenario.Name);
+                VirtualDesktop.Create().Switch();
+                //_logger.LogScenario(scenario.Name);
+
+                foreach (var command in scenario.Commands)
+                {
+                    if (command.Action.CanExecute())
+                        Task.Run(() => command.Action.Execute());
+                }
             }
+            catch (Exception ex)
+            {
+                //_logger.LogError($"Ошибка выполнения сценария: {ex.Message}");
+            }
+        }
+
+        private void NotifyUser(string message)
+        {
+            // Реализация уведомлений
         }
     }
 }
