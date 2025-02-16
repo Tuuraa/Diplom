@@ -13,7 +13,7 @@ namespace WPFComponents.Services
     public class LLMActionService
     {
         private readonly string apiUrl = "https://openrouter.ai/api/v1/chat/completions";
-        private readonly string apiKey = "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";
+        private readonly string apiKey = "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";
         private readonly string model = "mistralai/mistral-small-24b-instruct-2501:free";
 
         public async Task<string> GenerateCodeAsync(string userCommand)

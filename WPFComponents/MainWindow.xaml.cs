@@ -1,4 +1,5 @@
-﻿using Microsoft.Toolkit.Uwp.Notifications;
+﻿using H.NotifyIcon;
+using Microsoft.Toolkit.Uwp.Notifications;
 using NAudio.CoreAudioApi;
 using NAudio.MediaFoundation;
 using NAudio.Wave;
@@ -27,10 +28,10 @@ namespace WPFComponents
     {
         private double _originalLeft, _originalTop;
         DB.ApplicationContext _db;
+        private TaskbarIcon _taskbarIcon;
 
         private VoiceCommandProcessor _voiceCommandProcessor;
         WebSocketServer socketServer = new WebSocketServer();
-        //private AudioWebSocketClient audioWebSocketClient;
         private SoundWave soundWave;
 
         public MainWindow(VoiceCommandProcessor processor, DB.ApplicationContext db)
@@ -38,6 +39,7 @@ namespace WPFComponents
             StartServer();
             _db = db;
             InitializeComponent();
+            _taskbarIcon = this.TrayIcon;
             soundWave = new SoundWave(MyCanvas, waveLine);
 
             _db.Database.EnsureCreated();
@@ -48,6 +50,7 @@ namespace WPFComponents
             var coms = _db.Commands.ToList();
 
             _voiceCommandProcessor = processor;
+            _voiceCommandProcessor.TrayIcon = _taskbarIcon;
             //_voiceCommandProcessor.RegisterCommand(coms);
 
             socketServer.OnTextReceived += (message) =>

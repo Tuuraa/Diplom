@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using H.NotifyIcon;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using WPFComponents.DB;
@@ -17,9 +18,12 @@ namespace WPFComponents
 
             // Добавляем зависимости в DI-контейнер
             services.AddDbContext<ApplicationContext>(options =>
-     options.UseSqlite("Data Source=database.db"));
+                options.UseSqlite("Data Source=database.db"));
+
             services.AddTransient<LoggerService>();
+
             services.AddTransient<LLMActionService>();
+
             services.AddTransient<VoiceCommandProcessor>();
 
             // Регистрируем MainWindow

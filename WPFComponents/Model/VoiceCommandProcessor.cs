@@ -1,13 +1,19 @@
-﻿using Microsoft.Toolkit.Uwp.Notifications;
+﻿using H.NotifyIcon;
+using Microsoft.Toolkit.Uwp.Notifications;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Speech.Synthesis;
 using System.Windows;
+using System.Windows.Controls.Primitives;
+using System.Windows.Forms;
 using WindowsDesktop;
 using WPFComponents.DB;
 using WPFComponents.Model.Commands;
 using WPFComponents.Services;
+using WPFComponents.Utils;
+using WPFComponents.View;
+using ApplicationContext = WPFComponents.DB.ApplicationContext;
 
 namespace WPFComponents.Model
 {
@@ -17,6 +23,7 @@ namespace WPFComponents.Model
         //private readonly ScenarioMatcher _scenarioMatcher;
         private readonly LLMActionService _llmService;
         private readonly LoggerService _logger;
+        public TaskbarIcon? TrayIcon;
 
         public VoiceCommandProcessor(
             LoggerService logger,
@@ -78,19 +85,10 @@ namespace WPFComponents.Model
                     return;
                 }
 
-                // Обработка сценариев
-                //var scenarioResult = _scenarioMatcher.Match(recognizedPhrase);
-                //if (scenarioResult.Confidence > 0.4)
-                //{
-                //    ExecuteScenario(scenarioResult.Scenario);
-                //    return;
-                //}
-
-                // Асинхронный вызов LLM без блокировки
                 _ = ProcessWithLLMAsync(recognizedPhrase);
 
                 // Уведомление пользователя
-                NotifyUser("Команда не распознана");
+                //NotifyUser("Команда не распознана");
             }
             catch (Exception ex)
             {
@@ -103,6 +101,7 @@ namespace WPFComponents.Model
             try
             {
                 var code = await _llmService.GenerateCodeAsync(phrase);
+                await NotifyUserAsync(code);
                 if (!string.IsNullOrWhiteSpace(code))
                 {
                     await _llmService.ExecuteGeneratedCodeAsync(code);
@@ -149,7 +148,28 @@ namespace WPFComponents.Model
 
         private void NotifyUser(string message)
         {
-            // Реализация уведомлений
+            AgreeBalloon balloon = new AgreeBalloon(message);
+            //balloon.AgreeClicked += Balloon_AgreeClicked;
+            TrayIcon.ShowNotification("test",message);
+        }
+        private async Task NotifyUserAsync(string message)
+        {
+            var tcs = new TaskCompletionSource<bool>();
+
+            // Создание и настройка FancyBalloon
+            FancyBalloon balloon = new FancyBalloon(message);
+            balloon.AgreeClicked += (sender, e) =>
+            {
+                // Завершаем задачу, когда пользователь нажал кнопку
+                tcs.SetResult(true);
+                TrayIcon.CloseBalloon();
+            };
+
+            // Показать баллон
+            TrayIcon.ShowCustomBalloon(balloon, PopupAnimation.Fade, 50000);
+
+            // Ожидаем, пока пользователь согласится
+            await tcs.Task;
         }
     }
 }

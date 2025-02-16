@@ -75,5 +75,8 @@
 
             </Grid>
         </Grid>
+        <tb:TaskbarIcon x:Name="TrayIcon"
+        IconSource="Media/Icons/wave.ico"
+        ToolTipText="SkyAI" />
     </Grid>
 </Window>
