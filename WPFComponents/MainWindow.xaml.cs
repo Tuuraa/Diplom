@@ -44,9 +44,6 @@ namespace WPFComponents
 
             _db.Database.EnsureCreated();
 
-            string location = string.Join("\\", new List<string>(System.Reflection.Assembly.
-                GetExecutingAssembly().Location.Split("\\")).Take(6)) + "\\WPFComponents\\Media\\";
-
             var coms = _db.Commands.ToList();
 
             _voiceCommandProcessor = processor;
@@ -72,14 +69,6 @@ namespace WPFComponents
                 });
             };
 
-        }
-
-        private void SetImgConfig(Image img, string sourse, double height = 25,  double width = 25)
-        {
-            img.Height = height;
-            img.Width = width;
-
-            img.Source = new BitmapImage(new Uri(sourse));
         }
 
         private async void StartServer() => await socketServer.StartAsync("http://localhost:5001/");
@@ -134,6 +123,12 @@ namespace WPFComponents
             this.BeginAnimation(Window.LeftProperty, moveX);
             this.BeginAnimation(Window.TopProperty, moveY);
             this.BeginAnimation(Window.OpacityProperty, fadeIn);
+        }
+
+        private void SymbolIcon_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            PhoneConnectWindow phoneConnectWindow = new PhoneConnectWindow();
+            phoneConnectWindow.Show();
         }
 
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
