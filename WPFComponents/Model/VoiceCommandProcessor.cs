@@ -60,7 +60,7 @@ namespace WPFComponents.Model
 
             var homeScenario = new Scenario
             {
-                Name = "Дом",
+                Name = "я дома",
                 Phrases = new List<string> { "я дома" },
                 Commands = new List<Command>
                 {

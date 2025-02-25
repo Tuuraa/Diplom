@@ -42,6 +42,9 @@ namespace WPFComponents
             _taskbarIcon = this.TrayIcon;
             soundWave = new SoundWave(MyCanvas, waveLine);
 
+            Constructor constructor = new Constructor();
+            constructor.Show();
+
             #region CommandsAddToDB
             //var wordAc = new PrintWordCommand("привет");
 
