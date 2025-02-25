@@ -21,6 +21,7 @@ namespace WPFComponents.Model
     {
         private readonly CommandMatcher _commandMatcher;
         //private readonly ScenarioMatcher _scenarioMatcher;
+        private Dictionary<string, Scenario> _scenarios;
         private readonly LLMActionService _llmService;
         private readonly LoggerService _logger;
         public TaskbarIcon? TrayIcon;
@@ -34,7 +35,7 @@ namespace WPFComponents.Model
             _llmService = llmService;
             var commands = context.Commands.ToList();
             var commandsMap = ConvertCommandsToMap(commands);
-            var scenarios = InitializeScenarios();
+            _scenarios = InitializeScenarios();
 
             _commandMatcher = new CommandMatcher(commandsMap);
             //_scenarioMatcher = new ScenarioMatcher(scenarios);
@@ -82,6 +83,12 @@ namespace WPFComponents.Model
                 if (commandResult.Confidence > 0.4)
                 {
                     await ExecuteCommand(commandResult.Command, recognizedPhrase);
+                    return;
+                }
+
+                if (_scenarios != null && _scenarios.ContainsKey(recognizedPhrase))
+                {
+                    ExecuteScenario(_scenarios[recognizedPhrase]);
                     return;
                 }
 

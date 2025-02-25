@@ -42,6 +42,50 @@ namespace WPFComponents
             _taskbarIcon = this.TrayIcon;
             soundWave = new SoundWave(MyCanvas, waveLine);
 
+            #region CommandsAddToDB
+            //var wordAc = new PrintWordCommand("привет");
+
+            //var printWord = new Command
+            //{
+            //    Name = "PrintHello",
+            //    Phrases = new List<string> { "Напечатай привет", "Напиши привет" },
+            //    Action = new PrintWordCommand("привет"),
+            //    Type = wordAc.GetType().Name
+            //};
+
+            //var butAc = new PressKeyCommand("X", "");
+            //var butpress = new Command
+            //{
+            //    Name = "Press X",
+            //    Phrases = new List<string> { "Нажми X" },
+            //    Action = butAc,
+            //    Type = butAc.GetType().Name
+            //};
+
+            //var mouseAc = new MoveMouseCommand(100, 100, false, "MoveMouseCommand");
+            //var mouse = new Command
+            //{
+            //    Name = "Mouse",
+            //    Phrases = new List<string> { "Мышь на 100 и 100" },
+            //    Action = mouseAc,
+            //    Type = mouseAc.GetType().Name
+            //};
+
+            //var hidewindow = new HideWindowCommand();
+            //var windowcom = new Command
+            //{
+            //    Name = "HideWindow",
+            //    Phrases = new List<string> { "Сверни окно" },
+            //    Action = hidewindow,
+            //    Type = hidewindow.GetType().Name
+            //};
+
+            //db.Commands.Add(windowcom);
+            //db.Commands.Add(butpress);
+            //db.Commands.Add(mouse);
+            //db.SaveChanges();
+            #endregion
+
             _db.Database.EnsureCreated();
 
             var coms = _db.Commands.ToList();
