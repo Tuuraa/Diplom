@@ -7,6 +7,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WPFComponents", "WPFCompone
 EndProject
 Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "PyRecognize-main", "PyRecognize-main\PyRecognize-main.pyproj", "{C18E0D21-57EE-48FF-AD8E-3857504D3E87}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nodify", "nodify\Nodify\Nodify.csproj", "{B3EDB95F-AD53-4714-ACAA-AE2AE7AF2F4B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nodify.Calculator", "nodify\Examples\Nodify.Calculator\Nodify.Calculator.csproj", "{3591A992-5A89-484F-92E9-13251D022001}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nodify.Shared", "nodify\Examples\Nodify.Shared\Nodify.Shared.csproj", "{946571CF-3CC7-4138-B1DF-3C159A3CED28}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SkyUtils", "SkyUtils\SkyUtils.csproj", "{1245D6C4-7450-4143-A23E-5E103A9A292E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,6 +27,22 @@ Global
 		{E121F701-71E0-48E9-AC2D-702DC9B65AD7}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C18E0D21-57EE-48FF-AD8E-3857504D3E87}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C18E0D21-57EE-48FF-AD8E-3857504D3E87}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B3EDB95F-AD53-4714-ACAA-AE2AE7AF2F4B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B3EDB95F-AD53-4714-ACAA-AE2AE7AF2F4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B3EDB95F-AD53-4714-ACAA-AE2AE7AF2F4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B3EDB95F-AD53-4714-ACAA-AE2AE7AF2F4B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3591A992-5A89-484F-92E9-13251D022001}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3591A992-5A89-484F-92E9-13251D022001}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3591A992-5A89-484F-92E9-13251D022001}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3591A992-5A89-484F-92E9-13251D022001}.Release|Any CPU.Build.0 = Release|Any CPU
+		{946571CF-3CC7-4138-B1DF-3C159A3CED28}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{946571CF-3CC7-4138-B1DF-3C159A3CED28}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{946571CF-3CC7-4138-B1DF-3C159A3CED28}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{946571CF-3CC7-4138-B1DF-3C159A3CED28}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1245D6C4-7450-4143-A23E-5E103A9A292E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1245D6C4-7450-4143-A23E-5E103A9A292E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1245D6C4-7450-4143-A23E-5E103A9A292E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1245D6C4-7450-4143-A23E-5E103A9A292E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

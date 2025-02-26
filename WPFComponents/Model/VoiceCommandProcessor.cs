@@ -1,5 +1,6 @@
 ﻿using H.NotifyIcon;
 using Microsoft.Toolkit.Uwp.Notifications;
+using SkyUtils;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -78,6 +78,7 @@
             </Grid>
         </Grid>
         <tb:TaskbarIcon x:Name="TrayIcon"
+        TrayLeftMouseDoubleClick="TrayIcon_TrayMouseDoubleClick"
         IconSource="Media/Icons/wave.ico"
         ToolTipText="SkyAI" Margin="0,44,0,440" Grid.Row="1" />
     </Grid>

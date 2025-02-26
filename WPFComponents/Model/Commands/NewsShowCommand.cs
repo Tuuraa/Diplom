@@ -2,6 +2,7 @@
 using System.Net.NetworkInformation;
 using System.Windows;
 using WPFComponents.Model.Interfaces;
+using SkyUtils;
 
 namespace WPFComponents.Model.Commands
 {

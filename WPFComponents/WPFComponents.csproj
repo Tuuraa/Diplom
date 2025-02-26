@@ -33,7 +33,7 @@
     <PackageReference Include="Microsoft.Toolkit.Uwp.Notifications" Version="7.1.3" />
     <PackageReference Include="NAudio" Version="2.2.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="Nodify" Version="7.0.0" />
+    <PackageReference Include="Nodify" Version="7.0.1" />
     <PackageReference Include="QRCoder" Version="1.6.0" />
     <PackageReference Include="Serilog" Version="4.2.0" />
     <PackageReference Include="Serilog.Extensions.Logging" Version="9.0.0" />
@@ -49,6 +49,11 @@
 
   <ItemGroup>
     <Folder Include="Model\Abstract\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\nodify\Examples\Nodify.Calculator\Nodify.Calculator.csproj" />
+    <ProjectReference Include="..\SkyUtils\SkyUtils.csproj" />
   </ItemGroup>
 
   <ItemGroup>

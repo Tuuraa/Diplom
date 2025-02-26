@@ -91,7 +91,11 @@ namespace WPFComponents
 
             _db.Database.EnsureCreated();
 
+
             var coms = _db.Commands.ToList();
+
+            Nodify.Calculator.MainWindow mainWindow = new Nodify.Calculator.MainWindow(coms);
+            mainWindow.Show();
 
             _voiceCommandProcessor = processor;
             _voiceCommandProcessor.TrayIcon = _taskbarIcon;
