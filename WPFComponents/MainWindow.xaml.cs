@@ -42,9 +42,6 @@ namespace WPFComponents
             _taskbarIcon = this.TrayIcon;
             soundWave = new SoundWave(MyCanvas, waveLine);
 
-            Constructor constructor = new Constructor();
-            constructor.Show();
-
             #region CommandsAddToDB
             //var wordAc = new PrintWordCommand("привет");
 
@@ -94,8 +91,13 @@ namespace WPFComponents
 
             var coms = _db.Commands.ToList();
 
-            Nodify.Calculator.MainWindow mainWindow = new Nodify.Calculator.MainWindow(coms);
+            Nodify.Calculator.MainWindow mainWindow = new Nodify.Calculator.MainWindow(new List<SkyUtils.Command>());
+            mainWindow.Title = "Констуктор с общими командами";
             mainWindow.Show();
+
+            Nodify.Calculator.MainWindow constuctor = new Nodify.Calculator.MainWindow(coms);
+            constuctor.Title = "Конструктор с коммандами из БД";
+            constuctor.Show();
 
             _voiceCommandProcessor = processor;
             _voiceCommandProcessor.TrayIcon = _taskbarIcon;
