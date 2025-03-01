@@ -1,3 +1,6 @@
 [submodule "nodify"]
 	path = nodify
 	url = https://github.com/XodziGitTwink/nodify.git
+[submodule "markdig"]
+	path = markdig
+	url = https://github.com/xoofx/markdig.git
