@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nodify.Shared", "nodify\Exa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SkyUtils", "SkyUtils\SkyUtils.csproj", "{1245D6C4-7450-4143-A23E-5E103A9A292E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Markdig", "markdig\src\Markdig\Markdig.csproj", "{CAA08A02-395F-4E3A-B433-D8ECC0620A1F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,6 +45,10 @@ Global
 		{1245D6C4-7450-4143-A23E-5E103A9A292E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1245D6C4-7450-4143-A23E-5E103A9A292E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1245D6C4-7450-4143-A23E-5E103A9A292E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CAA08A02-395F-4E3A-B433-D8ECC0620A1F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CAA08A02-395F-4E3A-B433-D8ECC0620A1F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CAA08A02-395F-4E3A-B433-D8ECC0620A1F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CAA08A02-395F-4E3A-B433-D8ECC0620A1F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

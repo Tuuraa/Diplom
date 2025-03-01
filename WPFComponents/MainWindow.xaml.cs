@@ -31,6 +31,10 @@ namespace WPFComponents
             StartServer();
             InitializeComponent();
 
+            //todo снеси нахуй если не надо
+            var markdownView = new MarkdownView();
+            markdownView.Show();
+
             _db = db;
             _taskbarIcon = this.TrayIcon;
             soundWave = new SoundWave(MyCanvas, waveLine);
