@@ -1,21 +1,11 @@
 ﻿using H.NotifyIcon;
-using Microsoft.Toolkit.Uwp.Notifications;
-using NAudio.CoreAudioApi;
-using NAudio.MediaFoundation;
-using NAudio.Wave;
-using System.Collections.ObjectModel;
-using System.IO;
+using System.Collections.Frozen;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Animation;
-using System.Windows.Media.Imaging;
-using WPFComponents.DB;
 using WPFComponents.Model;
-using WPFComponents.Model.Commands;
-using WPFComponents.Services;
+using WPFComponents.Model.Utils;
 using WPFComponents.Utils;
 using WPFComponents.View;
 
@@ -31,14 +21,17 @@ namespace WPFComponents
         private TaskbarIcon _taskbarIcon;
 
         private VoiceCommandProcessor _voiceCommandProcessor;
-        WebSocketServer socketServer = new WebSocketServer();
+        private WebSocketServer socketServer;
+        private WebsocketMessageController<string> websocketController;
         private SoundWave soundWave;
+        private FrozenDictionary<string, Action<string>> _messageHandlers;
 
         public MainWindow(VoiceCommandProcessor processor, DB.ApplicationContext db)
         {
             StartServer();
-            _db = db;
             InitializeComponent();
+
+            _db = db;
             _taskbarIcon = this.TrayIcon;
             soundWave = new SoundWave(MyCanvas, waveLine);
 
@@ -87,8 +80,6 @@ namespace WPFComponents
             #endregion
 
             _db.Database.EnsureCreated();
-
-
             var coms = _db.Commands.ToList();
 
             Nodify.Calculator.MainWindow mainWindow = new Nodify.Calculator.MainWindow(new List<SkyUtils.Command>());
@@ -103,28 +94,37 @@ namespace WPFComponents
             _voiceCommandProcessor.TrayIcon = _taskbarIcon;
             //_voiceCommandProcessor.RegisterCommand(coms);
 
+            websocketController = new WebsocketMessageController<string>(async msg =>
+            {
+                await _voiceCommandProcessor.ProcessVoiceCommand(msg);
+                soundWave.StopMicrophone();
+            });
+
+            websocketController.RegisterMessageHandler(new Dictionary<string, Action<string>>
+            {
+                { "success_wake_word", (_) => soundWave.StartMicrophone() },
+                // Примеры
+                { "mobile_init", (_) => {} },
+                { "mobile_msg", (_) => {} },
+            });
+
+            _messageHandlers = websocketController.MessageHandlers;
+
             socketServer.OnTextReceived += (message) =>
             {
                 Dispatcher.Invoke(() =>
                 {
-                    if (message == "success")
-                    {
-                        soundWave.StartMicrophone();
-                        //SetImgConfig(isActiveMicro, location + "micro_on.png", height: 22);
-                    }
-                    else
-                    {
-                        _voiceCommandProcessor.ProcessVoiceCommand(message);
-                        soundWave.StopMicrophone();
-                        //SetImgConfig(isActiveMicro, location + "micro_off.png");
-                    }
-
+                    websocketController.ExecuteAction(message, message);
                 });
             };
 
         }
 
-        private async void StartServer() => await socketServer.StartAsync("http://localhost:5001/");
+        private async void StartServer()
+        {
+            socketServer = new WebSocketServer();
+            await socketServer.StartAsync("http://localhost:5001/");
+        }
 
         private async void OpenSettings(object sender, RoutedEventArgs e)
         {
@@ -140,7 +140,7 @@ namespace WPFComponents
             var screenWidth = SystemParameters.WorkArea.Width;
             var screenHeight = SystemParameters.WorkArea.Height;
 
-            var trayLeft = screenWidth - 50; // Перемещение в угол экрана
+            var trayLeft = screenWidth - 50;
             var trayTop = screenHeight - 10;
 
             var moveX = new DoubleAnimation(this.Left, trayLeft, TimeSpan.FromSeconds(0.5));
@@ -161,7 +161,7 @@ namespace WPFComponents
 
         private async void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            
+
         }
 
         private void TrayIcon_TrayMouseDoubleClick(object sender, RoutedEventArgs e)
