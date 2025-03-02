@@ -1,20 +1,13 @@
 ﻿using H.NotifyIcon;
-using Microsoft.Toolkit.Uwp.Notifications;
 using SkyUtils;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Speech.Synthesis;
-using System.Windows;
 using System.Windows.Controls.Primitives;
-using System.Windows.Forms;
 using WindowsDesktop;
-using WPFComponents.DB;
 using WPFComponents.Model.Commands;
 using WPFComponents.Services;
 using WPFComponents.Utils;
 using WPFComponents.View;
 using ApplicationContext = WPFComponents.DB.ApplicationContext;
+using Scenario = WPFComponents.DB.Scenario;
 
 namespace WPFComponents.Model
 {
