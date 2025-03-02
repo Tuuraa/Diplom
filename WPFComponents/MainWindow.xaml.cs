@@ -3,6 +3,7 @@ using Microsoft.Toolkit.Uwp.Notifications;
 using NAudio.CoreAudioApi;
 using NAudio.MediaFoundation;
 using NAudio.Wave;
+using Nodify.Calculator;
 using SkyUtils;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -16,9 +17,13 @@ using System.Windows.Media.Imaging;
 using WPFComponents.DB;
 using WPFComponents.Model;
 using WPFComponents.Model.Commands;
+using WPFComponents.Model.Utils;
 using WPFComponents.Services;
 using WPFComponents.Utils;
 using WPFComponents.View;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+using Command = SkyUtils.Command;
+using Scenario = WPFComponents.DB.Scenario;
 
 namespace WPFComponents
 {
@@ -91,9 +96,10 @@ namespace WPFComponents
 
             var coms = _db.Commands.ToList();
 
-            Nodify.Calculator.EditorView mainWindow = new Nodify.Calculator.EditorView(new List<SkyUtils.Command>());
-            mainWindow.Title = "Констуктор сценариев";
-            mainWindow.Show();
+            Nodify.Calculator.EditorView constuctor = new Nodify.Calculator.EditorView(new List<SkyUtils.Command>());
+            constuctor.Title = "Констуктор сценариев";
+            constuctor.CommandsUpdated += EditorView_CommandsUpdated;
+            constuctor.Show();
 
             //Nodify.Calculator.EditorView constuctor = new Nodify.Calculator.EditorView(coms);
             //constuctor.Title = "Конструктор с коммандами из БД";
@@ -123,6 +129,24 @@ namespace WPFComponents
             };
 
         }
+
+        private void EditorView_CommandsUpdated(List<OperationViewModel> updatedCommands,string name, string phrase)
+        {
+            List<ICommandAction> actions = new List<ICommandAction>();
+            List<Command> commands = new List<Command>();
+            foreach (var command in updatedCommands)
+            {
+                var action = CommandFactory.CreateCommand((SkyUtils.CommandType)command.CommandType, command);
+                Command new_command = new Command();
+                new_command.Action = action;
+                commands.Add(new_command);
+            }
+            Scenario scenario = new Scenario();
+            scenario.Name = name;
+            scenario.Phrases = new List<string> { phrase };
+            scenario.Commands = commands;
+        }
+
 
         private async void StartServer() => await socketServer.StartAsync("http://localhost:5001/");
 
