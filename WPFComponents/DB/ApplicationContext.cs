@@ -11,11 +11,23 @@ namespace WPFComponents.DB
         public DbSet<Command> Commands { get; set; }
         public DbSet<Scenario> Scenarios { get; set; }
         public DbSet<LogEntry> Logs { get; set; }
+        public DbSet<InstalledProgram> InstalledPrograms { get; set; }
 
         public ApplicationContext(DbContextOptions<ApplicationContext> options)
         : base(options)
         {
         }
+        public ApplicationContext() : base(new DbContextOptions<ApplicationContext>()) { }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured) // Если контекст создаётся без DI
+            {
+                optionsBuilder.UseSqlite("Data Source=database.db");
+            }
+        }
+
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

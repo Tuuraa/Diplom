@@ -199,5 +199,36 @@ namespace SkyUtils
         {
             return DisplayName;
         }
+
+        public static void SaveInstalledProgramsToJson(List<InstalledProgram> programs, string filePath)
+        {
+            try
+            {
+                var json = JsonSerializer.Serialize(programs, new JsonSerializerOptions { WriteIndented = true });
+                File.WriteAllText(filePath, json);
+                Console.WriteLine("Данные успешно сохранены в файл.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Ошибка при сохранении в JSON: {ex.Message}");
+            }
+        }
+
+        public static List<InstalledProgram> LoadInstalledProgramsFromJson(string filePath)
+        {
+            try
+            {
+                var json = File.ReadAllText(filePath);
+                var programs = JsonSerializer.Deserialize<List<InstalledProgram>>(json);
+                return programs ?? new List<InstalledProgram>();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Ошибка при загрузке из JSON: {ex.Message}");
+                return new List<InstalledProgram>();
+            }
+        }
     }
+
 }
+

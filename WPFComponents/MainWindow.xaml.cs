@@ -3,6 +3,7 @@ using Microsoft.Toolkit.Uwp.Notifications;
 using NAudio.CoreAudioApi;
 using NAudio.MediaFoundation;
 using NAudio.Wave;
+using SkyUtils;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Windows;
@@ -88,16 +89,15 @@ namespace WPFComponents
 
             _db.Database.EnsureCreated();
 
-
             var coms = _db.Commands.ToList();
 
-            Nodify.Calculator.MainWindow mainWindow = new Nodify.Calculator.MainWindow(new List<SkyUtils.Command>());
-            mainWindow.Title = "Констуктор с общими командами";
+            Nodify.Calculator.EditorView mainWindow = new Nodify.Calculator.EditorView(new List<SkyUtils.Command>());
+            mainWindow.Title = "Констуктор сценариев";
             mainWindow.Show();
 
-            Nodify.Calculator.MainWindow constuctor = new Nodify.Calculator.MainWindow(coms);
-            constuctor.Title = "Конструктор с коммандами из БД";
-            constuctor.Show();
+            //Nodify.Calculator.EditorView constuctor = new Nodify.Calculator.EditorView(coms);
+            //constuctor.Title = "Конструктор с коммандами из БД";
+            //constuctor.Show();
 
             _voiceCommandProcessor = processor;
             _voiceCommandProcessor.TrayIcon = _taskbarIcon;

@@ -1,11 +1,15 @@
-﻿using System.Drawing;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Drawing;
 
 public class InstalledProgram
 {
+    public int Id { get; set; }
     public string Name { get; set; }
     public string ExecutablePath { get; set; }
 
     private string _iconPath;
+
+    [NotMapped]
     public string DisplayIcon
     {
         get
