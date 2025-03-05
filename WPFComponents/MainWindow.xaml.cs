@@ -96,7 +96,7 @@ namespace WPFComponents
 
             var coms = _db.Commands.ToList();
 
-            Nodify.Calculator.EditorView constuctor = new Nodify.Calculator.EditorView(new List<SkyUtils.Command>());
+            Nodify.Calculator.EditorView constuctor = new Nodify.Calculator.EditorView();
             constuctor.Title = "Констуктор сценариев";
             constuctor.CommandsUpdated += EditorView_CommandsUpdated;
             constuctor.Show();
