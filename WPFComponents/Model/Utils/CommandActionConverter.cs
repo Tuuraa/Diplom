@@ -24,7 +24,9 @@ namespace WPFComponents.Model.Utils
             switch (commandType)
             {
                 case "OpenAppCommand":
-                    return JsonSerializer.Deserialize<OpenAppCommand>(jsonObject.GetRawText(), options);
+                    //return JsonSerializer.Deserialize<OpenAppCommand>(jsonObject.GetRawText(), options);
+                    string path = jsonObject.GetProperty("PathToExe").GetString();
+                    return new OpenAppCommand(path);
                 case "NewsShowCommand":
                     return JsonSerializer.Deserialize<NewsShowCommand>(jsonObject.GetRawText(), options);
                 case "MoveMouseCommand":
@@ -70,6 +72,9 @@ namespace WPFComponents.Model.Utils
                     writer.WriteString("Word", printWordCommand.Word);
                     break;
                 case HideWindowCommand hideWindowCommand:
+                    break;
+                case OpenAppCommand openAppCommand:
+                    writer.WriteString("PathToExe", openAppCommand.PathToExe);
                     break;
                 default:
                     throw new NotSupportedException($"Тип команды '{value.GetType()}' не поддерживается для сериализации.");

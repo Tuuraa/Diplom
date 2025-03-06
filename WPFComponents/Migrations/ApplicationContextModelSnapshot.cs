@@ -33,7 +33,7 @@ namespace WPFComponents.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("InstalledPrograms");
+                    b.ToTable("InstalledPrograms", (string)null);
                 });
 
             modelBuilder.Entity("SkyUtils.Command", b =>
@@ -65,7 +65,7 @@ namespace WPFComponents.Migrations
 
                     b.HasIndex("ScenarioId");
 
-                    b.ToTable("Commands");
+                    b.ToTable("Commands", (string)null);
                 });
 
             modelBuilder.Entity("WPFComponents.DB.LogEntry", b =>
@@ -83,7 +83,7 @@ namespace WPFComponents.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Logs");
+                    b.ToTable("Logs", (string)null);
                 });
 
             modelBuilder.Entity("WPFComponents.DB.Scenario", b =>
@@ -102,7 +102,7 @@ namespace WPFComponents.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Scenarios");
+                    b.ToTable("Scenarios", (string)null);
                 });
 
             modelBuilder.Entity("SkyUtils.Command", b =>

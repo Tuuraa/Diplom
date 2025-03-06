@@ -14,8 +14,7 @@ namespace WPFComponents.Model
     public class VoiceCommandProcessor
     {
         private readonly CommandMatcher _commandMatcher;
-        //private readonly ScenarioMatcher _scenarioMatcher;
-        private Dictionary<string, Scenario> _scenarios;
+        private readonly ScenarioMatcher _scenarioMatcher;
         private readonly LLMActionService _llmService;
         private readonly LoggerService _logger;
         public TaskbarIcon? TrayIcon;
@@ -29,10 +28,11 @@ namespace WPFComponents.Model
             _llmService = llmService;
             var commands = context.Commands.ToList();
             var commandsMap = ConvertCommandsToMap(commands);
-            _scenarios = InitializeScenarios();
+            var scenarios = context.Scenarios.ToList();
+            var scenariosMap = ConvertScenariosToMap(scenarios);
 
             _commandMatcher = new CommandMatcher(commandsMap);
-            //_scenarioMatcher = new ScenarioMatcher(scenarios);
+            _scenarioMatcher = new ScenarioMatcher(scenariosMap);
         }
 
         private Dictionary<string, Command> ConvertCommandsToMap(List<Command> commands)
@@ -47,26 +47,38 @@ namespace WPFComponents.Model
             }
             return map;
         }
-
-        private Dictionary<string, Scenario> InitializeScenarios()
+        private Dictionary<string, Scenario> ConvertScenariosToMap(List<Scenario> scenarios)
         {
-            var scenarios = new Dictionary<string, Scenario>();
-
-            var homeScenario = new Scenario
+            var map = new Dictionary<string, Scenario>();
+            foreach (var scenario in scenarios)
             {
-                Name = "я дома",
-                Phrases = new List<string> { "я дома" },
-                Commands = new List<Command>
+                foreach (var phrase in scenario.Phrases)
                 {
-                    new Command { Action = new NewsShowCommand() },
-                    new Command { Action = new OpenSiteCommand("https://habr.com/ru/flows/develop/news/") },
-                    new Command { Action = new OpenAppCommand(@"C:\Users\ivank\AppData\Roaming\Telegram Desktop\Telegram.exe") }
+                    map[phrase] = scenario;
                 }
-            };
-
-            scenarios[homeScenario.Name] = homeScenario;
-            return scenarios;
+            }
+            return map;
         }
+
+        //private Dictionary<string, Scenario> InitializeScenarios()
+        //{
+        //    var scenarios = new Dictionary<string, Scenario>();
+
+        //    var homeScenario = new Scenario
+        //    {
+        //        Name = "я дома",
+        //        Phrases = new List<string> { "я дома" },
+        //        Commands = new List<Command>
+        //        {
+        //            new Command { Action = new NewsShowCommand() },
+        //            new Command { Action = new OpenSiteCommand("https://habr.com/ru/flows/develop/news/") },
+        //            new Command { Action = new OpenAppCommand(@"C:\Users\ivank\AppData\Roaming\Telegram Desktop\Telegram.exe") }
+        //        }
+        //    };
+
+        //    scenarios[homeScenario.Name] = homeScenario;
+        //    return scenarios;
+        //}
 
         public async Task ProcessVoiceCommand(string recognizedPhrase)
         {
@@ -80,9 +92,10 @@ namespace WPFComponents.Model
                     return;
                 }
 
-                if (_scenarios != null && _scenarios.ContainsKey(recognizedPhrase))
+                var scenarioResult = _scenarioMatcher.Match(recognizedPhrase);
+                if (scenarioResult.Confidence > 0.4)
                 {
-                    ExecuteScenario(_scenarios[recognizedPhrase]);
+                    await ExecuteScenario(scenarioResult.Scenario);
                     return;
                 }
 
@@ -128,7 +141,7 @@ namespace WPFComponents.Model
             }
         }
 
-        private void ExecuteScenario(Scenario scenario)
+        private async Task ExecuteScenario(Scenario scenario)
         {
             try
             {
@@ -143,6 +156,7 @@ namespace WPFComponents.Model
             }
             catch (Exception ex)
             {
+                throw ex;
                 //_logger.LogError($"Ошибка выполнения сценария: {ex.Message}");
             }
         }

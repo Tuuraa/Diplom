@@ -2,6 +2,7 @@
 using SkyUtils;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,6 +14,8 @@ namespace WPFComponents.DB
         public int Id { get; set; }
         public string Name { get; set; } = null!;
         public List<string> Phrases { get; set; } = null!;
+
+        [NotMapped]
         public List<Command> Commands { get; set; } = null!;
     }
 }

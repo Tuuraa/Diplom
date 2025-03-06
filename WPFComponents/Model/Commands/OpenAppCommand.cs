@@ -14,7 +14,7 @@ namespace WPFComponents.Model.Commands
         public string PathToExe { get; set; }
         public OpenAppCommand(string pathToExe)
         {
-            //CommandType = commandType;
+            CommandType = this.GetType().Name;
             PathToExe = pathToExe;
         }
 

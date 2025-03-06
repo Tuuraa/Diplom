@@ -7,19 +7,26 @@ using System.Threading.Tasks;
 using WPFComponents.Services;
 using WPFComponents.DB;
 using SkyUtils;
+using Scenario = WPFComponents.DB.Scenario;
 
 namespace WPFComponents.Model
 {
-    // Класс для хранения результата сопоставления
     public class MatchResult
     {
         public Command Command { get; }
+        public Scenario Scenario { get; }
         public float Confidence { get; }
         public bool IsLLMFallback { get; }
 
         public MatchResult(Command command, float confidence, bool isLlmFallback = false)
         {
             Command = command;
+            Confidence = confidence;
+            IsLLMFallback = isLlmFallback;
+        }
+        public MatchResult(Scenario scenario, float confidence, bool isLlmFallback = false)
+        {
+            Scenario = scenario;
             Confidence = confidence;
             IsLLMFallback = isLlmFallback;
         }
@@ -30,9 +37,9 @@ namespace WPFComponents.Model
     {
         private static readonly Regex _cleanRegex = new Regex("[^а-яa-z0-9 ]", RegexOptions.Compiled);
         private static readonly HashSet<string> _stopWords = new HashSet<string>
-    {
+        {
         "пожалуйста", "найди", "сделай", "запусти", "открой", "мне", "нужно"
-    };
+        };
 
         public static string Normalize(string input)
         {
@@ -49,6 +56,11 @@ namespace WPFComponents.Model
 
     // Базовый класс для сопоставления команд
     public interface ICommandMatcher
+    {
+        MatchResult Match(string phrase);
+    }
+
+    public interface IScenarioMatcher
     {
         MatchResult Match(string phrase);
     }
@@ -92,16 +104,44 @@ namespace WPFComponents.Model
             // Этап 4: Не найдено (офлайн режим)
             return new MatchResult(new Command(), 0f);
         }
+        public MatchResult MatchScenario(string phrase)
+        {
+            var normalized = TextNormalizer.Normalize(phrase);
+
+            // Этап 1: Точное совпадение
+            if (_exactMatches.TryGetValue(normalized, out var exactCommand))
+                return new MatchResult(exactCommand, 1.0f);
+
+            // Этап 2: Левенштейн для коротких фраз
+            if (normalized.Length < 15)
+            {
+                var levResult = _levenshteinMatcher.Match(normalized);
+                if (levResult.Confidence > 0.8f)
+                    return levResult;
+            }
+
+            // Этап 3: TF-IDF
+            var tfidfResult = _tfidfMatcher.Match(normalized);
+            if (tfidfResult.Confidence > 0.4f)
+                return tfidfResult;
+
+            // Этап 4: Не найдено (офлайн режим)
+            return new MatchResult(new Scenario(), 0f);
+        }
     }
 
-    // Реализация матчера на Левенштейне
     public class LevenshteinMatcher : ICommandMatcher
     {
         private readonly Dictionary<string, Command> _commands;
+        private readonly Dictionary<string, Scenario> _scenarios;
 
         public LevenshteinMatcher(Dictionary<string, Command> commands)
         {
             _commands = commands;
+        }
+        public LevenshteinMatcher(Dictionary<string, Scenario> scenarios)
+        {
+            _scenarios = scenarios;
         }
 
         public MatchResult Match(string phrase)
@@ -127,6 +167,7 @@ namespace WPFComponents.Model
     public class TfidfMatcher : ICommandMatcher
     {
         private readonly Dictionary<string, Command> _commands;
+        private readonly Dictionary<string, Scenario> _scenarios;
         private readonly TfIdfProcessor _tfidf;
 
         public TfidfMatcher(Dictionary<string, Command> commands)
@@ -135,6 +176,14 @@ namespace WPFComponents.Model
             _tfidf = new TfIdfProcessor();
 
             foreach (var key in commands.Keys)
+                _tfidf.AddDocument(key);
+        }
+        public TfidfMatcher(Dictionary<string, Scenario> scenarios)
+        {
+            _scenarios = scenarios;
+            _tfidf = new TfIdfProcessor();
+
+            foreach (var key in scenarios.Keys)
                 _tfidf.AddDocument(key);
         }
 

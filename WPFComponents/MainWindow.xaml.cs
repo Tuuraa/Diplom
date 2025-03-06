@@ -94,6 +94,8 @@ namespace WPFComponents
 
             _db.Database.EnsureCreated();
 
+            var stop = _db.Scenarios.ToList();
+
             var coms = _db.Commands.ToList();
 
             Nodify.Calculator.EditorView constuctor = new Nodify.Calculator.EditorView();
@@ -138,13 +140,19 @@ namespace WPFComponents
             {
                 var action = CommandFactory.CreateCommand((SkyUtils.CommandType)command.CommandType, command);
                 Command new_command = new Command();
+                new_command.Id = 0;
+                new_command.Name = "Temp";
                 new_command.Action = action;
+                new_command.Type = action.GetType().Name;
+                new_command.Phrases = new List<string>();
                 commands.Add(new_command);
             }
             Scenario scenario = new Scenario();
             scenario.Name = name;
             scenario.Phrases = new List<string> { phrase };
             scenario.Commands = commands;
+            _db.Scenarios.Add(scenario);
+            _db.SaveChanges();
         }
 
 
