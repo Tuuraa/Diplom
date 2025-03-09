@@ -11,5 +11,7 @@ namespace WPFComponents.DB
         public int Id { get; set; }
         public DateTime Timestamp { get; set; } = DateTime.UtcNow;
         public string Command { get; set; } = string.Empty;
+        public string? Response { get; set; }
+        public string? Result {  get; set; }
     }
 }

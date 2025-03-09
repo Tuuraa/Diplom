@@ -57,6 +57,26 @@ namespace WPFComponents.DB
                 .HasMany(s => s.Commands)
                 .WithOne()
                 .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<LogEntry>()
+        .HasKey(l => l.Id);
+
+            modelBuilder.Entity<LogEntry>()
+                .Property(l => l.Timestamp)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP") 
+                .ValueGeneratedOnAdd(); 
+
+            modelBuilder.Entity<LogEntry>()
+                .Property(l => l.Command)
+                .IsRequired(); 
+
+            modelBuilder.Entity<LogEntry>()
+                .Property(l => l.Response)
+                .HasMaxLength(1000); 
+
+            modelBuilder.Entity<LogEntry>()
+                .Property(l => l.Result)
+                .HasMaxLength(1000);
         }
     }
 }

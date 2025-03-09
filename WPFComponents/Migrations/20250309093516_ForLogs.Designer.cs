@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WPFComponents.DB;
 
@@ -10,9 +11,11 @@ using WPFComponents.DB;
 namespace WPFComponents.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20250309093516_ForLogs")]
+    partial class ForLogs
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.10");
@@ -33,7 +36,7 @@ namespace WPFComponents.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("InstalledPrograms", (string)null);
+                    b.ToTable("InstalledPrograms");
                 });
 
             modelBuilder.Entity("SkyUtils.Command", b =>
@@ -65,7 +68,7 @@ namespace WPFComponents.Migrations
 
                     b.HasIndex("ScenarioId");
 
-                    b.ToTable("Commands", (string)null);
+                    b.ToTable("Commands");
                 });
 
             modelBuilder.Entity("WPFComponents.DB.LogEntry", b =>
@@ -78,22 +81,18 @@ namespace WPFComponents.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Response")
-                        .HasMaxLength(1000)
+                    b.Property<string>("Resonse")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Result")
-                        .HasMaxLength(1000)
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("Timestamp")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Logs", (string)null);
+                    b.ToTable("Logs");
                 });
 
             modelBuilder.Entity("WPFComponents.DB.Scenario", b =>
@@ -112,7 +111,7 @@ namespace WPFComponents.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Scenarios", (string)null);
+                    b.ToTable("Scenarios");
                 });
 
             modelBuilder.Entity("SkyUtils.Command", b =>

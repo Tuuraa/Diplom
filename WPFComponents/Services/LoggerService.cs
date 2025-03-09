@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using WPFComponents.DB;
 
 namespace WPFComponents.Services
@@ -14,7 +15,7 @@ namespace WPFComponents.Services
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public void LogCommand(string commandText)
+        public async Task LogCommand(string commandText)
         {
             var log = new LogEntry { Command = commandText };
             _context.Logs.Add(log);

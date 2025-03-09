@@ -26,10 +26,14 @@ namespace WPFComponents.Model
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _llmService = llmService;
+            context.Database.EnsureCreated();
             var commands = context.Commands.ToList();
             var commandsMap = ConvertCommandsToMap(commands);
             var scenarios = context.Scenarios.ToList();
             var scenariosMap = ConvertScenariosToMap(scenarios);
+
+            var test = _logger.GetLogs();
+            var stop = 5;
 
             _commandMatcher = new CommandMatcher(commandsMap);
             _scenarioMatcher = new ScenarioMatcher(scenariosMap);
@@ -60,26 +64,6 @@ namespace WPFComponents.Model
             return map;
         }
 
-        //private Dictionary<string, Scenario> InitializeScenarios()
-        //{
-        //    var scenarios = new Dictionary<string, Scenario>();
-
-        //    var homeScenario = new Scenario
-        //    {
-        //        Name = "я дома",
-        //        Phrases = new List<string> { "я дома" },
-        //        Commands = new List<Command>
-        //        {
-        //            new Command { Action = new NewsShowCommand() },
-        //            new Command { Action = new OpenSiteCommand("https://habr.com/ru/flows/develop/news/") },
-        //            new Command { Action = new OpenAppCommand(@"C:\Users\ivank\AppData\Roaming\Telegram Desktop\Telegram.exe") }
-        //        }
-        //    };
-
-        //    scenarios[homeScenario.Name] = homeScenario;
-        //    return scenarios;
-        //}
-
         public async Task ProcessVoiceCommand(string recognizedPhrase)
         {
             try
@@ -88,6 +72,7 @@ namespace WPFComponents.Model
                 var commandResult = _commandMatcher.Match(recognizedPhrase);
                 if (commandResult.Confidence > 0.4)
                 {
+                    _logger.LogCommand(commandResult.Command.Name);
                     await ExecuteCommand(commandResult.Command, recognizedPhrase);
                     return;
                 }
@@ -95,18 +80,19 @@ namespace WPFComponents.Model
                 var scenarioResult = _scenarioMatcher.Match(recognizedPhrase);
                 if (scenarioResult.Confidence > 0.4)
                 {
+                    _logger.LogCommand("Вызов сценария" + scenarioResult.Scenario.Name);
                     await ExecuteScenario(scenarioResult.Scenario);
                     return;
                 }
 
-                _ = ProcessWithLLMAsync(recognizedPhrase);
+                //_ = ProcessWithLLMAsync(recognizedPhrase);
 
                 // Уведомление пользователя
                 //NotifyUser("Команда не распознана");
             }
             catch (Exception ex)
             {
-               // _logger.LogError($"Ошибка обработки команды: {ex.Message}");
+                _logger.LogCommand($"Ошибка обработки команды: {ex.Message}");
             }
         }
 

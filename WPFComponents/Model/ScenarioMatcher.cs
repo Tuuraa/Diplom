@@ -33,13 +33,13 @@ namespace WPFComponents.Model
             // Этап 2: Левенштейн для коротких фраз
             if (normalized.Length < 15)
             {
-                var levResult = _levenshteinMatcher.Match(normalized);
+                var levResult = _levenshteinMatcher.MatchScenario(normalized);
                 if (levResult.Confidence > 0.8f)
                     return levResult;
             }
 
             // Этап 3: TF-IDF
-            var tfidfResult = _tfidfMatcher.Match(normalized);
+            var tfidfResult = _tfidfMatcher.MatchScenario(normalized);
             if (tfidfResult.Confidence > 0.4f)
                 return tfidfResult;
 

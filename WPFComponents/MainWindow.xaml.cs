@@ -102,8 +102,6 @@ namespace WPFComponents
             //db.SaveChanges();
             #endregion
 
-            _db.Database.EnsureCreated();
-
             var stop = _db.Scenarios.ToList();
 
             var coms = _db.Commands.ToList();

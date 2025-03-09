@@ -132,8 +132,8 @@ namespace WPFComponents.Model
 
     public class LevenshteinMatcher : ICommandMatcher
     {
-        private readonly Dictionary<string, Command> _commands;
-        private readonly Dictionary<string, Scenario> _scenarios;
+        private readonly Dictionary<string, Command>? _commands;
+        private readonly Dictionary<string, Scenario>? _scenarios;
 
         public LevenshteinMatcher(Dictionary<string, Command> commands)
         {
@@ -156,6 +156,23 @@ namespace WPFComponents.Model
                 {
                     bestScore = score;
                     bestMatch = _commands[key];
+                }
+            }
+
+            return new MatchResult(bestMatch, bestScore);
+        }
+        public MatchResult MatchScenario(string phrase)
+        {
+            Scenario bestMatch = null;
+            float bestScore = 0;
+
+            foreach (var key in _scenarios.Keys)
+            {
+                var score = FastLevenshtein.GetSimilarity(phrase, key);
+                if (score > bestScore)
+                {
+                    bestScore = score;
+                    bestMatch = _scenarios[key];
                 }
             }
 
@@ -193,6 +210,23 @@ namespace WPFComponents.Model
             Command bestCommand = null;
 
             foreach (var (key, command) in _commands)
+            {
+                var score = _tfidf.CalculateSimilarity(phrase, key);
+                if (score > bestScore)
+                {
+                    bestScore = score;
+                    bestCommand = command;
+                }
+            }
+
+            return new MatchResult(bestCommand, bestScore);
+        }
+        public MatchResult MatchScenario(string phrase)
+        {
+            var bestScore = 0f;
+            Scenario bestCommand = null;
+
+            foreach (var (key, command) in _scenarios)
             {
                 var score = _tfidf.CalculateSimilarity(phrase, key);
                 if (score > bestScore)
