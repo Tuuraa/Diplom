@@ -1,4 +1,5 @@
 ﻿using H.NotifyIcon;
+using MaterialDesignThemes.Wpf;
 using Microsoft.Toolkit.Uwp.Notifications;
 using NAudio.CoreAudioApi;
 using NAudio.MediaFoundation;
@@ -45,8 +46,17 @@ namespace WPFComponents
             StartServer();
             _db = db;
             InitializeComponent();
+            Loaded += (sender, args) =>
+            {
+                Wpf.Ui.Appearance.SystemThemeWatcher.Watch(
+                    this,                                    // Window class
+                    Wpf.Ui.Controls.WindowBackdropType.Mica, // Background type
+                    true                                     // Whether to change accents automatically
+                );
+            };
             _taskbarIcon = this.TrayIcon;
             soundWave = new SoundWave(MyCanvas, waveLine);
+
 
             #region CommandsAddToDB
             //var wordAc = new PrintWordCommand("привет");
@@ -97,11 +107,6 @@ namespace WPFComponents
             var stop = _db.Scenarios.ToList();
 
             var coms = _db.Commands.ToList();
-
-            Nodify.Calculator.EditorView constuctor = new Nodify.Calculator.EditorView();
-            constuctor.Title = "Констуктор сценариев";
-            constuctor.CommandsUpdated += EditorView_CommandsUpdated;
-            constuctor.Show();
 
             //Nodify.Calculator.EditorView constuctor = new Nodify.Calculator.EditorView(coms);
             //constuctor.Title = "Конструктор с коммандами из БД";
@@ -154,16 +159,12 @@ namespace WPFComponents
             _db.Scenarios.Add(scenario);
             _db.SaveChanges();
         }
-
-
         private async void StartServer() => await socketServer.StartAsync("http://localhost:5001/");
-
         private async void OpenSettings(object sender, RoutedEventArgs e)
         {
             CommandRegister settingWindow = new();
             settingWindow.Show();
         }
-
         private void MinimizeToTray(object sender, RoutedEventArgs e)
         {
             _originalLeft = this.Left;
@@ -185,17 +186,10 @@ namespace WPFComponents
             this.BeginAnimation(Window.TopProperty, moveY);
             this.BeginAnimation(Window.OpacityProperty, fadeOut);
         }
-
         private void MediaElement_MediaFailed(object sender, ExceptionRoutedEventArgs e)
         {
             System.Windows.MessageBox.Show($"Ошибка воспроизведения видео: {e.ErrorException.Message}");
         }
-
-        private async void Button_Click_1(object sender, RoutedEventArgs e)
-        {
-            
-        }
-
         private void TrayIcon_TrayMouseDoubleClick(object sender, RoutedEventArgs e)
         {
             this.Visibility = Visibility.Visible;
@@ -216,12 +210,39 @@ namespace WPFComponents
             phoneConnectWindow.Show();
         }
 
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            Nodify.Calculator.EditorView constuctor = new Nodify.Calculator.EditorView();
+            constuctor.Title = "Констуктор сценариев";
+            constuctor.CommandsUpdated += EditorView_CommandsUpdated;
+            constuctor.Show();
+        }
+
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ButtonState == MouseButtonState.Pressed)
             {
                 this.DragMove();
             }
+        }
+        private void ThemeToggle_Checked(object sender, RoutedEventArgs e)
+        {
+            //Theme.Apply(ThemeType.Dark);
+            Wpf.Ui.Appearance.ApplicationThemeManager.Apply(
+              Wpf.Ui.Appearance.ApplicationTheme.Light, // Theme type
+              Wpf.Ui.Controls.WindowBackdropType.Mica,  // Background type
+              true                                      // Whether to change accents automatically
+            );
+
+        }
+
+        private void ThemeToggle_Unchecked(object sender, RoutedEventArgs e)
+        {
+            Wpf.Ui.Appearance.ApplicationThemeManager.Apply(
+              Wpf.Ui.Appearance.ApplicationTheme.Dark, // Theme type
+              Wpf.Ui.Controls.WindowBackdropType.Mica,  // Background type
+              true                                      // Whether to change accents automatically
+            );
         }
     }
 }

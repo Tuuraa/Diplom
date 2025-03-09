@@ -28,9 +28,25 @@
         </Grid.RowDefinitions>
 
         <Border CornerRadius="15" Grid.RowSpan="2"
-                Background="FloralWhite" />
+                Background="{DynamicResource ApplicationBackgroundBrush}" />
         <ui:SymbolIcon PreviewMouseDown="MinimizeToTray" Cursor="Hand" Symbol="DismissCircle12" FontSize="25" Margin="379,0,0,0"></ui:SymbolIcon>
         <ui:SymbolIcon PreviewMouseDown="SymbolIcon_PreviewMouseDown" Cursor="Hand" Symbol="Phone12" FontSize="25" Margin="350,0,41,0"></ui:SymbolIcon>
+        <ui:ToggleSwitch x:Name="ThemeToggle"
+                 Checked="ThemeToggle_Checked"
+                 Unchecked="ThemeToggle_Unchecked"
+                 Margin="10,8,0,0"
+                 VerticalAlignment="Top"
+                 RenderTransformOrigin="0.503,0.4">
+            <ui:ToggleSwitch.Content>
+                <StackPanel Orientation="Horizontal">
+                    <ui:SymbolIcon Symbol="WeatherMoon16" Width="20" Height="20"/>
+                </StackPanel>
+            </ui:ToggleSwitch.Content>
+        </ui:ToggleSwitch>
+
+
+
+
 
         <Grid Margin="10 0 10 20" Grid.Row="1" Cursor="">
             <Grid.RowDefinitions>
@@ -46,19 +62,19 @@
             </Grid.ColumnDefinitions>
 
             <TextBlock Margin="10 0 0 0" Text="SkyAI" FontSize="36" FontWeight="Bold" VerticalAlignment="Top"
-                       Foreground="Black" HorizontalAlignment="Left" Grid.Column="0"/>
+                       Foreground="{DynamicResource TextFillColorPrimaryBrush}" HorizontalAlignment="Left" Grid.Column="0"/>
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" 
                         VerticalAlignment="Top" Grid.Column="1" Margin="0,15,0,0">
                 <TextBlock Text="Settings" PreviewMouseDown="OpenSettings"
-                           Foreground="Black" FontSize="18" FontWeight="Bold" 
+                           Foreground="{DynamicResource TextFillColorPrimaryBrush}" FontSize="18" FontWeight="Bold" 
                            Margin="10,0,0,0" Cursor="Hand"/>
 
                 <TextBlock Text="Docs" Margin="10,0,0,0" Cursor="Hand"
-                           Foreground="Black" FontSize="18" FontWeight="Bold"/>
+                           Foreground="{DynamicResource TextFillColorPrimaryBrush}" FontSize="18" FontWeight="Bold"/>
             </StackPanel>
 
-            <Canvas x:Name="MyCanvas" Background="FloralWhite" 
+            <Canvas x:Name="MyCanvas" Background="{DynamicResource ApplicationBackgroundBrush}" 
                     Margin="40,40,31,10" Grid.Row="1" Grid.ColumnSpan="2">
                 <Polyline x:Name="waveLine" Stroke="Black" StrokeThickness="2" />
             </Canvas>
@@ -69,8 +85,8 @@
 
             <Grid Grid.Row="1" Grid.ColumnSpan="3" Cursor="" Margin="0,368,0,0" Grid.RowSpan="2">
 
-                <Image Source="pack://application:,,,/WPFComponents;component/Media/Icons/close_window.png" HorizontalAlignment="Left"
-                       Margin="15 0 0 0" Height="30" x:Name="isActiveMicro"/>
+                <!--<Image Source="pack://application:,,,/WPFComponents;component/Media/Icons/close_window.png" HorizontalAlignment="Left"
+                       Margin="15 0 0 0" Height="30" x:Name="isActiveMicro"/>-->
                 <TextBlock x:Name="devTeam" Text="Developed by ZXC Team" Foreground="Black"
                            FontWeight="Bold" VerticalAlignment="Center" 
                            HorizontalAlignment="Right" Margin="10"/>
@@ -78,8 +94,36 @@
             </Grid>
         </Grid>
         <tb:TaskbarIcon x:Name="TrayIcon"
-        TrayLeftMouseDoubleClick="TrayIcon_TrayMouseDoubleClick"
-        IconSource="Media/Icons/wave.ico"
-        ToolTipText="SkyAI" Margin="0,44,0,440" Grid.Row="1" />
+                MenuActivation="RightClick"
+                TrayLeftMouseDoubleClick="TrayIcon_TrayMouseDoubleClick"
+                IconSource="Media/Icons/wave.ico"
+                ToolTipText="SkyAI"
+                Margin="0,44,0,440"
+                Grid.Row="1">
+            <tb:TaskbarIcon.ContextMenu>
+                <ContextMenu Background="FloralWhite">
+                    <MenuItem Click="MenuItem_Click">
+                        <MenuItem.Header>
+                            <StackPanel Orientation="Horizontal">
+                                <Image Width="20" Height="20" Source="Media/Icons/wave.ico" Margin="0,0,5,0" />
+                                <TextBlock Foreground="Black" Text="Конструктор" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </MenuItem.Header>
+                        <MenuItem.Style>
+                            <Style TargetType="MenuItem">
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Setter Property="Padding" Value="5"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="LightGray"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </MenuItem.Style>
+                    </MenuItem>
+                    <MenuItem Header="Second Menu Item" />
+                </ContextMenu>
+            </tb:TaskbarIcon.ContextMenu>
+        </tb:TaskbarIcon>
     </Grid>
 </Window>
