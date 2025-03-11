@@ -100,6 +100,55 @@ namespace WPFComponents
             //db.Commands.Add(butpress);
             //db.Commands.Add(mouse);
             //db.SaveChanges();
+
+            //var moveRight = new MoveMouseCommand(200, 0, true, "MoveMouseCommand"); // Вправо
+            //var moveDown = new MoveMouseCommand(0, -200, true, "MoveMouseCommand");  // Вниз
+            //var moveLeft = new MoveMouseCommand(-200, 0, true, "MoveMouseCommand");  // Влево
+            //var moveUp = new MoveMouseCommand(0, 200, true, "MoveMouseCommand");
+
+            //var squareCommands = new List<Command>
+            //{
+            //    new Command
+            //    {
+            //        Name = "MoveRight",
+            //        Phrases = new List<string> { "Начни квадрат", "Вправо" },
+            //        Action = moveRight,
+            //        Type = moveRight.GetType().Name
+            //    },
+            //    new Command
+            //    {
+            //        Name = "MoveDown",
+            //        Phrases = new List<string> { "Вниз" },
+            //        Action = moveDown,
+            //        Type = moveDown.GetType().Name
+            //    },
+            //    new Command
+            //    {
+            //        Name = "MoveLeft",
+            //        Phrases = new List<string> { "Влево" },
+            //        Action = moveLeft,
+            //        Type = moveLeft.GetType().Name
+            //    },
+            //    new Command
+            //    {
+            //        Name = "MoveUp",
+            //        Phrases = new List<string> { "Вверх", "Закончить квадрат" },
+            //        Action = moveUp,
+            //        Type = moveUp.GetType().Name
+            //    }
+            //};
+
+            //_db.Commands.AddRange(squareCommands);
+            //Scenario test = new Scenario();
+            //test.Commands = new List<Command>();
+            //test.Commands.AddRange(squareCommands);
+            //test.Phrases = new List<string> { "Нарисуй квадрат" };
+            //test.Name = "Квадрат";
+
+            //_db.Scenarios.Add(test);
+
+            //_db.SaveChanges();
+
             #endregion
 
             var stop = _db.Scenarios.ToList();

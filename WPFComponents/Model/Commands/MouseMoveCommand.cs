@@ -1,9 +1,10 @@
-﻿using System.Runtime.CompilerServices;
+﻿using SkyUtils;
+using System;
 using System.Text.Json.Serialization;
+using System.Threading.Tasks;
 using System.Windows;
 using WindowsInput;
 using WindowsInput.Native;
-using SkyUtils;
 using WPFComponents.Model.Interfaces;
 
 namespace WPFComponents.Model.Commands
@@ -30,31 +31,37 @@ namespace WPFComponents.Model.Commands
 
         public bool CanExecute()
         {
-            // Проверяем, что координаты находятся в пределах допустимых значений экрана
-            return X >= 0 && Y >= 0;
+            return true;
         }
 
         public async Task Execute()
         {
             try
             {
-                // Перемещаем мышь на указанные координаты
-                _inputSimulator.Mouse.MoveMouseBy(X, Y);
+                var currentPos = System.Windows.Forms.Cursor.Position;
+                int startX = currentPos.X;
+                int startY = currentPos.Y;
 
-                // Выполняем клик, если указано в параметрах
+                int steps = 50; // Количество шагов для плавности
+                int delay = 10; // Задержка между шагами (мс)
+
                 if (Click)
                 {
-                    _inputSimulator.Mouse.LeftButtonClick();
-                    MessageBox.Show($"Мышь перемещена на ({X}, {Y}) и выполнен клик.");
+                    _inputSimulator.Mouse.LeftButtonDown();
                 }
-                else
+
+                _inputSimulator.Mouse.MoveMouseBy(X, Y);
+
+                if (Click)
                 {
-                    MessageBox.Show($"Мышь перемещена на ({X}, {Y}).");
+                    _inputSimulator.Mouse.LeftButtonUp();
                 }
+
+                //MessageBox.Show($"Мышь плавно перемещена на ({X}, {Y}){(Click ? " с зажатой кнопкой" : "")}.");
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка при перемещении мыши на ({X}, {Y}): {ex.Message}");
+                MessageBox.Show($"Ошибка при перемещении мыши: {ex.Message}");
             }
         }
     }

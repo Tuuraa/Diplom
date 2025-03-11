@@ -11,13 +11,16 @@ namespace WPFComponents.Model
 {
     public class ScenarioMatcher : IScenarioMatcher
     {
-        private readonly Dictionary<string, Scenario> _scenarios;
+        private readonly Dictionary<string, Scenario> _scenarios = new Dictionary<string, Scenario>(StringComparer.OrdinalIgnoreCase);
         private readonly LevenshteinMatcher _levenshteinMatcher;
         private readonly TfidfMatcher _tfidfMatcher;
 
         public ScenarioMatcher(Dictionary<string, Scenario> scenarios)
         {
-            _scenarios = scenarios;
+            foreach (var kvp in scenarios)
+            {
+                _scenarios[kvp.Key] = kvp.Value;
+            }
             _levenshteinMatcher = new LevenshteinMatcher(scenarios);
             _tfidfMatcher = new TfidfMatcher(scenarios);
         }

@@ -68,14 +68,18 @@ namespace WPFComponents.Model
     // Реализация CommandMatcher
     public class CommandMatcher : ICommandMatcher
     {
-        private readonly Dictionary<string, Command> _exactMatches;
+        private readonly Dictionary<string, Command> _exactMatches = new Dictionary<string, Command>(StringComparer.OrdinalIgnoreCase);
         private readonly LevenshteinMatcher _levenshteinMatcher;
         private readonly TfidfMatcher _tfidfMatcher;
 
         // Убрали зависимость от ILlmService из конструктора
         public CommandMatcher(Dictionary<string, Command> commands)
         {
-            _exactMatches = commands;
+            //_exactMatches = commands;
+            foreach (var kvp in commands)
+            {
+                _exactMatches[kvp.Key] = kvp.Value;
+            }
             _levenshteinMatcher = new LevenshteinMatcher(commands);
             _tfidfMatcher = new TfidfMatcher(commands);
         }
@@ -132,12 +136,16 @@ namespace WPFComponents.Model
 
     public class LevenshteinMatcher : ICommandMatcher
     {
-        private readonly Dictionary<string, Command>? _commands;
+        private readonly Dictionary<string, Command>? _commands = new Dictionary<string, Command>(StringComparer.OrdinalIgnoreCase);
         private readonly Dictionary<string, Scenario>? _scenarios;
 
         public LevenshteinMatcher(Dictionary<string, Command> commands)
         {
-            _commands = commands;
+            foreach (var kvp in commands)
+            {
+                _commands[kvp.Key] = kvp.Value;
+            }
+            //_commands = commands;
         }
         public LevenshteinMatcher(Dictionary<string, Scenario> scenarios)
         {

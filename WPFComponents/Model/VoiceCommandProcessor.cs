@@ -131,13 +131,13 @@ namespace WPFComponents.Model
         {
             try
             {
-                VirtualDesktop.Create().Switch();
+                //VirtualDesktop.Create().Switch();
                 //_logger.LogScenario(scenario.Name);
 
                 foreach (var command in scenario.Commands)
                 {
                     if (command.Action.CanExecute())
-                        Task.Run(() => command.Action.Execute());
+                        await Task.Run(() => command.Action.Execute());
                 }
             }
             catch (Exception ex)
