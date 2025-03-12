@@ -145,40 +145,40 @@ namespace WPFComponents
             //test.Phrases = new List<string> { "Нарисуй квадрат" };
             //test.Name = "Квадрат";
 
-            var circleCommands = new List<Command>();
+            //var circleCommands = new List<Command>();
 
-            int radius = 10; // Радиус круга
-            int steps = 36; // Количество шагов (чем больше, тем плавнее круг)
-            double angleStep = 2 * Math.PI / steps;
+            //int radius = 10; // Радиус круга
+            //int steps = 36; // Количество шагов (чем больше, тем плавнее круг)
+            //double angleStep = 2 * Math.PI / steps;
 
-            for (int i = 0; i < steps; i++)
-            {
-                int dx = (int)(radius * Math.Cos(i * angleStep));
-                int dy = (int)(radius * Math.Sin(i * angleStep));
+            //for (int i = 0; i < steps; i++)
+            //{
+            //    int dx = (int)(radius * Math.Cos(i * angleStep));
+            //    int dy = (int)(radius * Math.Sin(i * angleStep));
 
-                var moveCommand = new MoveMouseCommand(dx, dy, true, "MoveMouseCommand");
+            //    var moveCommand = new MoveMouseCommand(dx, dy, true, "MoveMouseCommand");
 
-                circleCommands.Add(new Command
-                {
-                    Name = $"MoveStep{i}",
-                    Phrases = new List<string> { $"Шаг {i}" },
-                    Action = moveCommand,
-                    Type = moveCommand.GetType().Name
-                });
-            }
+            //    circleCommands.Add(new Command
+            //    {
+            //        Name = $"MoveStep{i}",
+            //        Phrases = new List<string> { $"Шаг {i}" },
+            //        Action = moveCommand,
+            //        Type = moveCommand.GetType().Name
+            //    });
+            //}
 
-            Scenario circle = new Scenario();
-            circle.Commands = new List<Command>();
-            circle.Commands.AddRange(circleCommands);
-            circle.Phrases = new List<string> { "тест" };
-            circle.Name = "Круг";
+            //Scenario circle = new Scenario();
+            //circle.Commands = new List<Command>();
+            //circle.Commands.AddRange(circleCommands);
+            //circle.Phrases = new List<string> { "тест" };
+            //circle.Name = "Круг";
 
-            db.Scenarios.Add(circle);
+            //db.Scenarios.Add(circle);
 
 
             //_db.Scenarios.Add(test);
 
-            _db.SaveChanges();
+            //_db.SaveChanges();
 
             #endregion
 

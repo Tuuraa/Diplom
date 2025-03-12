@@ -68,6 +68,15 @@ namespace WPFComponents.Model
         {
             try
             {
+
+                var scenarioResult = _scenarioMatcher.Match(recognizedPhrase);
+                if (scenarioResult.Confidence > 0.4)
+                {
+                    _logger.LogCommand("Вызов сценария" + scenarioResult.Scenario.Name);
+                    await ExecuteScenario(scenarioResult.Scenario);
+                    return;
+                }
+
                 // Обработка локальных команд
                 var commandResult = _commandMatcher.Match(recognizedPhrase);
                 if (commandResult.Confidence > 0.4)
@@ -77,13 +86,7 @@ namespace WPFComponents.Model
                     return;
                 }
 
-                var scenarioResult = _scenarioMatcher.Match(recognizedPhrase);
-                if (scenarioResult.Confidence > 0.4)
-                {
-                    _logger.LogCommand("Вызов сценария" + scenarioResult.Scenario.Name);
-                    await ExecuteScenario(scenarioResult.Scenario);
-                    return;
-                }
+                
 
                 //_ = ProcessWithLLMAsync(recognizedPhrase);
 
