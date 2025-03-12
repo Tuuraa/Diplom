@@ -17,9 +17,11 @@
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
     <PackageReference Include="FuzzySharp" Version="2.0.2" />
+	  <Reference Include="H.InputSimulator, Version=1.0.0.0, Culture=neutral, PublicKeyToken=603f13207e65c17b">
+		  <Aliases>HInputSimulator</Aliases>
+	  </Reference>
     <PackageReference Include="H.NotifyIcon" Version="2.2.0" />
     <PackageReference Include="H.NotifyIcon.Wpf" Version="2.2.0" />
-    <PackageReference Include="InputSimulator" Version="1.0.4" />
     <PackageReference Include="MaterialDesignThemes" Version="5.1.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.10">
       <PrivateAssets>all</PrivateAssets>

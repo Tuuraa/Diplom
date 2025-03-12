@@ -56,8 +56,6 @@ namespace WPFComponents.Model.Commands
                 {
                     _inputSimulator.Mouse.LeftButtonUp();
                 }
-
-                //MessageBox.Show($"Мышь плавно перемещена на ({X}, {Y}){(Click ? " с зажатой кнопкой" : "")}.");
             }
             catch (Exception ex)
             {
