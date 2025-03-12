@@ -6,6 +6,9 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using WPFComponents.Services;
 using WPFComponents.DB;
+using Accord.MachineLearning;
+using Accord.Math;
+using Accord.Math.Distances;
 using SkyUtils;
 using Scenario = WPFComponents.DB.Scenario;
 
@@ -32,28 +35,6 @@ namespace WPFComponents.Model
         }
     }
 
-    // Класс для нормализации текста
-    public static class TextNormalizer
-    {
-        private static readonly Regex _cleanRegex = new Regex("[^а-яa-z0-9 ]", RegexOptions.Compiled);
-        private static readonly HashSet<string> _stopWords = new HashSet<string>
-        {
-        "пожалуйста", "найди", "сделай", "запусти", "открой", "мне", "нужно"
-        };
-
-        public static string Normalize(string input)
-        {
-            // Приведение к нижнему регистру и удаление спецсимволов
-            var cleaned = _cleanRegex.Replace(input.ToLowerInvariant(), " ");
-
-            // Удаление стоп-слов
-            var words = cleaned.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
-                .Where(w => !_stopWords.Contains(w));
-
-            return string.Join(" ", words);
-        }
-    }
-
     // Базовый класс для сопоставления команд
     public interface ICommandMatcher
     {
@@ -70,7 +51,7 @@ namespace WPFComponents.Model
     {
         private readonly Dictionary<string, Command> _exactMatches = new Dictionary<string, Command>(StringComparer.OrdinalIgnoreCase);
         private readonly LevenshteinMatcher _levenshteinMatcher;
-        private readonly TfidfMatcher _tfidfMatcher;
+        private readonly TfIdfMatcher _tfidfMatcher = new TfIdfMatcher();
 
         // Убрали зависимость от ILlmService из конструктора
         public CommandMatcher(Dictionary<string, Command> commands)
@@ -81,7 +62,7 @@ namespace WPFComponents.Model
                 _exactMatches[kvp.Key] = kvp.Value;
             }
             _levenshteinMatcher = new LevenshteinMatcher(commands);
-            _tfidfMatcher = new TfidfMatcher(commands);
+            _tfidfMatcher.AddCommands(commands.Values);
         }
 
         public MatchResult Match(string phrase)
@@ -185,66 +166,6 @@ namespace WPFComponents.Model
             }
 
             return new MatchResult(bestMatch, bestScore);
-        }
-    }
-
-    // Реализация матчера на TF-IDF
-    public class TfidfMatcher : ICommandMatcher
-    {
-        private readonly Dictionary<string, Command> _commands;
-        private readonly Dictionary<string, Scenario> _scenarios;
-        private readonly TfIdfProcessor _tfidf;
-
-        public TfidfMatcher(Dictionary<string, Command> commands)
-        {
-            _commands = commands;
-            _tfidf = new TfIdfProcessor();
-
-            foreach (var key in commands.Keys)
-                _tfidf.AddDocument(key);
-        }
-        public TfidfMatcher(Dictionary<string, Scenario> scenarios)
-        {
-            _scenarios = scenarios;
-            _tfidf = new TfIdfProcessor();
-
-            foreach (var key in scenarios.Keys)
-                _tfidf.AddDocument(key);
-        }
-
-        public MatchResult Match(string phrase)
-        {
-            var bestScore = 0f;
-            Command bestCommand = null;
-
-            foreach (var (key, command) in _commands)
-            {
-                var score = _tfidf.CalculateSimilarity(phrase, key);
-                if (score > bestScore)
-                {
-                    bestScore = score;
-                    bestCommand = command;
-                }
-            }
-
-            return new MatchResult(bestCommand, bestScore);
-        }
-        public MatchResult MatchScenario(string phrase)
-        {
-            var bestScore = 0f;
-            Scenario bestCommand = null;
-
-            foreach (var (key, command) in _scenarios)
-            {
-                var score = _tfidf.CalculateSimilarity(phrase, key);
-                if (score > bestScore)
-                {
-                    bestScore = score;
-                    bestCommand = command;
-                }
-            }
-
-            return new MatchResult(bestCommand, bestScore);
         }
     }
 }

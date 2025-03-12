@@ -13,17 +13,23 @@ namespace WPFComponents.Model
     {
         private readonly Dictionary<string, Scenario> _scenarios = new Dictionary<string, Scenario>(StringComparer.OrdinalIgnoreCase);
         private readonly LevenshteinMatcher _levenshteinMatcher;
-        private readonly TfidfMatcher _tfidfMatcher;
+        private readonly TfIdfMatcher _tfidfMatcher;
 
         public ScenarioMatcher(Dictionary<string, Scenario> scenarios)
         {
+            // Преобразуем Dictionary в IEnumerable<Scenario>
+            var scenarioList = scenarios.Values.ToList();
+
             foreach (var kvp in scenarios)
             {
                 _scenarios[kvp.Key] = kvp.Value;
             }
-            _levenshteinMatcher = new LevenshteinMatcher(scenarios);
-            _tfidfMatcher = new TfidfMatcher(scenarios);
+
+            _levenshteinMatcher = new LevenshteinMatcher(scenarios); // Если LevenshteinMatcher принимает Dictionary
+            _tfidfMatcher = new TfIdfMatcher();
+            _tfidfMatcher.AddScenarios(scenarioList); // Передаем список сценариев вместо словаря
         }
+
 
         public MatchResult Match(string phrase)
         {
@@ -42,7 +48,7 @@ namespace WPFComponents.Model
             }
 
             // Этап 3: TF-IDF
-            var tfidfResult = _tfidfMatcher.MatchScenario(normalized);
+            var tfidfResult = _tfidfMatcher.Match(normalized);
             if (tfidfResult.Confidence > 0.4f)
                 return tfidfResult;
 
