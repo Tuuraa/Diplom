@@ -1,4 +1,5 @@
 ﻿using Nodify.Calculator;
+using Nodify.Calculator.Commands;
 using SkyUtils;
 using System;
 using System.Collections.Generic;
@@ -20,11 +21,16 @@ namespace WPFComponents.Model.Utils
                 case CommandType.HideWindow:
                     return new HideWindowCommand();
                 case CommandType.MouseMove:
-                    return new MoveMouseCommand(100,100,false, "MoveMouseCommand");
+                    var mouseMoveOperation = operation as MouseMoveViewModel;
+                    if (mouseMoveOperation == null)
+                    {
+                        throw new InvalidOperationException("Operation is not of type MouseMoveViewModel.");
+                    }
+                    return new MoveMouseCommand(mouseMoveOperation.X, mouseMoveOperation.Y, mouseMoveOperation.Click, "MoveMouseCommand");
                 case CommandType.OpenSite:
                     return new OpenSiteCommand(operation.Parametr);
                 case CommandType.OpenApp:
-                    return new OpenAppCommand(operation.Parametr); 
+                    return new OpenAppCommand(operation.Parametr);
                 case CommandType.ScreenShot:
                     return new ScrennShotCommand();
                 default:
