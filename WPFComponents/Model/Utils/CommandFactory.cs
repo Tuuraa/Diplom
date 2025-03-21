@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Windows.Web.Syndication;
 using WPFComponents.Model.Commands;
 using CommandType = SkyUtils.CommandType;
 
@@ -33,6 +34,13 @@ namespace WPFComponents.Model.Utils
                     return new OpenAppCommand(operation.Parametr);
                 case CommandType.ScreenShot:
                     return new ScrennShotCommand();
+                case CommandType.DrawCircle:
+                    var circle = operation as DrawCircleViewModel;
+                    if(circle == null)
+                    {
+                        throw new InvalidOperationException("Operation is not of type DrawCircle.");
+                    }
+                    return new DrawCircleCommand(circle.Radius, "DrawCircleCommand");
                 default:
                     throw new ArgumentException("Invalid command type");
             }

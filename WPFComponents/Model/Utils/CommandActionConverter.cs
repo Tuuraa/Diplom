@@ -43,6 +43,9 @@ namespace WPFComponents.Model.Utils
                     return new PrintWordCommand(word);
                 case "HideWindowCommand":
                     return new HideWindowCommand();
+                case "DrawCircleCommand":
+                    int radius = jsonObject.GetProperty("Radius").GetInt32();
+                    return new DrawCircleCommand(radius, commandType);
                 default:
                     throw new Exception("Неизвестный тип команды");
             }
@@ -75,6 +78,9 @@ namespace WPFComponents.Model.Utils
                     break;
                 case OpenAppCommand openAppCommand:
                     writer.WriteString("PathToExe", openAppCommand.PathToExe);
+                    break;
+                case DrawCircleCommand drawCircleCommand:
+                    writer.WriteNumber("Radius", drawCircleCommand.Radius);
                     break;
                 default:
                     throw new NotSupportedException($"Тип команды '{value.GetType()}' не поддерживается для сериализации.");
