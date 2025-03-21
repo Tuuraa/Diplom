@@ -29,7 +29,12 @@ namespace WPFComponents.Model.Utils
                     }
                     return new MoveMouseCommand(mouseMoveOperation.X, mouseMoveOperation.Y, mouseMoveOperation.Click, "MoveMouseCommand");
                 case CommandType.OpenSite:
-                    return new OpenSiteCommand(operation.Parametr);
+                    var openSiteOperation = operation as OpenSiteViewModel;
+                    if(openSiteOperation == null)
+                    {
+                        throw new InvalidOperationException("a");
+                    }
+                    return new OpenSiteCommand(openSiteOperation.Url);
                 case CommandType.OpenApp:
                     return new OpenAppCommand(operation.Parametr);
                 case CommandType.ScreenShot:

@@ -139,8 +139,8 @@ namespace WPFComponents.Model
 
                 foreach (var command in scenario.Commands)
                 {
-                    if (command.Action.CanExecute())
-                        await Task.Run(() => command.Action.Execute());
+                    if (command.Action.CanExecute()) await command.Action.Execute();
+                    //await Task.Run(() => command.Action.Execute()); //паралельность
                 }
             }
             catch (Exception ex)

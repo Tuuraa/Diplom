@@ -11,10 +11,10 @@ namespace WPFComponents.Model.Commands
 {
     internal class OpenSiteCommand : ICommandAction
     {
-        private Uri _uri {  get; set; }
+        public string Url {  get; set; }
 
         public OpenSiteCommand(string uri) { 
-            _uri = new Uri(uri);
+            Url = uri;
         }
 
         public bool CanExecute()
@@ -26,7 +26,7 @@ namespace WPFComponents.Model.Commands
         {
             ProcessStartInfo psi = new ProcessStartInfo
             {
-                FileName = _uri.AbsoluteUri,
+                FileName = new Uri(Url).AbsoluteUri,
                 UseShellExecute = true // Это позволит системе открыть URL в браузере по умолчанию
             };
 

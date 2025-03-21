@@ -46,6 +46,9 @@ namespace WPFComponents.Model.Utils
                 case "DrawCircleCommand":
                     int radius = jsonObject.GetProperty("Radius").GetInt32();
                     return new DrawCircleCommand(radius, commandType);
+                case "OpenSiteCommand":
+                    string url = jsonObject.GetProperty("Url").GetString() ?? string.Empty;
+                    return new OpenSiteCommand(url);
                 default:
                     throw new Exception("Неизвестный тип команды");
             }
@@ -81,6 +84,9 @@ namespace WPFComponents.Model.Utils
                     break;
                 case DrawCircleCommand drawCircleCommand:
                     writer.WriteNumber("Radius", drawCircleCommand.Radius);
+                    break;
+                case OpenSiteCommand openSiteCommand:
+                    writer.WriteString("Url", openSiteCommand.Url);
                     break;
                 default:
                     throw new NotSupportedException($"Тип команды '{value.GetType()}' не поддерживается для сериализации.");
