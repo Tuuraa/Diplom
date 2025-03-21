@@ -3,10 +3,51 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:WPFComponents.View"
+        xmlns:local="clr-namespace:WPFComponents.ViewModel"
         mc:Ignorable="d"
-        Title="PhoneConnectWindow" Height="450" Width="282">
-    <Grid>
-        <Image x:Name="QRCodeImage" Margin="0,75,0,74" />
+        Title="Phone Connect" Height="450" Width="300">
+
+    <Window.DataContext>
+        <local:PhoneConnectWindowVM />
+    </Window.DataContext>
+
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- QR-код -->
+        <Image Grid.Row="1" Width="200" Height="200" Source="{Binding QrCodeImage}" />
+
+        <!-- Выбор градиента -->
+        <ListBox Grid.Row="2" ItemsSource="{Binding GradientOptions}" 
+         SelectedItem="{Binding SelectedGradient, Mode=TwoWay}"
+         Height="60"
+         ScrollViewer.HorizontalScrollBarVisibility="Auto"
+         Background="Transparent"
+         BorderThickness="0">
+
+            <!-- Панель для горизонтального отображения -->
+            <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel Orientation="Horizontal"/>
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
+
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Border Width="20" Height="20" Margin="5" CornerRadius="5">
+                        <Border.Background>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                <GradientStop Color="{Binding Color1}" Offset="0"/>
+                                <GradientStop Color="{Binding Color2}" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Border.Background>
+                    </Border>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
     </Grid>
 </Window>
