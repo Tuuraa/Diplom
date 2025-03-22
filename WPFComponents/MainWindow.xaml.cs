@@ -215,7 +215,7 @@ namespace WPFComponents
 
         }
 
-        private void EditorView_CommandsUpdated(List<OperationViewModel> updatedCommands,string name, string phrase)
+        private async void EditorView_CommandsUpdated(List<OperationViewModel> updatedCommands,string name, string phrase)
         {
             List<ICommandAction> actions = new List<ICommandAction>();
             List<Command> commands = new List<Command>();
@@ -236,6 +236,7 @@ namespace WPFComponents
             scenario.Commands = commands;
             _db.Scenarios.Add(scenario);
             _db.SaveChanges();
+            await _voiceCommandProcessor.UpdateMaps();
         }
         private async void StartServer() => await socketServer.StartAsync("http://localhost:5001/");
         private async void OpenSettings(object sender, RoutedEventArgs e)

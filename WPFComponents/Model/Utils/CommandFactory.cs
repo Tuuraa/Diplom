@@ -15,7 +15,7 @@ namespace WPFComponents.Model.Utils
     {
         public static ICommandAction CreateCommand(CommandType commandType, OperationViewModel operation)
         {
-            switch (commandType)
+            switch (operation.CommandType)
             {
                 case CommandType.ButtonPress:
                     return new PressKeyCommand("K", "PressKeyCommand");

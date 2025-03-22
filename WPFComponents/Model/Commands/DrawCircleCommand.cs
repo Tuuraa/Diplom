@@ -41,15 +41,34 @@ namespace WPFComponents.Model.Commands
                 int steps = 100; // Количество шагов для рисования круга
                 double angleIncrement = 2 * Math.PI / steps; // Угол между шагами
 
+                // Начинаем рисовать круг без сдвигов
                 _inputSimulator.Mouse.LeftButtonDown();
 
+                // Рисуем круг
                 for (int i = 0; i <= steps; i++)
                 {
                     double angle = i * angleIncrement;
                     int x = (int)(centerX + Radius * Math.Cos(angle));
                     int y = (int)(centerY + Radius * Math.Sin(angle));
 
-                    _inputSimulator.Mouse.MoveMouseTo(x, y);
+                    // Перемещаем курсор относительно текущего положения
+                    int deltaX = x - currentPos.X;
+                    int deltaY = y - currentPos.Y;
+
+                    // Если это первая итерация, не сдвигаем курсор, а сразу начинаем рисовать
+                    if (i == 0)
+                    {
+                        // Начинаем с того места, где курсор есть сейчас, без сдвига
+                        currentPos = new System.Drawing.Point(x, y);
+                    }
+                    else
+                    {
+                        // Перемещаем курсор относительно текущей позиции
+                        _inputSimulator.Mouse.MoveMouseBy(deltaX, deltaY);
+                    }
+
+                    // Обновляем текущую позицию
+                    currentPos = new System.Drawing.Point(x, y);
 
                     await Task.Delay(10); // Задержка для плавности
                 }

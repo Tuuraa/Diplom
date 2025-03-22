@@ -24,7 +24,7 @@ namespace WPFComponents.Model.Commands
         {
             CommandType = commandType;
             X = x;
-            Y = y;
+            Y = -y;
             Click = click;
             _inputSimulator = new InputSimulator();
         }

@@ -1,5 +1,6 @@
 ﻿using H.NotifyIcon;
 using SkyUtils;
+using System.Runtime.CompilerServices;
 using System.Windows.Controls.Primitives;
 using WindowsDesktop;
 using WPFComponents.Model.Commands;
@@ -13,11 +14,12 @@ namespace WPFComponents.Model
 {
     public class VoiceCommandProcessor
     {
-        private readonly CommandMatcher _commandMatcher;
-        private readonly ScenarioMatcher _scenarioMatcher;
-        private readonly LLMActionService _llmService;
-        private readonly LoggerService _logger;
+        private CommandMatcher _commandMatcher;
+        private ScenarioMatcher _scenarioMatcher;
+        private LLMActionService _llmService;
+        private LoggerService _logger;
         public TaskbarIcon? TrayIcon;
+        private readonly ApplicationContext context;
 
         public VoiceCommandProcessor(
             LoggerService logger,
@@ -27,6 +29,18 @@ namespace WPFComponents.Model
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _llmService = llmService;
             context.Database.EnsureCreated();
+            var commands = context.Commands.ToList();
+            var commandsMap = ConvertCommandsToMap(commands);
+            var scenarios = context.Scenarios.ToList();
+            var scenariosMap = ConvertScenariosToMap(scenarios);
+            this.context = context;
+
+            _commandMatcher = new CommandMatcher(commandsMap);
+            _scenarioMatcher = new ScenarioMatcher(scenariosMap);
+        }
+
+        public async Task UpdateMaps()
+        {
             var commands = context.Commands.ToList();
             var commandsMap = ConvertCommandsToMap(commands);
             var scenarios = context.Scenarios.ToList();
