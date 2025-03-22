@@ -1,5 +1,8 @@
 ﻿using H.NotifyIcon;
 using System.Collections.Frozen;
+using System.Drawing;
+using System.IO;
+using System.Net.WebSockets;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Input;
@@ -32,8 +35,8 @@ namespace WPFComponents
             InitializeComponent();
 
             //todo снеси нахуй если не надо
-            var markdownView = new MarkdownView();
-            markdownView.Show();
+            //var markdownView = new MarkdownView();
+            //markdownView.Show();
 
             _db = db;
             _taskbarIcon = this.TrayIcon;
@@ -88,11 +91,11 @@ namespace WPFComponents
 
             Nodify.Calculator.MainWindow mainWindow = new Nodify.Calculator.MainWindow(new List<SkyUtils.Command>());
             mainWindow.Title = "Констуктор с общими командами";
-            mainWindow.Show();
+            //mainWindow.Show();
 
             Nodify.Calculator.MainWindow constuctor = new Nodify.Calculator.MainWindow(coms);
             constuctor.Title = "Конструктор с коммандами из БД";
-            constuctor.Show();
+            //constuctor.Show();
 
             _voiceCommandProcessor = processor;
             _voiceCommandProcessor.TrayIcon = _taskbarIcon;
@@ -108,7 +111,8 @@ namespace WPFComponents
             {
                 { "success_wake_word", (_) => soundWave.StartMicrophone() },
                 // Примеры
-                { "mobile_init", (_) => {} },
+                { "mobile_init", (_) => System.Windows.MessageBox.Show("FLUTTER INIT") },
+                { "send_screen", async (_) => { await socketServer.SendAsync(await SendScreen()); } },
                 { "mobile_msg", (_) => {} },
             });
 
@@ -124,10 +128,29 @@ namespace WPFComponents
 
         }
 
+        private async Task<byte[]> SendScreen()
+        {
+            Rectangle bound = Screen.PrimaryScreen.Bounds;
+
+            using (Bitmap bitmap = new Bitmap(bound.Width, bound.Height))
+            {
+                using (Graphics g = Graphics.FromImage(bitmap))
+                {
+                    g.CopyFromScreen(System.Drawing.Point.Empty, System.Drawing.Point.Empty, bound.Size);
+                }
+
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    bitmap.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                    return ms.ToArray();
+                }
+            }
+        }
+
         private async void StartServer()
         {
             socketServer = new WebSocketServer();
-            await socketServer.StartAsync("http://localhost:5001/");
+            await socketServer.StartAsync("http://192.168.31.165:5001/");
         }
 
         private async void OpenSettings(object sender, RoutedEventArgs e)

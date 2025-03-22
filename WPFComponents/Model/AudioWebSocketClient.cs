@@ -9,6 +9,7 @@ class WebSocketServer
 {
     private HttpListener _httpListener;
     public event Action<string> OnTextReceived;
+    private WebSocket webSocket;
 
     public async Task StartAsync(string url)
     {
@@ -22,7 +23,7 @@ class WebSocketServer
             var context = await _httpListener.GetContextAsync();
             if (context.Request.IsWebSocketRequest)
             {
-                WebSocket webSocket = null;
+                webSocket = null;
                 try
                 {
                     var webSocketContext = await context.AcceptWebSocketAsync(null);
@@ -74,6 +75,28 @@ class WebSocketServer
         {
             Console.WriteLine("Error: " + ex.Message);
         }
+    }
+
+    public async Task SendAsync(string message)
+    {
+        if (webSocket == null || webSocket.State != WebSocketState.Open)
+        {
+            throw new InvalidOperationException("WebSocket соединение не активно.");
+        }
+
+        var buffer = Encoding.UTF8.GetBytes(message);
+        await webSocket.SendAsync(new ArraySegment<byte>(buffer), WebSocketMessageType.Text, true, CancellationToken.None);
+    }
+
+
+    public async Task SendAsync(byte[] data)
+    {
+        if (webSocket == null || webSocket.State != WebSocketState.Open)
+        {
+            throw new InvalidOperationException("WebSocket соединение не активно.");
+        }
+
+        await webSocket.SendAsync(new ArraySegment<byte>(data), WebSocketMessageType.Binary, true, CancellationToken.None);
     }
 
     public void Stop()
