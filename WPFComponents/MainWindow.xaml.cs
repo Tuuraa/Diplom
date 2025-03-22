@@ -6,7 +6,9 @@ using NAudio.MediaFoundation;
 using NAudio.Wave;
 using Nodify.Calculator;
 using SkyUtils;
+using System.Collections.Frozen;
 using System.Collections.ObjectModel;
+using System.Drawing;
 using System.IO;
 using System.Net.WebSockets;
 using System.Windows;
@@ -277,10 +279,10 @@ namespace WPFComponents
         private async void StartServer()
         {
             socketServer = new WebSocketServer();
-            await socketServer.StartAsync("http://192.168.31.165:5001/");
+            await socketServer.StartAsync("http://192.168.0.15:5001/");
         }
 
-        private async void StartServer() => await socketServer.StartAsync("http://192.168.0.15:5001/");
+        //private async void StartServer() => await socketServer.StartAsync("http://192.168.0.15:5001/");
         private async void OpenSettings(object sender, RoutedEventArgs e)
         {
             CommandRegister settingWindow = new();
