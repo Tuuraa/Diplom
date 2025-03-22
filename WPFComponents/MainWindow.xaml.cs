@@ -253,7 +253,7 @@ namespace WPFComponents
                 System.Windows.MessageBox.Show("Ошибка добавления сценария");
             }
         }
-        private async void StartServer() => await socketServer.StartAsync("http://localhost:5001/");
+        private async void StartServer() => await socketServer.StartAsync("http://192.168.0.15:5001/");
         private async void OpenSettings(object sender, RoutedEventArgs e)
         {
             CommandRegister settingWindow = new();
