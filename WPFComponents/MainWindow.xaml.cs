@@ -10,6 +10,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -217,26 +218,40 @@ namespace WPFComponents
 
         private async void EditorView_CommandsUpdated(List<OperationViewModel> updatedCommands,string name, string phrase)
         {
-            List<ICommandAction> actions = new List<ICommandAction>();
-            List<Command> commands = new List<Command>();
-            foreach (var command in updatedCommands)
+            try
             {
-                var action = CommandFactory.CreateCommand((SkyUtils.CommandType)command.CommandType, command);
-                Command new_command = new Command();
-                new_command.Id = 0;
-                new_command.Name = "Temp";
-                new_command.Action = action;
-                new_command.Type = action.GetType().Name;
-                new_command.Phrases = new List<string>();
-                commands.Add(new_command);
+                List<ICommandAction> actions = new List<ICommandAction>();
+                List<Command> commands = new List<Command>();
+                foreach (var command in updatedCommands)
+                {
+                    var action = CommandFactory.CreateCommand((SkyUtils.CommandType)command.CommandType, command);
+                    Command new_command = new Command();
+                    new_command.Id = 0;
+                    new_command.Name = "Temp";
+                    new_command.Action = action;
+                    new_command.Type = action.GetType().Name;
+                    new_command.Phrases = new List<string>();
+                    commands.Add(new_command);
+                }
+                Scenario scenario = new Scenario();
+                scenario.Name = name;
+                scenario.Phrases = new List<string> { phrase };
+                scenario.Commands = commands;
+                _db.Scenarios.Add(scenario);
+                _db.SaveChanges();
+                await _voiceCommandProcessor.UpdateMaps();
+                FancyBalloon balloon = new FancyBalloon($"Сценарий {name} успешно добавлен");
+                balloon.AgreeClicked += (sender, e) =>
+                {
+                    TrayIcon.CloseBalloon();
+                };
+
+                TrayIcon.ShowCustomBalloon(balloon, PopupAnimation.Fade, 50000);
             }
-            Scenario scenario = new Scenario();
-            scenario.Name = name;
-            scenario.Phrases = new List<string> { phrase };
-            scenario.Commands = commands;
-            _db.Scenarios.Add(scenario);
-            _db.SaveChanges();
-            await _voiceCommandProcessor.UpdateMaps();
+            catch
+            {
+                System.Windows.MessageBox.Show("Ошибка добавления сценария");
+            }
         }
         private async void StartServer() => await socketServer.StartAsync("http://localhost:5001/");
         private async void OpenSettings(object sender, RoutedEventArgs e)

@@ -15,7 +15,7 @@ namespace WPFComponents.Model.Utils
     {
         public static ICommandAction CreateCommand(CommandType commandType, OperationViewModel operation)
         {
-            switch (operation.CommandType)
+            switch (commandType)
             {
                 case CommandType.ButtonPress:
                     return new PressKeyCommand("K", "PressKeyCommand");
@@ -30,9 +30,9 @@ namespace WPFComponents.Model.Utils
                     return new MoveMouseCommand(mouseMoveOperation.X, mouseMoveOperation.Y, mouseMoveOperation.Click, "MoveMouseCommand");
                 case CommandType.OpenSite:
                     var openSiteOperation = operation as OpenSiteViewModel;
-                    if(openSiteOperation == null)
+                    if (openSiteOperation == null)
                     {
-                        throw new InvalidOperationException("a");
+                        throw new InvalidOperationException("Operation is not of type OpenSiteViewModel.");
                     }
                     return new OpenSiteCommand(openSiteOperation.Url);
                 case CommandType.OpenApp:
@@ -41,11 +41,18 @@ namespace WPFComponents.Model.Utils
                     return new ScrennShotCommand();
                 case CommandType.DrawCircle:
                     var circle = operation as DrawCircleViewModel;
-                    if(circle == null)
+                    if (circle == null)
                     {
                         throw new InvalidOperationException("Operation is not of type DrawCircle.");
                     }
                     return new DrawCircleCommand(circle.Radius, "DrawCircleCommand");
+                case CommandType.DrawSquare:
+                    var square = operation as DrawSquareViewModel;
+                    if (square == null)
+                    {
+                        throw new InvalidOperationException("Operation is not of type DrawSquare.");
+                    }
+                    return new DrawSquareCommand(square.SideLength, "DrawSquareCommand");
                 default:
                     throw new ArgumentException("Invalid command type");
             }

@@ -3,17 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using WPFComponents.Model.Commands;
+using WPFComponents.Model.Interfaces;
+using SkyUtils;
 
 namespace WPFComponents.Model.Utils
 {
-    using SkyUtils;
-    using System;
-    using System.Text.Json;
-    using System.Text.Json.Serialization;
-    using System.Windows;
-    using WPFComponents.Model.Commands;
-    using WPFComponents.Model.Interfaces;
-
     public class CommandActionConverter : JsonConverter<ICommandAction>
     {
         public override ICommandAction? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
@@ -24,13 +21,11 @@ namespace WPFComponents.Model.Utils
             switch (commandType)
             {
                 case "OpenAppCommand":
-                    //return JsonSerializer.Deserialize<OpenAppCommand>(jsonObject.GetRawText(), options);
                     string path = jsonObject.GetProperty("PathToExe").GetString();
                     return new OpenAppCommand(path);
                 case "NewsShowCommand":
                     return JsonSerializer.Deserialize<NewsShowCommand>(jsonObject.GetRawText(), options);
                 case "MoveMouseCommand":
-                    //return JsonSerializer.Deserialize<MoveMouseCommand>(jsonObject.GetRawText(), options);
                     int x = jsonObject.GetProperty("X").GetInt32();
                     int y = jsonObject.GetProperty("Y").GetInt32();
                     bool click = jsonObject.GetProperty("Click").GetBoolean();
@@ -49,6 +44,11 @@ namespace WPFComponents.Model.Utils
                 case "OpenSiteCommand":
                     string url = jsonObject.GetProperty("Url").GetString() ?? string.Empty;
                     return new OpenSiteCommand(url);
+                case "DrawSquareCommand": 
+                    int sideLength = jsonObject.GetProperty("SideLength").GetInt32();
+                    return new DrawSquareCommand(sideLength, commandType);
+                case "ScrennShotCommand":
+                    return new ScrennShotCommand();
                 default:
                     throw new Exception("Неизвестный тип команды");
             }
@@ -64,10 +64,8 @@ namespace WPFComponents.Model.Utils
             {
                 case PressKeyCommand pressKeyCommand:
                     writer.WriteString("key", pressKeyCommand.Key);
-                    //JsonSerializer.Serialize(writer, pressKeyCommand, options);
                     break;
-                case NewsShowCommand newsShowcommand:
-                    //JsonSerializer.Serialize(writer, newsShowcommand, options);
+                case NewsShowCommand newsShowCommand:
                     break;
                 case MoveMouseCommand moveMouseCommand:
                     writer.WriteNumber("X", moveMouseCommand.X);
@@ -88,11 +86,15 @@ namespace WPFComponents.Model.Utils
                 case OpenSiteCommand openSiteCommand:
                     writer.WriteString("Url", openSiteCommand.Url);
                     break;
+                case DrawSquareCommand drawSquareCommand: 
+                    writer.WriteNumber("SideLength", drawSquareCommand.SideLength);
+                    break;
+                case ScrennShotCommand scrennShotCommand:
+                    break;
                 default:
                     throw new NotSupportedException($"Тип команды '{value.GetType()}' не поддерживается для сериализации.");
             }
             writer.WriteEndObject();
         }
     }
-
 }

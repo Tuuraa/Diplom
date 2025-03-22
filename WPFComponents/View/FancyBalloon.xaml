@@ -6,19 +6,72 @@
              xmlns:local="clr-namespace:WPFComponents.View"
              mc:Ignorable="d" 
              d:DesignHeight="120" d:DesignWidth="300">
-    <Border BorderBrush="Black" BorderThickness="2" Background="FloralWhite" Padding="10">
-        <Grid>
-            <TextBlock x:Name="MessageTextBlock" FontSize="14" VerticalAlignment="Top" TextWrapping="Wrap" Height="44" Margin="0,10,0,0"/>
-            <Button x:Name="AgreeButton" Content="Согласен" Width="100" Height="30" Click="AgreeButton_Click" Margin="176,62,0,0" VerticalAlignment="Top" Foreground="Black">
-                <Button.Background>
-                    <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.ActiveCaptionTextColorKey}}"/>
-                </Button.Background>
-                <Button.BorderBrush>
-                    <LinearGradientBrush EndPoint="0,3" MappingMode="Absolute">
-                        <GradientStop Color="#18FFFFFF" Offset="0.33"/>
-                        <GradientStop Offset="0.625" Color="{DynamicResource {x:Static SystemColors.ActiveBorderColorKey}}"/>
+    <UserControl.Resources>
+        <!-- Стиль для текста -->
+        <Style x:Key="MessageTextStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="Margin" Value="0,10,0,0"/>
+            <Setter Property="Foreground" Value="#DCDCDC"/>
+        </Style>
+
+        <!-- Стиль для кнопки с закругленными углами -->
+        <Style x:Key="AgreeButtonStyle" TargetType="Button">
+            <Setter Property="Width" Value="120"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Background">
+                <Setter.Value>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                        <GradientStop Color="#FF4A90E2" Offset="0"/>
+                        <GradientStop Color="#FF356AC1" Offset="1"/>
                     </LinearGradientBrush>
-                </Button.BorderBrush>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Margin" Value="90,62,0,0"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Self}}" Value="True">
+                    <DataTrigger.EnterActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <ColorAnimation To="#FF356AC1" Storyboard.TargetProperty="(Button.Background).(GradientBrush.GradientStops)[1].Color" Duration="0:0:0.3"/>
+                                <ColorAnimation To="#FF4A90E2" Storyboard.TargetProperty="(Button.Background).(GradientBrush.GradientStops)[0].Color" Duration="0:0:0.3"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </DataTrigger.EnterActions>
+                    <DataTrigger.ExitActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <ColorAnimation To="#FF4A90E2" Storyboard.TargetProperty="(Button.Background).(GradientBrush.GradientStops)[1].Color" Duration="0:0:0.3"/>
+                                <ColorAnimation To="#FF356AC1" Storyboard.TargetProperty="(Button.Background).(GradientBrush.GradientStops)[0].Color" Duration="0:0:0.3"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </DataTrigger.ExitActions>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+
+    <!-- Темный фон с закругленными углами -->
+    <Border BorderBrush="Black" BorderThickness="2" Background="#2C3E50" Padding="10" CornerRadius="12">
+        <Grid>
+            <TextBlock x:Name="MessageTextBlock" Style="{StaticResource MessageTextStyle}" Height="44"/>
+            <Button x:Name="AgreeButton" Content="Согласен" Style="{StaticResource AgreeButtonStyle}" Click="AgreeButton_Click" Margin="146,54,10,0">
+                <Button.Template>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" CornerRadius="20">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
             </Button>
         </Grid>
     </Border>

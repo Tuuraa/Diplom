@@ -15,5 +15,6 @@ namespace SkyUtils
         OpenApp,
         ScreenShot,
         DrawCircle,
+        DrawSquare,
     }
 }
