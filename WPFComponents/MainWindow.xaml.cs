@@ -8,15 +8,13 @@ using Nodify.Calculator;
 using SkyUtils;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Net.WebSockets;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Forms;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Animation;
-using System.Windows.Media.Imaging;
-using WPFComponents.DB;
 using WPFComponents.Model;
 using WPFComponents.Model.Commands;
 using WPFComponents.Model.Utils;
@@ -39,13 +37,14 @@ namespace WPFComponents
         private TaskbarIcon _taskbarIcon;
 
         private VoiceCommandProcessor _voiceCommandProcessor;
-        WebSocketServer socketServer = new WebSocketServer();
+        private WebSocketServer socketServer;
+        private WebsocketMessageController<string> websocketController;
         private SoundWave soundWave;
+        private FrozenDictionary<string, Action<string>> _messageHandlers;
 
         public MainWindow(VoiceCommandProcessor processor, DB.ApplicationContext db)
         {
             StartServer();
-            _db = db;
             InitializeComponent();
             Loaded += (sender, args) =>
             {
@@ -183,34 +182,38 @@ namespace WPFComponents
 
             #endregion
 
-            var stop = _db.Scenarios.ToList();
-
-            var coms = _db.Commands.ToList();
 
             //Nodify.Calculator.EditorView constuctor = new Nodify.Calculator.EditorView(coms);
             //constuctor.Title = "Конструктор с коммандами из БД";
+            _db.Database.EnsureCreated();
             //constuctor.Show();
 
             _voiceCommandProcessor = processor;
             _voiceCommandProcessor.TrayIcon = _taskbarIcon;
             //_voiceCommandProcessor.RegisterCommand(coms);
 
+            websocketController = new WebsocketMessageController<string>(async msg =>
+            {
+                await _voiceCommandProcessor.ProcessVoiceCommand(msg);
+                soundWave.StopMicrophone();
+            });
+
+            websocketController.RegisterMessageHandler(new Dictionary<string, Action<string>>
+            {
+                { "success_wake_word", (_) => soundWave.StartMicrophone() },
+                // Примеры
+                { "mobile_init", (_) => System.Windows.MessageBox.Show("FLUTTER INIT") },
+                { "send_screen", async (_) => { await socketServer.SendAsync(await SendScreen()); } },
+                { "mobile_msg", (_) => {} },
+            });
+
+            _messageHandlers = websocketController.MessageHandlers;
+
             socketServer.OnTextReceived += (message) =>
             {
                 Dispatcher.Invoke(() =>
                 {
-                    if (message == "success")
-                    {
-                        soundWave.StartMicrophone();
-                        //SetImgConfig(isActiveMicro, location + "micro_on.png", height: 22);
-                    }
-                    else
-                    {
-                        _voiceCommandProcessor.ProcessVoiceCommand(message);
-                        soundWave.StopMicrophone();
-                        //SetImgConfig(isActiveMicro, location + "micro_off.png");
-                    }
-
+                    websocketController.ExecuteAction(message, message);
                 });
             };
 
@@ -245,14 +248,38 @@ namespace WPFComponents
                 {
                     TrayIcon.CloseBalloon();
                 };
-
-                TrayIcon.ShowCustomBalloon(balloon, PopupAnimation.Fade, 50000);
+                        TrayIcon.ShowCustomBalloon(balloon, PopupAnimation.Fade, 50000);
             }
             catch
             {
                 System.Windows.MessageBox.Show("Ошибка добавления сценария");
             }
         }
+        private async Task<byte[]> SendScreen()
+        {
+            Rectangle bound = Screen.PrimaryScreen.Bounds;
+
+            using (Bitmap bitmap = new Bitmap(bound.Width, bound.Height))
+            {
+                using (Graphics g = Graphics.FromImage(bitmap))
+                {
+                    g.CopyFromScreen(System.Drawing.Point.Empty, System.Drawing.Point.Empty, bound.Size);
+                }
+
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    bitmap.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                    return ms.ToArray();
+                }
+            }
+        }
+
+        private async void StartServer()
+        {
+            socketServer = new WebSocketServer();
+            await socketServer.StartAsync("http://192.168.31.165:5001/");
+        }
+
         private async void StartServer() => await socketServer.StartAsync("http://192.168.0.15:5001/");
         private async void OpenSettings(object sender, RoutedEventArgs e)
         {
@@ -267,7 +294,7 @@ namespace WPFComponents
             var screenWidth = SystemParameters.WorkArea.Width;
             var screenHeight = SystemParameters.WorkArea.Height;
 
-            var trayLeft = screenWidth - 50; // Перемещение в угол экрана
+            var trayLeft = screenWidth - 50;
             var trayTop = screenHeight - 10;
 
             var moveX = new DoubleAnimation(this.Left, trayLeft, TimeSpan.FromSeconds(0.5));

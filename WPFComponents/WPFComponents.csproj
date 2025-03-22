@@ -56,6 +56,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\markdig\src\Markdig\Markdig.csproj" />
     <ProjectReference Include="..\nodify\Examples\Nodify.Calculator\Nodify.Calculator.csproj" />
     <ProjectReference Include="..\SkyUtils\SkyUtils.csproj" />
   </ItemGroup>
