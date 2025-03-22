@@ -47,6 +47,8 @@ namespace WPFComponents
         public MainWindow(VoiceCommandProcessor processor, DB.ApplicationContext db)
         {
             StartServer();
+            _db = db;
+            _voiceCommandProcessor = processor;
             InitializeComponent();
             Loaded += (sender, args) =>
             {
