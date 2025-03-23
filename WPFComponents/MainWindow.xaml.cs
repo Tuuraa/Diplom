@@ -187,8 +187,6 @@ namespace WPFComponents
             #endregion
 
 
-            //Nodify.Calculator.EditorView constuctor = new Nodify.Calculator.EditorView(coms);
-            //constuctor.Title = "Конструктор с коммандами из БД";
             _db.Database.EnsureCreated();
             //constuctor.Show();
 
@@ -207,8 +205,8 @@ namespace WPFComponents
                 { "success_wake_word", (_) => soundWave.StartMicrophone() },
                 // Примеры
                 { "mobile_init", (_) => System.Windows.MessageBox.Show("FLUTTER INIT") },
-                { "send_screen", async (_) => { await socketServer.SendAsync(await SendScreen()); } },
-                { "mobile_msg", (_) => {} },
+                { "send_screen", async (_) => { await socketServer.BroadcastAsync(await SendScreen()); } },
+                { "mobile_msg", async (msg) => {await _voiceCommandProcessor.ProcessVoiceCommand(msg); } },
             });
 
             _messageHandlers = websocketController.MessageHandlers;
