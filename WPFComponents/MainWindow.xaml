@@ -28,7 +28,9 @@
         </Grid.RowDefinitions>
 
         <Border CornerRadius="15" Grid.RowSpan="2"
-                Background="{DynamicResource ApplicationBackgroundBrush}" />
+                Background="{DynamicResource ApplicationBackgroundBrush}" >
+            
+        </Border>
         <ui:SymbolIcon PreviewMouseDown="MinimizeToTray" Cursor="Hand" Symbol="DismissCircle12" FontSize="25" Margin="379,0,0,0"></ui:SymbolIcon>
         <ui:SymbolIcon PreviewMouseDown="SymbolIcon_PreviewMouseDown" Cursor="Hand" Symbol="Phone12" FontSize="25" Margin="350,0,41,0"></ui:SymbolIcon>
         <ui:ToggleSwitch x:Name="ThemeToggle"
@@ -83,15 +85,16 @@
                      TextWrapping="Wrap" Margin="20,0,11,20"
                      VerticalAlignment="Bottom" SelectionOpacity="0" Visibility="Hidden" Grid.ColumnSpan="2" Grid.Row="1"/>
 
-            <Grid Grid.Row="1" Grid.ColumnSpan="3" Cursor="" Margin="0,368,0,0" Grid.RowSpan="2">
+            <Grid Grid.Row="1" Grid.ColumnSpan="3" Cursor="" Margin="0,368,0,0" Grid.RowSpan="2" HorizontalAlignment="Left" Width="400">
 
                 <!--<Image Source="pack://application:,,,/WPFComponents;component/Media/Icons/close_window.png" HorizontalAlignment="Left"
                        Margin="15 0 0 0" Height="30" x:Name="isActiveMicro"/>-->
                 <TextBlock x:Name="devTeam" Text="Developed by ZXC Team" Foreground="Black"
                            FontWeight="Bold" VerticalAlignment="Center" 
                            HorizontalAlignment="Right" Margin="10"/>
-
+                <ui:Button x:Name="button" Content="Микро" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,200,0" Click="button_Click"/>
             </Grid>
+            
         </Grid>
         <tb:TaskbarIcon x:Name="TrayIcon"
                 MenuActivation="RightClick"

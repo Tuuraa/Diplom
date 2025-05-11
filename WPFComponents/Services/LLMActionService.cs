@@ -14,7 +14,7 @@ namespace WPFComponents.Services
     {
         private readonly string apiUrl = "https://openrouter.ai/api/v1/chat/completions";
         private readonly string apiKey = "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";
-        private readonly string model = "mistralai/mistral-small-24b-instruct-2501:free";
+        private readonly string model = "google/gemini-2.0-flash-thinking-exp:free";
 
         public async Task<string> GenerateCodeAsync(string userCommand)
         {

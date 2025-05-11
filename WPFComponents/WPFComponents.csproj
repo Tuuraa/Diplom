@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <PackageReference Include="Accord.MachineLearning" Version="3.8.0" />
+    <PackageReference Include="AssemblyAI" Version="1.2.2" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
     <PackageReference Include="FuzzySharp" Version="2.0.2" />
 	  <Reference Include="H.InputSimulator, Version=1.0.0.0, Culture=neutral, PublicKeyToken=603f13207e65c17b">

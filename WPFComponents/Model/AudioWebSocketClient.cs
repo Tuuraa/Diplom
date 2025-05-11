@@ -17,36 +17,36 @@ class WebSocketServer
     {
         _httpListener = new HttpListener();
         _httpListener.Prefixes.Add(url);
-        _httpListener.Start();
+        //_httpListener.Start();
 
         Console.WriteLine("WebSocket сервер запущен.");
 
-        while (true)
-        {
-            var context = await _httpListener.GetContextAsync();
-            if (context.Request.IsWebSocketRequest)
-            {
-                try
-                {
-                    var webSocketContext = await context.AcceptWebSocketAsync(null);
-                    var webSocket = webSocketContext.WebSocket;
+        //while (true)
+        //{
+        //    var context = await _httpListener.GetContextAsync();
+        //    if (context.Request.IsWebSocketRequest)
+        //    {
+        //        try
+        //        {
+        //            var webSocketContext = await context.AcceptWebSocketAsync(null);
+        //            var webSocket = webSocketContext.WebSocket;
 
-                    _clients.Add(webSocket);
-                    Console.WriteLine($"Новое WebSocket-подключение. Всего подключений: {_clients.Count}");
+        //            _clients.Add(webSocket);
+        //            Console.WriteLine($"Новое WebSocket-подключение. Всего подключений: {_clients.Count}");
 
-                    _ = HandleWebSocketConnection(webSocket);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("Ошибка при установке соединения: " + ex.Message);
-                }
-            }
-            else
-            {
-                context.Response.StatusCode = 400;
-                context.Response.Close();
-            }
-        }
+        //            _ = HandleWebSocketConnection(webSocket);
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            Console.WriteLine("Ошибка при установке соединения: " + ex.Message);
+        //        }
+        //    }
+        //    else
+        //    {
+        //        context.Response.StatusCode = 400;
+        //        context.Response.Close();
+        //    }
+        //}
     }
 
     private async Task HandleWebSocketConnection(WebSocket webSocket)

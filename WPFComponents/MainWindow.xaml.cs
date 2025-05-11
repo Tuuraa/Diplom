@@ -203,7 +203,6 @@ namespace WPFComponents
             websocketController.RegisterMessageHandler(new Dictionary<string, Action<string>>
             {
                 { "success_wake_word", (_) => soundWave.StartMicrophone() },
-                // Примеры
                 { "mobile_init", (_) => System.Windows.MessageBox.Show("FLUTTER INIT") },
                 { "send_screen", async (_) => { await socketServer.BroadcastAsync(await SendScreen()); } },
                 { "mobile_msg", async (msg) => {await _voiceCommandProcessor.ProcessVoiceCommand(msg); } },
@@ -250,7 +249,7 @@ namespace WPFComponents
                 {
                     TrayIcon.CloseBalloon();
                 };
-                        TrayIcon.ShowCustomBalloon(balloon, PopupAnimation.Fade, 50000);
+                TrayIcon.ShowCustomBalloon(balloon, PopupAnimation.Fade, 50000);
             }
             catch
             {
@@ -279,7 +278,7 @@ namespace WPFComponents
         private async void StartServer()
         {
             socketServer = new WebSocketServer();
-            await socketServer.StartAsync("http://192.168.0.15:5001/");
+            await socketServer.StartAsync("http://192.168.250.196:5001/");
         }
 
         //private async void StartServer() => await socketServer.StartAsync("http://192.168.0.15:5001/");
@@ -357,6 +356,15 @@ namespace WPFComponents
               true                                      // Whether to change accents automatically
             );
 
+        }
+
+        private async void button_Click(object sender, RoutedEventArgs e)
+        {
+            var recorder = new SpeechRecorder();
+            string apiKey = "5f2606b39c874474928b318ac794a963";
+            string result = await recorder.RecordAndTranscribeAsync(5, apiKey);
+
+            var stop = 5;
         }
 
         private void ThemeToggle_Unchecked(object sender, RoutedEventArgs e)
