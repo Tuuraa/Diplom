@@ -11,7 +11,7 @@ namespace WPFComponents.ViewModel
 {
     class CommandRegisterVM : INotifyPropertyChanged
     {
-        private readonly string _settingsPath = "C:\\Users\\turap\\source\\repos\\Diplom\\WPFComponents\\settings.json";
+        private readonly string _settingsPath = "C:\\DiplomUI\\WPFComponents\\settings.json";
         private Dictionary<string, bool?> _settings;
 
         private ObservableCollection<SettingControlItem> settingControlItems;
@@ -33,47 +33,34 @@ namespace WPFComponents.ViewModel
 
         public CommandRegisterVM()
         {
-            //string json = File.ReadAllText(_settingsPath);
+            string json = File.ReadAllText(_settingsPath);
 
-            //_settings = JsonConvert.DeserializeObject<Dictionary<string, bool?>>(json);
+            _settings = JsonConvert.DeserializeObject<Dictionary<string, bool?>>(json);
 
-            ////_settingControl = settingControl;
-            //SettingControlItems = new ObservableCollection<SettingControlItem>
-            //(
-            //    new[]
-            //    {
-            //        new SettingControlItem("Открывать сценарии на новом рабочем столе", "Описание 1", _settings["OpenInVD"])
-            //        {
-            //            action = () =>
-            //            {
-            //                MessageBox.Show("Открывать сценарии на новом рабочем столе");
-            //            },
-            //            SettingTitle="OpenInVD"
-            //        },
-            //        new SettingControlItem("Запустить steam", "Описание 2", _settings["OpenSteam"])
-            //        {
-            //            action = () =>
-            //            {
-            //                Task.Run(() =>
-            //                {
-            //                    Process.Start(new ProcessStartInfo(
-            //                        fileName:"D:\\Steam\\steam.exe"
-            //                    ));
-            //                });
-            //            },
-            //            SettingTitle="OpenSteam"
-            //        },
-            //        new SettingControlItem("FanzyZones", "Описание 3", true),
-            //        new SettingControlItem("File Lock Smith", "Описание 4", true),
-            //        new SettingControlItem("Host File Editor", "Описание 5", true)
-            //    }
+            //_settingControl = settingControl;
+            SettingControlItems = new ObservableCollection<SettingControlItem>
+            (
+                new[]
+                {
+                    new SettingControlItem("Открывать сценарии на новом рабочем столе", "Описание 1", _settings["OpenInVD"])
+                    {
+                        action = () =>
+                        {
+                            MessageBox.Show("Открывать сценарии на новом рабочем столе");
+                        },
+                        SettingTitle="OpenInVD"
+                    },
+                    new SettingControlItem("FanzyZones", "Описание 3", true),
+                    new SettingControlItem("File Lock Smith", "Описание 4", true),
+                    new SettingControlItem("Host File Editor", "Описание 5", true)
+                }
 
-            //);
+            );
 
-            //foreach (var item in SettingControlItems)
-            //{
-            //    item.PropertyChanged += OnSettingItemPropertyChanged;
-            //}
+            foreach (var item in SettingControlItems)
+            {
+                item.PropertyChanged += OnSettingItemPropertyChanged;
+            }
 
         }
 

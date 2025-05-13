@@ -8,6 +8,7 @@ using Nodify.Calculator;
 using SkyUtils;
 using System.Collections.Frozen;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Net.WebSockets;
@@ -279,7 +280,7 @@ namespace WPFComponents
         private async void StartServer()
         {
             socketServer = new WebSocketServer();
-            await socketServer.StartAsync("http://192.168.0.15:5001/");
+            await socketServer.StartAsync("http://192.168.229.196:5001/");
         }
 
         //private async void StartServer() => await socketServer.StartAsync("http://192.168.0.15:5001/");
@@ -287,6 +288,24 @@ namespace WPFComponents
         {
             CommandRegister settingWindow = new();
             settingWindow.Show();
+        }
+        private async void OpenDocs(object sender, RoutedEventArgs e)
+        {
+            var url = "https://github.com/Tuuraa/Diplom";
+            try
+            {
+                ProcessStartInfo psi = new ProcessStartInfo
+                {
+                    FileName = url,
+                    UseShellExecute = true
+                };
+                Process.Start(psi);
+            }
+            catch (Exception ex)
+            {
+                
+            }
+
         }
         private void MinimizeToTray(object sender, RoutedEventArgs e)
         {

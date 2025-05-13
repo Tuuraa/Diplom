@@ -61,18 +61,29 @@
     </UserControl.Resources>
 
     <!-- Темный фон с закругленными углами -->
-    <Border BorderBrush="Black" BorderThickness="2" Background="#2C3E50" Padding="10" CornerRadius="12">
+    <Border BorderBrush="Black" BorderThickness="2" Background="{DynamicResource ApplicationBackgroundBrush}" Padding="10" CornerRadius="12">
         <Grid>
-            <TextBlock x:Name="MessageTextBlock" Style="{StaticResource MessageTextStyle}" Height="44"/>
-            <Button x:Name="AgreeButton" Content="Согласен" Style="{StaticResource AgreeButtonStyle}" Click="AgreeButton_Click" Margin="146,54,10,0">
+            <TextBlock TextTrimming="CharacterEllipsis" x:Name="MessageTextBlock" Style="{StaticResource MessageTextStyle}" Height="51" Margin="0,10,0,0"/>
+            <Button Width="50" Height="20"
+        x:Name="AgreeButton"
+        Content="Ок"
+        FontSize="10"
+        Style="{StaticResource AgreeButtonStyle}"
+        Click="AgreeButton_Click"
+        Margin="216,66,10,0">
                 <Button.Template>
                     <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" CornerRadius="20">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <Border Background="{TemplateBinding Background}"
+                    BorderBrush="{TemplateBinding BorderBrush}"
+                    BorderThickness="1"
+                    CornerRadius="5">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                  VerticalAlignment="Center"/>
                         </Border>
                     </ControlTemplate>
                 </Button.Template>
             </Button>
+
         </Grid>
     </Border>
 </UserControl>

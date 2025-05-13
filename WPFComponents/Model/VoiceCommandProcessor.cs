@@ -86,26 +86,24 @@ namespace WPFComponents.Model
                 var scenarioResult = _scenarioMatcher.Match(recognizedPhrase);
                 if (scenarioResult.Confidence > 0.4)
                 {
-                    _logger.LogCommand("Вызов сценария" + scenarioResult.Scenario.Name);
+                    _logger.LogCommand("Вызов сценария " + scenarioResult.Scenario.Name);
                     await ExecuteScenario(scenarioResult.Scenario);
                     return;
                 }
 
                 // Обработка локальных команд
                 var commandResult = _commandMatcher.Match(recognizedPhrase);
-                if (commandResult.Confidence > 0.4)
+                if (commandResult.Confidence > 0.6)
                 {
                     _logger.LogCommand(commandResult.Command.Name);
                     await ExecuteCommand(commandResult.Command, recognizedPhrase);
                     return;
                 }
 
-                
-
-                //_ = ProcessWithLLMAsync(recognizedPhrase);
+                //await ProcessWithLLMAsync(recognizedPhrase);
 
                 // Уведомление пользователя
-                //NotifyUser("Команда не распознана");
+                NotifyUser("Команда не распознана");
             }
             catch (Exception ex)
             {

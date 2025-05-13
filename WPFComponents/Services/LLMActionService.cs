@@ -13,8 +13,8 @@ namespace WPFComponents.Services
     public class LLMActionService
     {
         private readonly string apiUrl = "https://openrouter.ai/api/v1/chat/completions";
-        private readonly string apiKey = "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";
-        private readonly string model = "mistralai/mistral-small-24b-instruct-2501:free";
+        private readonly string apiKey = "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";
+        private readonly string model = "qwen/qwen-2.5-7b-instruct:free";
 
         public async Task<string> GenerateCodeAsync(string userCommand)
         {
@@ -58,35 +58,35 @@ namespace WPFComponents.Services
                 }
             }
         }
-            public async Task ExecuteGeneratedCodeAsync(string code)
+        public async Task ExecuteGeneratedCodeAsync(string code)
+        {
+            if (string.IsNullOrWhiteSpace(code))
             {
-                if (string.IsNullOrWhiteSpace(code))
-                {
-                    Console.WriteLine("Ошибка: нет кода для выполнения.");
-                    return;
-                }
+                Console.WriteLine("Ошибка: нет кода для выполнения.");
+                return;
+            }
 
-                // Если это CMD код
-                if (code.StartsWith("```cmd") || code.Contains("mkdir") || code.Contains("echo") || code.Contains("del"))
-                {
-                    await ExecuteCmdAsync(code);
-                }
-                // Если это Python код
-                else if (code.Contains("```python") || code.Contains("import"))
-                {
-                    await ExecutePythonAsync(code);
-                }
-                else
-                {
-                    Console.WriteLine("Ошибка: неподдерживаемый формат кода.");
-                }
+            // Если это CMD код
+            if (code.StartsWith("```cmd") || code.Contains("mkdir") || code.Contains("echo") || code.Contains("del"))
+            {
+                await ExecuteCmdAsync(code);
+            }
+            // Если это Python код
+            else if (code.Contains("```python") || code.Contains("import"))
+            {
+                await ExecutePythonAsync(code);
+            }
+            else
+            {
+                Console.WriteLine("Ошибка: неподдерживаемый формат кода.");
+            }
         }
 
         private async Task ExecuteCmdAsync(string cmdCode)
         {
             try
             {
-                cmdCode = cmdCode.Replace("```cmd","");
+                cmdCode = cmdCode.Replace("```cmd", "");
                 cmdCode = cmdCode.Replace("```", "");
                 var processStartInfo = new ProcessStartInfo
                 {
@@ -94,7 +94,7 @@ namespace WPFComponents.Services
                     Arguments = $"/C {cmdCode}",
                     RedirectStandardOutput = true,
                     UseShellExecute = false,
-                    CreateNoWindow = true
+                    CreateNoWindow = false
                 };
 
                 using (var process = Process.Start(processStartInfo))
@@ -146,6 +146,6 @@ namespace WPFComponents.Services
             {
                 Console.WriteLine("Ошибка при выполнении Python скрипта: " + ex.Message);
             }
+        }
     }
-}
 }
