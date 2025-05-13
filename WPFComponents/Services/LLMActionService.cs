@@ -13,8 +13,8 @@ namespace WPFComponents.Services
     public class LLMActionService
     {
         private readonly string apiUrl = "https://openrouter.ai/api/v1/chat/completions";
-        private readonly string apiKey = "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";
-        private readonly string model = "google/gemini-2.0-flash-thinking-exp:free";
+        private readonly string apiKey = "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";
+        private readonly string model = "qwen/qwen-2.5-7b-instruct:free";
 
         public async Task<string> GenerateCodeAsync(string userCommand)
         {
@@ -94,7 +94,7 @@ namespace WPFComponents.Services
                     Arguments = $"/C {cmdCode}",
                     RedirectStandardOutput = true,
                     UseShellExecute = false,
-                    CreateNoWindow = true
+                    CreateNoWindow = false
                 };
 
                 using (var process = Process.Start(processStartInfo))

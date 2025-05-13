@@ -16,6 +16,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Forms;
 using System.Windows.Input;
+using System.Windows.Interop;
 using System.Windows.Media.Animation;
 using WPFComponents.Model;
 using WPFComponents.Model.Commands;
@@ -360,11 +361,13 @@ namespace WPFComponents
 
         private async void button_Click(object sender, RoutedEventArgs e)
         {
+            soundWave.StartMicrophone();
             var recorder = new SpeechRecorder();
             string apiKey = "5f2606b39c874474928b318ac794a963";
             string result = await recorder.RecordAndTranscribeAsync(5, apiKey);
+            soundWave.StopMicrophone();
 
-            var stop = 5;
+            await _voiceCommandProcessor.ProcessVoiceCommand(result);
         }
 
         private void ThemeToggle_Unchecked(object sender, RoutedEventArgs e)

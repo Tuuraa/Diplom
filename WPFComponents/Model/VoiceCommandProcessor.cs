@@ -102,10 +102,10 @@ namespace WPFComponents.Model
 
                 
 
-                //_ = ProcessWithLLMAsync(recognizedPhrase);
+                await ProcessWithLLMAsync(recognizedPhrase);
 
                 // Уведомление пользователя
-                //NotifyUser("Команда не распознана");
+                await NotifyUserAsync("Команда не распознана");
             }
             catch (Exception ex)
             {
