@@ -36,10 +36,10 @@
                        TextWrapping="Wrap" Margin="10,5,10,0" 
                        Grid.Row="1" Grid.ColumnSpan="2"/>
 
-            <Button Content="Запуск" Background="#4d4d4d" 
+            <!--<Button Content="Запуск" Background="#4d4d4d" 
                     Foreground="White" HorizontalAlignment="Stretch" 
                     Height="30" VerticalAlignment="Center" Grid.ColumnSpan="2"
-                    Grid.Row="2" Cursor="Hand" Margin="10" Command="{Binding Command}"/>
+                    Grid.Row="2" Cursor="Hand" Margin="10" Command="{Binding Command}"/>-->
         </Grid>
     </Border>
 </UserControl>

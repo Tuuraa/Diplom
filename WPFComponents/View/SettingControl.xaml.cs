@@ -10,7 +10,6 @@ namespace WPFComponents.View
         public SettingControl()
         {
             InitializeComponent();
-            //DataContext = new SettingControlVM(new SettingControlItem(Header, Description, isEnable));
         }
     }
 }

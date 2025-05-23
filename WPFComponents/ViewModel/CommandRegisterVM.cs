@@ -1,90 +1,72 @@
-﻿using Newtonsoft.Json;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics;
-using System.IO;
-using System.Windows;
-using System.Windows.Input;
 using WPFComponents.Model;
 
 namespace WPFComponents.ViewModel
 {
-    class CommandRegisterVM : INotifyPropertyChanged
+    public class CommandRegisterVM : INotifyPropertyChanged
     {
-        private readonly string _settingsPath = "C:\\DiplomUI\\WPFComponents\\settings.json";
-        private Dictionary<string, bool?> _settings;
+        public ObservableCollection<SettingTab> Tabs { get; set; }
 
-        private ObservableCollection<SettingControlItem> settingControlItems;
-        public ObservableCollection<SettingControlItem> SettingControlItems
+        private int _selectedTabIndex;
+        public int SelectedTabIndex
         {
-            get => settingControlItems;
+            get => _selectedTabIndex;
             set
             {
-                settingControlItems = value;
-                OnPropertyChanged(nameof(SettingControlItems));
+                if (_selectedTabIndex != value)
+                {
+                    _selectedTabIndex = value;
+                    OnPropertyChanged(nameof(SelectedTabIndex));
+                    OnPropertyChanged(nameof(SelectedTab));
+                }
             }
         }
 
-        public void ExecuteClosingCommand()
-        {
-            string json = JsonConvert.SerializeObject(_settings, Formatting.Indented);
-            File.WriteAllText(_settingsPath, json);
-        }
+        public SettingTab SelectedTab => Tabs[SelectedTabIndex];
 
         public CommandRegisterVM()
         {
-            string json = File.ReadAllText(_settingsPath);
-
-            _settings = JsonConvert.DeserializeObject<Dictionary<string, bool?>>(json);
-
-            //_settingControl = settingControl;
-            SettingControlItems = new ObservableCollection<SettingControlItem>
-            (
-                new[]
-                {
-                    new SettingControlItem("Открывать сценарии на новом рабочем столе", "Описание 1", _settings["OpenInVD"])
-                    {
-                        action = () =>
-                        {
-                            MessageBox.Show("Открывать сценарии на новом рабочем столе");
-                        },
-                        SettingTitle="OpenInVD"
-                    },
-                    new SettingControlItem("FanzyZones", "Описание 3", true),
-                    new SettingControlItem("File Lock Smith", "Описание 4", true),
-                    new SettingControlItem("Host File Editor", "Описание 5", true)
-                }
-
-            );
-
-            foreach (var item in SettingControlItems)
+            Tabs = new ObservableCollection<SettingTab>
             {
-                item.PropertyChanged += OnSettingItemPropertyChanged;
-            }
-
-        }
-
-        private void OnSettingItemPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(SettingControlItem.isEnabled))
-            {
-                var item = sender as SettingControlItem;
-
-                // Обновляем значение в словаре
-                if (_settings.ContainsKey(item.SettingTitle))
+                new("Общее", new()
                 {
-                    _settings[item.SettingTitle] = item.isEnabled;
-                }
-            }
-
-            ExecuteClosingCommand();
+                    new("Открывать в виртуальном рабочем столе", "Запуск сценариев в отдельном экране", true),
+                    new("Показывать уведомления", "Отображать всплывающие уведомления", false),
+                    new("Отправка логов", "Анонимная отправка логов", false)
+                }),
+                new("Нейросеть", new()
+                {
+                    new("Локальная модель", "Использовать локальную версию ИИ", false),
+                    new("GPU ускорение", "Ускорение с помощью видеокарты", true)
+                }),
+                new("Команды", new()
+                {
+                    new("Автосохранение", "Сохранять команды при изменениях", true)
+                }),
+                new("Прочее", new()
+                {
+                    new("Режим разработчика", "Куча крутых фишек", false),
+                    new("Версия", "Номер сборки альфа 0.001", false),
+                    new("Разработчики", "ZXC Team", false),
+                })
+            };
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
+        protected void OnPropertyChanged(string propertyName)
+            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
 
-        protected virtual void OnPropertyChanged(string propertyName)
+    public class SettingTab
+    {
+        public string Name { get; set; }
+        public ObservableCollection<SettingControlItem> Settings { get; set; }
+
+        public SettingTab(string name, ObservableCollection<SettingControlItem> settings)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            Name = name;
+            Settings = settings;
         }
     }
 }

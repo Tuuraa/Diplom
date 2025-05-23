@@ -12,12 +12,15 @@
 
   <ItemGroup>
     <None Remove="Media\Icons\wave.ico" />
+    <None Remove="Media\idle.gif" />
+    <None Remove="Media\start.gif" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Accord.MachineLearning" Version="3.8.0" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
     <PackageReference Include="FuzzySharp" Version="2.0.2" />
+    <PackageReference Include="WpfAnimatedGif" Version="2.0.2" />
 	  <Reference Include="H.InputSimulator, Version=1.0.0.0, Culture=neutral, PublicKeyToken=603f13207e65c17b">
 		  <Aliases>HInputSimulator</Aliases>
 	  </Reference>
@@ -62,6 +65,8 @@
 
   <ItemGroup>
     <Resource Include="Media\Icons\wave.ico" />
+    <Resource Include="Media\idle.gif" />
+    <Resource Include="Media\start.gif" />
   </ItemGroup>
 
   <ItemGroup>

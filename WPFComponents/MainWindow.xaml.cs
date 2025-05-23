@@ -18,6 +18,8 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media.Animation;
+using System.Windows.Media.Imaging;
+using WpfAnimatedGif;
 using WPFComponents.Model;
 using WPFComponents.Model.Commands;
 using WPFComponents.Model.Utils;
@@ -51,6 +53,11 @@ namespace WPFComponents
             _db = db;
             _voiceCommandProcessor = processor;
             InitializeComponent();
+
+            var imageUri = new Uri("C:\\DiplomUI\\WPFComponents\\Media\\idle.gif");
+            var image = new BitmapImage(imageUri);
+            ImageBehavior.SetAnimatedSource(this.gifImage, image);
+
             Loaded += (sender, args) =>
             {
                 Wpf.Ui.Appearance.SystemThemeWatcher.Watch(
@@ -61,6 +68,7 @@ namespace WPFComponents
             };
             _taskbarIcon = this.TrayIcon;
             soundWave = new SoundWave(MyCanvas, waveLine);
+            MyCanvas.Visibility = Visibility.Collapsed;
 
 
             #region CommandsAddToDB
@@ -197,13 +205,15 @@ namespace WPFComponents
 
             websocketController = new WebsocketMessageController<string>(async msg =>
             {
+                FadeOut(MyCanvas);
                 await _voiceCommandProcessor.ProcessVoiceCommand(msg);
                 soundWave.StopMicrophone();
+                FadeIn(this.gifImage);
             });
 
             websocketController.RegisterMessageHandler(new Dictionary<string, Action<string>>
             {
-                { "success_wake_word", (_) => soundWave.StartMicrophone() },
+                { "success_wake_word", (_) => StartListen() },
                 // Примеры
                 { "mobile_init", (_) => System.Windows.MessageBox.Show("FLUTTER INIT") },
                 { "send_screen", async (_) => { await socketServer.BroadcastAsync(await SendScreen()); } },
@@ -221,6 +231,46 @@ namespace WPFComponents
             };
 
         }
+
+        private void StartListen()
+        {
+            FadeOut(this.gifImage);
+            soundWave.StartMicrophone();
+            FadeIn(MyCanvas);
+        }
+
+        private void FadeIn(UIElement element, double durationSeconds = 0.5)
+        {
+            element.Visibility = Visibility.Visible;
+
+            var fadeIn = new DoubleAnimation
+            {
+                From = 0,
+                To = 1,
+                Duration = TimeSpan.FromSeconds(durationSeconds),
+                FillBehavior = FillBehavior.HoldEnd
+            };
+            element.BeginAnimation(UIElement.OpacityProperty, fadeIn);
+        }
+
+        private void FadeOut(UIElement element, double durationSeconds = 0.5)
+        {
+            var fadeOut = new DoubleAnimation
+            {
+                From = 1,
+                To = 0,
+                Duration = TimeSpan.FromSeconds(durationSeconds),
+                FillBehavior = FillBehavior.HoldEnd
+            };
+
+            fadeOut.Completed += (s, e) =>
+            {
+                element.Visibility = Visibility.Hidden;
+            };
+
+            element.BeginAnimation(UIElement.OpacityProperty, fadeOut);
+        }
+
 
         private async void EditorView_CommandsUpdated(List<OperationViewModel> updatedCommands,string name, string phrase)
         {
@@ -281,15 +331,16 @@ namespace WPFComponents
         {
             socketServer = new WebSocketServer();
             await socketServer.StartAsync("http://192.168.229.196:5001/");
+            //http://192.168.229.196:5001/
         }
 
         //private async void StartServer() => await socketServer.StartAsync("http://192.168.0.15:5001/");
-        private async void OpenSettings(object sender, RoutedEventArgs e)
+        private void OpenSettings(object sender, RoutedEventArgs e)
         {
             CommandRegister settingWindow = new();
             settingWindow.Show();
         }
-        private async void OpenDocs(object sender, RoutedEventArgs e)
+        private void OpenDocs(object sender, RoutedEventArgs e)
         {
             var url = "https://github.com/Tuuraa/Diplom";
             try
@@ -345,13 +396,11 @@ namespace WPFComponents
             this.BeginAnimation(Window.TopProperty, moveY);
             this.BeginAnimation(Window.OpacityProperty, fadeIn);
         }
-
         private void SymbolIcon_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             PhoneConnectWindow phoneConnectWindow = new PhoneConnectWindow();
             phoneConnectWindow.Show();
         }
-
         private void MenuItem_Click(object sender, RoutedEventArgs e)
         {
             Nodify.Calculator.EditorView constuctor = new Nodify.Calculator.EditorView();
@@ -359,7 +408,6 @@ namespace WPFComponents
             constuctor.CommandsUpdated += EditorView_CommandsUpdated;
             constuctor.Show();
         }
-
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ButtonState == MouseButtonState.Pressed)
@@ -376,6 +424,11 @@ namespace WPFComponents
               true                                      // Whether to change accents automatically
             );
 
+        }
+
+        private void Window_Initialized(object sender, EventArgs e)
+        {
+            FadeIn(this.gifImage, 2);
         }
 
         private void ThemeToggle_Unchecked(object sender, RoutedEventArgs e)

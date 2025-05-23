@@ -16,7 +16,7 @@ namespace WPFComponents.View
         protected override void OnMouseWheel(MouseWheelEventArgs e)
         {
             double scrollAmount = e.Delta > 0 ? -20 : 20;
-            scrollViewer.ScrollToVerticalOffset(scrollViewer.VerticalOffset + scrollAmount);
+            //scrollViewer.ScrollToVerticalOffset(scrollViewer.VerticalOffset + scrollAmount);
             e.Handled = true;
         }
 

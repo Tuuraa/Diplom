@@ -12,9 +12,10 @@
         Width="420"
         Background="Transparent"
         AllowsTransparency="True"
+        Icon="Media/Icons/wave.ico"
         WindowStartupLocation="CenterScreen"
         WindowStyle="None"
-        MouseLeftButtonDown="Window_MouseLeftButtonDown">
+        MouseLeftButtonDown="Window_MouseLeftButtonDown" Initialized="Window_Initialized">
 
     <Window.RenderTransform>
         <ScaleTransform x:Name="WindowScale" ScaleX="1" ScaleY="1" />
@@ -28,7 +29,8 @@
         </Grid.RowDefinitions>
 
         <Border CornerRadius="15" Grid.RowSpan="2"
-                Background="{DynamicResource ApplicationBackgroundBrush}" />
+                Background="{DynamicResource ApplicationBackgroundBrush}" >
+        </Border>
         <ui:SymbolIcon PreviewMouseDown="MinimizeToTray" Cursor="Hand" Symbol="DismissCircle12" FontSize="25" Margin="379,0,0,0"></ui:SymbolIcon>
         <ui:SymbolIcon PreviewMouseDown="SymbolIcon_PreviewMouseDown" Cursor="Hand" Symbol="Phone12" FontSize="25" Margin="350,0,41,0"></ui:SymbolIcon>
         <ui:ToggleSwitch x:Name="ThemeToggle"
@@ -43,11 +45,6 @@
                 </StackPanel>
             </ui:ToggleSwitch.Content>
         </ui:ToggleSwitch>
-
-
-
-
-
         <Grid Margin="10 0 10 20" Grid.Row="1" Cursor="">
             <Grid.RowDefinitions>
                 <RowDefinition Height="0.5*"/>
@@ -92,6 +89,7 @@
                            HorizontalAlignment="Right" Margin="10"/>
 
             </Grid>
+            <Image Visibility="Hidden" x:Name="gifImage" Grid.ColumnSpan="2" Margin="25,68,17,84" Grid.RowSpan="2"/>
         </Grid>
         <tb:TaskbarIcon x:Name="TrayIcon"
                 MenuActivation="RightClick"

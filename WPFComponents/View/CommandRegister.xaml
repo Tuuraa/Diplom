@@ -1,99 +1,42 @@
 ﻿<Window x:Class="WPFComponents.View.CommandRegister"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WPFComponents.View"
-        xmlns:wpfui="http://schemas.lepo.co/wpfui/2022/xaml"
-        xmlns:loc="clr-namespace:WPFComponents"
-        mc:Ignorable="d"
-        Background="#202020"
-        Title="CommandRegister" Height="600" Width="860"
-        >
-    <Grid Background="{DynamicResource ApplicationBackgroundBrush}">
+        xmlns:vm="clr-namespace:WPFComponents.ViewModel"
+        Title="CommandRegister" Height="600" Width="860" Background="#202020">
+    <Window.DataContext>
+        <vm:CommandRegisterVM />
+    </Window.DataContext>
 
+    <Grid Background="#202020">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="0.25*"/>
-            <ColumnDefinition Width="0.8*"/>
+            <ColumnDefinition Width="160"/>
+            <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <StackPanel Grid.Column="0">
-            <Menu>
-                <Grid HorizontalAlignment="Center" Width="80">
-                    <TextBlock Text="Общее" Foreground="WhiteSmoke"/>
-                </Grid>
-            </Menu>
+        <!-- Меню -->
+        <ListBox ItemsSource="{Binding Tabs}" 
+                 SelectedIndex="{Binding SelectedTabIndex}" 
+                 DisplayMemberPath="Name"
+                 Background="#2d2d2d"
+                 Foreground="White"
+                 BorderThickness="0"
+                 FontSize="14"
+                 />
 
-            <Menu>
-                <Grid HorizontalAlignment="Center"
-                      Width="80">
-                    <TextBlock Text="Нейросеть" 
-                               Foreground="WhiteSmoke"/>
-                </Grid>
-            </Menu>
-
-            <Menu>
-                <Grid HorizontalAlignment="Center"
-                      Width="80">
-                    <TextBlock Text="Команды" 
-                               Foreground="WhiteSmoke"/>
-                </Grid>
-            </Menu>
-
-            <Menu>
-                <Grid HorizontalAlignment="Center"
-                      Width="80">
-                    <TextBlock Text="Прочее" 
-                               Foreground="WhiteSmoke"/>
-                </Grid>
-            </Menu>
-        </StackPanel>
-
-        <Grid Grid.Column="1">
-
-            <Grid.RowDefinitions>
-                <RowDefinition Height="0.1*"/>
-                <RowDefinition Height="0.9*"/>
-            </Grid.RowDefinitions>
-
-            <TextBlock Text="Общее" 
-                       Foreground="WhiteSmoke"
-                       FontSize="26" FontWeight="Bold"
-                       Margin="15 15 0 0"/>
-
-            <ScrollViewer x:Name="scrollViewer" VerticalScrollBarVisibility="Auto" 
-                          Background="{DynamicResource ApplicationBackgroundColorLightBrush}"
-               PanningMode="Both" Grid.Row="1"
-               CanContentScroll="True">
-                <ListBox  HorizontalAlignment="Left"
-                     ScrollViewer.HorizontalScrollBarVisibility="Hidden"
-                     ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                     ItemsSource="{Binding SettingControlItems}">
-                    <ListBox.ItemContainerStyle>
-                        <Style TargetType="ListBoxItem">
-                            <Setter Property="Background" Value="Transparent"/>
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="ListBoxItem">
-                                        <Border Background="{DynamicResource ApplicationBackgroundBrush}" 
-                                            >
-                                            <ContentPresenter />
-                                        </Border>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </ListBox.ItemContainerStyle>
-
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <local:SettingControl Height="130" Width="400"/>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
-            </ScrollViewer>
-
-        </Grid>
-        
+        <!-- Контент -->
+        <ContentControl Grid.Column="1" Content="{Binding SelectedTab}">
+            <ContentControl.ContentTemplate>
+                <DataTemplate>
+                    <ItemsControl ItemsSource="{Binding Settings}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <local:SettingControl />
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </DataTemplate>
+            </ContentControl.ContentTemplate>
+        </ContentControl>
     </Grid>
 </Window>
