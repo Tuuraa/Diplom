@@ -4,6 +4,8 @@ import websockets
 from pvrecorder import PvRecorder
 from Models.speech_recognize import VoskModel
 from config import config
+import socket
+import psutil
 
 
 logging.basicConfig(level=logging.INFO)
@@ -68,8 +70,22 @@ class Recorder:
 
     async def _send_websocket_message(self, message: str) -> None:
         try:
-            async with websockets.connect(config.websoket_url) as websocket:
+            websocket_url = f"ws://{get_active_ipv4()}:{5001}/ws"
+            async with websockets.connect(websocket_url) as websocket:
                 await websocket.send(message)
                 logger.info(f"Sent message: {message}")
         except Exception as e:
             logger.error(f"Error while sending data over WebSocket: {e}")
+
+def get_active_ipv4() -> str:
+    for interface_name, interface_addrs in psutil.net_if_addrs().items():
+        stats = psutil.net_if_stats().get(interface_name)
+        if not stats or not stats.isup:
+            continue  # адаптер не активен
+
+        for addr in interface_addrs:
+            if addr.family == socket.AF_INET and not addr.address.startswith("127."):
+                return addr.address
+
+    return "127.0.0.1"
+

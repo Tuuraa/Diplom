@@ -11,6 +11,9 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Net.NetworkInformation;
+using System.Net.Sockets;
+using System.Net;
 using System.Net.WebSockets;
 using System.Windows;
 using System.Windows.Controls;
@@ -214,7 +217,6 @@ namespace WPFComponents
             websocketController.RegisterMessageHandler(new Dictionary<string, Action<string>>
             {
                 { "success_wake_word", (_) => StartListen() },
-                // Примеры
                 { "mobile_init", (_) => System.Windows.MessageBox.Show("FLUTTER INIT") },
                 { "send_screen", async (_) => { await socketServer.BroadcastAsync(await SendScreen()); } },
                 { "mobile_msg", async (msg) => {await _voiceCommandProcessor.ProcessVoiceCommand(msg); } },
@@ -329,10 +331,36 @@ namespace WPFComponents
 
         private async void StartServer()
         {
+
+            string ip = GetLocalIPv4();
             socketServer = new WebSocketServer();
-            await socketServer.StartAsync("http://192.168.229.196:5001/");
-            //http://192.168.229.196:5001/
+            await socketServer.StartAsync($"http://{ip}:5001/");
         }
+
+        static string GetLocalIPv4()
+        {
+            foreach (NetworkInterface ni in NetworkInterface.GetAllNetworkInterfaces())
+            {
+                // Убедимся, что адаптер активен и используется для интернета
+                if (ni.OperationalStatus == OperationalStatus.Up &&
+                    ni.NetworkInterfaceType != NetworkInterfaceType.Loopback &&
+                    ni.NetworkInterfaceType != NetworkInterfaceType.Tunnel)
+                {
+                    var ipProps = ni.GetIPProperties();
+                    foreach (UnicastIPAddressInformation ip in ipProps.UnicastAddresses)
+                    {
+                        if (ip.Address.AddressFamily == AddressFamily.InterNetwork &&
+                            !IPAddress.IsLoopback(ip.Address))
+                        {
+                            return ip.Address.ToString();
+                        }
+                    }
+                }
+            }
+
+            return "IP not found";
+        }
+
 
         //private async void StartServer() => await socketServer.StartAsync("http://192.168.0.15:5001/");
         private void OpenSettings(object sender, RoutedEventArgs e)
