@@ -27,7 +27,7 @@
                        HorizontalAlignment="Left" Grid.Column="0" 
                        FontWeight="Bold"/>
 
-            <ToggleButton IsChecked="{Binding isEnabled}" VerticalAlignment="Center" 
+            <ToggleButton IsChecked="{Binding IsEnabled}" VerticalAlignment="Center" 
                           Margin="10,10,10,0" Width="30" Height="15"
                           HorizontalContentAlignment="Right" Grid.Column="1"/>
 

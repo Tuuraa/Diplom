@@ -1,0 +1,16 @@
+﻿<Page
+    x:Class="WPFComponents.View.WelcomePage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:viewmodels="clr-namespace:WPFComponents.ViewModel"
+    xmlns:ui="clr-namespace:Wpf.Ui.Controls;assembly=Wpf.Ui"
+    xmlns:wpfui="http://schemas.lepo.co/wpfui/2022/xaml">
+
+    <Grid VerticalAlignment="Center">
+        <StackPanel HorizontalAlignment="Center" Width="400">
+            <TextBlock Text="Добро пожаловать!" FontSize="24" FontWeight="Bold" TextAlignment="Center" Margin="0 0 0 10"/>
+            <TextBlock Text="Это поможет тебе быстро настроить голосового ассистента." TextAlignment="Center" Margin="0 0 0 20"/>
+            <wpfui:Button Content="Начать" Command="{Binding NextCommand}" />
+        </StackPanel>
+    </Grid>
+</Page>

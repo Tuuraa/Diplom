@@ -1,20 +1,18 @@
-﻿using System.ComponentModel;
+﻿using CommunityToolkit.Mvvm.Input;
+using System;
+using System.ComponentModel;
 using System.Windows.Input;
-using WPFComponents.Model.Interfaces;
 
 namespace WPFComponents.Model
 {
-    public class SettingControlItem: INotifyPropertyChanged
+    public class SettingControlItem : INotifyPropertyChanged
     {
         public string? Header { get; set; }
         public string? SettingTitle { get; set; }
         public string? Description { get; set; }
 
-        private bool? _isEnabled;
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-
-        public bool? isEnabled
+        private bool _isEnabled;
+        public bool IsEnabled
         {
             get => _isEnabled;
             set
@@ -22,20 +20,25 @@ namespace WPFComponents.Model
                 if (_isEnabled != value)
                 {
                     _isEnabled = value;
-                    OnPropertyChanged(nameof(isEnabled));
+                    OnPropertyChanged(nameof(IsEnabled));
                 }
             }
         }
 
-        public Action action { get; set; }
+        public Action? Action { get; set; }
+
         public ICommand Command { get; }
 
-        public SettingControlItem(string header, string desc, bool? is_enable)
+        public SettingControlItem(string header, string desc, bool isEnabled, Action? action = null)
         {
-            Header = header; Description = desc; isEnabled = is_enable;
-
-            Command = new RelayCommand(_ => action?.Invoke(), _ => true) ?? null;
+            Header = header;
+            Description = desc;
+            IsEnabled = isEnabled;
+            Action = action;
         }
+        public SettingControlItem() { }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         protected virtual void OnPropertyChanged(string propertyName)
         {

@@ -32,6 +32,7 @@ using WPFComponents.View;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 using Command = SkyUtils.Command;
 using Scenario = WPFComponents.DB.Scenario;
+using Wpf.Ui.Controls;
 
 namespace WPFComponents
 {

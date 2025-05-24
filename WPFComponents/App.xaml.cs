@@ -5,6 +5,8 @@ using Microsoft.Extensions.DependencyInjection;
 using WPFComponents.DB;
 using WPFComponents.Model;
 using WPFComponents.Services;
+using WPFComponents.Utils;
+using WPFComponents.View;
 
 namespace WPFComponents
 {
@@ -31,9 +33,16 @@ namespace WPFComponents
 
             _serviceProvider = services.BuildServiceProvider();
 
-            // Получаем MainWindow через DI
-            var mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
-            mainWindow.Show();
+            if (SettingsManager.Instance.Settings.FirstStart)
+            {
+                var firstLaunchWindow = new FirstLaunchWindow(_serviceProvider);
+                firstLaunchWindow.Show();
+            }
+            else
+            {
+                var mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
+                mainWindow.Show();
+            }
         }
     }
 }

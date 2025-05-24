@@ -33,14 +33,14 @@ namespace WPFComponents.ViewModel
             }
         }
 
-        public bool? IsEnable
+        public bool IsEnable
         {
-            get => _settingControl.isEnabled;
+            get => _settingControl.IsEnabled;
             set
             {
-                if (_settingControl.isEnabled != value)
+                if (_settingControl.IsEnabled != value)
                 {
-                    _settingControl.isEnabled = value;
+                    _settingControl.IsEnabled = value;
                     OnPropertyChanged(nameof(IsEnable));
                 }
             }
