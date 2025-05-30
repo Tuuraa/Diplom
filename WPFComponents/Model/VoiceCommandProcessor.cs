@@ -91,7 +91,6 @@ namespace WPFComponents.Model
                     return;
                 }
 
-                // Обработка локальных команд
                 var commandResult = _commandMatcher.Match(recognizedPhrase);
                 if (commandResult.Confidence > 0.6)
                 {
@@ -100,9 +99,8 @@ namespace WPFComponents.Model
                     return;
                 }
 
-                //await ProcessWithLLMAsync(recognizedPhrase);
+                await ProcessWithLLMAsync(recognizedPhrase);
 
-                // Уведомление пользователя
                 NotifyUser("Команда не распознана");
             }
             catch (Exception ex)

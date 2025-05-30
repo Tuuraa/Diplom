@@ -96,15 +96,16 @@
                 TrayLeftMouseDoubleClick="TrayIcon_TrayMouseDoubleClick"
                 IconSource="Media/Icons/wave.ico"
                 ToolTipText="SkyAI"
-                Margin="0,44,0,440"
+                Width="100"
+                Margin="0,44,0,0"
                 Grid.Row="1">
             <tb:TaskbarIcon.ContextMenu>
-                <ContextMenu Background="FloralWhite">
+                <ContextMenu Background="{DynamicResource ApplicationBackgroundBrush}">
                     <MenuItem Click="MenuItem_Click">
                         <MenuItem.Header>
                             <StackPanel Orientation="Horizontal">
-                                <Image Width="20" Height="20" Source="Media/Icons/wave.ico" Margin="0,0,5,0" />
-                                <TextBlock Foreground="Black" Text="Конструктор" VerticalAlignment="Center"/>
+                                <ui:SymbolIcon PreviewMouseDown="MinimizeToTray" Cursor="Hand" Symbol="DismissCircle12" FontSize="25" Margin="0,0,0,0"></ui:SymbolIcon>
+                                <TextBlock Foreground="{DynamicResource TextFillColorPrimaryBrush}" Text="Развернуть" VerticalAlignment="Center"/>
                             </StackPanel>
                         </MenuItem.Header>
                         <MenuItem.Style>
@@ -119,7 +120,82 @@
                             </Style>
                         </MenuItem.Style>
                     </MenuItem>
-                    <MenuItem Header="Second Menu Item" />
+                    <MenuItem Click="MenuItem_Click">
+                        <MenuItem.Header>
+                            <StackPanel Orientation="Horizontal">
+                                <ui:SymbolIcon PreviewMouseDown="MinimizeToTray" Cursor="Hand" Symbol="CalendarEmpty28" FontSize="25" Margin="0,0,0,0"></ui:SymbolIcon>
+                                <TextBlock Foreground="{DynamicResource TextFillColorPrimaryBrush}" Text="Конструктор" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </MenuItem.Header>
+                        <MenuItem.Style>
+                            <Style TargetType="MenuItem">
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Setter Property="Padding" Value="5"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="LightGray"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </MenuItem.Style>
+                    </MenuItem>
+                    <MenuItem Click="MenuItem_Click">
+                        <MenuItem.Header>
+                            <StackPanel Orientation="Horizontal">
+                                <ui:SymbolIcon PreviewMouseDown="MinimizeToTray" Cursor="Hand" Symbol="Settings48" FontSize="25" Margin="0,0,0,0"></ui:SymbolIcon>
+                                <TextBlock Foreground="{DynamicResource TextFillColorPrimaryBrush}" Text="Настройки" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </MenuItem.Header>
+                        <MenuItem.Style>
+                            <Style TargetType="MenuItem">
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Setter Property="Padding" Value="5"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="LightGray"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </MenuItem.Style>
+                    </MenuItem>
+                    <MenuItem Click="MenuItem_Click">
+                        <MenuItem.Header>
+                            <StackPanel Orientation="Horizontal">
+                                <ui:SymbolIcon PreviewMouseDown="MinimizeToTray" Cursor="Hand" Symbol="MicOff12" FontSize="25" Margin="0,0,0,0"></ui:SymbolIcon>
+                                <TextBlock Foreground="{DynamicResource TextFillColorPrimaryBrush}" Text="Выключить микрофон" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </MenuItem.Header>
+                        <MenuItem.Style>
+                            <Style TargetType="MenuItem">
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Setter Property="Padding" Value="5"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="LightGray"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </MenuItem.Style>
+                    </MenuItem>
+                    <MenuItem Click="MenuItem_Click">
+                        <MenuItem.Header>
+                            <StackPanel Orientation="Horizontal">
+                                <ui:SymbolIcon PreviewMouseDown="MinimizeToTray" Cursor="Hand" Symbol="ArrowExit20" FontSize="25" Margin="0,0,0,0"></ui:SymbolIcon>
+                                <TextBlock Foreground="{DynamicResource TextFillColorPrimaryBrush}" Text="Закрыть приложение" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </MenuItem.Header>
+                        <MenuItem.Style>
+                            <Style TargetType="MenuItem">
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Setter Property="Padding" Value="5"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="LightGray"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </MenuItem.Style>
+                    </MenuItem>
                 </ContextMenu>
             </tb:TaskbarIcon.ContextMenu>
         </tb:TaskbarIcon>

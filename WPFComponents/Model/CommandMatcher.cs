@@ -53,10 +53,8 @@ namespace WPFComponents.Model
         private readonly LevenshteinMatcher _levenshteinMatcher;
         private readonly TfIdfMatcher _tfidfMatcher = new TfIdfMatcher();
 
-        // Убрали зависимость от ILlmService из конструктора
         public CommandMatcher(Dictionary<string, Command> commands)
         {
-            //_exactMatches = commands;
             foreach (var kvp in commands)
             {
                 _exactMatches[kvp.Key] = kvp.Value;
@@ -69,11 +67,9 @@ namespace WPFComponents.Model
         {
             var normalized = TextNormalizer.Normalize(phrase);
 
-            // Этап 1: Точное совпадение
             if (_exactMatches.TryGetValue(normalized, out var exactCommand))
                 return new MatchResult(exactCommand, 1.0f);
 
-            // Этап 2: Левенштейн для коротких фраз
             if (normalized.Length < 15)
             {
                 var levResult = _levenshteinMatcher.Match(normalized);
@@ -81,37 +77,11 @@ namespace WPFComponents.Model
                     return levResult;
             }
 
-            // Этап 3: TF-IDF
             var tfidfResult = _tfidfMatcher.Match(normalized);
             if (tfidfResult.Confidence > 0.4f)
                 return tfidfResult;
 
-            // Этап 4: Не найдено (офлайн режим)
             return new MatchResult(new Command(), 0f);
-        }
-        public MatchResult MatchScenario(string phrase)
-        {
-            var normalized = TextNormalizer.Normalize(phrase);
-
-            // Этап 1: Точное совпадение
-            if (_exactMatches.TryGetValue(normalized, out var exactCommand))
-                return new MatchResult(exactCommand, 1.0f);
-
-            // Этап 2: Левенштейн для коротких фраз
-            if (normalized.Length < 15)
-            {
-                var levResult = _levenshteinMatcher.Match(normalized);
-                if (levResult.Confidence > 0.8f)
-                    return levResult;
-            }
-
-            // Этап 3: TF-IDF
-            var tfidfResult = _tfidfMatcher.Match(normalized);
-            if (tfidfResult.Confidence > 0.4f)
-                return tfidfResult;
-
-            // Этап 4: Не найдено (офлайн режим)
-            return new MatchResult(new Scenario(), 0f);
         }
     }
 

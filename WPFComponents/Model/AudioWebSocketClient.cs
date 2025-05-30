@@ -79,10 +79,6 @@ class WebSocketServer
             Console.WriteLine("Ошибка в WebSocket: " + ex.Message);
         }
     }
-
-    /// <summary>
-    /// Отправляет сообщение конкретному клиенту
-    /// </summary>
     public async Task SendAsync(WebSocket client, string message)
     {
         if (client == null || client.State != WebSocketState.Open)
@@ -95,9 +91,6 @@ class WebSocketServer
         await client.SendAsync(new ArraySegment<byte>(buffer), WebSocketMessageType.Text, true, CancellationToken.None);
     }
 
-    /// <summary>
-    /// Отправляет сообщение всем клиентам
-    /// </summary>
     public async Task BroadcastAsync(string message)
     {
         var buffer = Encoding.UTF8.GetBytes(message);
