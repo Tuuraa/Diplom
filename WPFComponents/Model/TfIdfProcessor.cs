@@ -51,7 +51,7 @@ namespace WPFComponents.Model
             foreach (var term in _allTerms)
             {
                 int docsWithTerm = _tf.Count(d => d.Value.ContainsKey(term));
-                _idf[term] = (float)Math.Log(totalDocs / (double)docsWithTerm);
+                _idf[term] = (float)(Math.Log((totalDocs + 1) / (double)(docsWithTerm + 1)) + 1);
             }
         }
 
@@ -104,7 +104,10 @@ namespace WPFComponents.Model
                 magA += a[i] * a[i];
                 magB += b[i] * b[i];
             }
-            return dot / (MathF.Sqrt(magA) * MathF.Sqrt(magB));
+            float denominator = MathF.Sqrt(magA) * MathF.Sqrt(magB);
+            if (denominator == 0)
+                return 0f; 
+            return dot / denominator;
         }
     }
 }

@@ -25,7 +25,6 @@ namespace WPFComponents.Model
 
         private static int Calculate(ReadOnlySpan<char> a, ReadOnlySpan<char> b, int[] buffer)
         {
-            // Оптимизированная реализация с одним массивом
             for (int i = 0; i <= a.Length; i++) buffer[i] = i;
 
             for (int j = 1; j <= b.Length; j++)

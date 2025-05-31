@@ -6,7 +6,7 @@ using WindowsInput.Native;
 
 namespace WPFComponents.Model.Commands
 {
-    internal class PressKeyCommand : ICommandAction
+    public class PressKeyCommand : ICommandAction
     {
         public string CommandType { get; set; }
         public string Key { get; set; }

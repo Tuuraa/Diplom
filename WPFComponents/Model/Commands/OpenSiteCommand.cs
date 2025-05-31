@@ -9,7 +9,7 @@ using WPFComponents.Model.Interfaces;
 
 namespace WPFComponents.Model.Commands
 {
-    internal class OpenSiteCommand : ICommandAction
+    public class OpenSiteCommand : ICommandAction
     {
         public string Url {  get; set; }
 

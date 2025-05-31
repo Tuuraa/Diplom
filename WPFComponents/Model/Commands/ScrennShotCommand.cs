@@ -6,7 +6,7 @@ using WPFComponents.Model.Utils;
 
 namespace WPFComponents.Model.Commands
 {
-    internal class ScrennShotCommand : ICommandAction
+    public class ScrennShotCommand : ICommandAction
     {
         public bool CanExecute()
         {

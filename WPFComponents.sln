@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SkyUtils", "SkyUtils\SkyUti
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DebugConsole", "DebugConsole\DebugConsole.csproj", "{B98FD26B-1655-4CB9-8781-274EAA6793D1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SkyTests", "SkyTests\SkyTests.csproj", "{BAC0E66B-7ACD-436F-AC5A-C271E6099BBA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -49,6 +51,10 @@ Global
 		{B98FD26B-1655-4CB9-8781-274EAA6793D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B98FD26B-1655-4CB9-8781-274EAA6793D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B98FD26B-1655-4CB9-8781-274EAA6793D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BAC0E66B-7ACD-436F-AC5A-C271E6099BBA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BAC0E66B-7ACD-436F-AC5A-C271E6099BBA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BAC0E66B-7ACD-436F-AC5A-C271E6099BBA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BAC0E66B-7ACD-436F-AC5A-C271E6099BBA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

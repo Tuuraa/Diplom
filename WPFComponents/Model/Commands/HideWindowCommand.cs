@@ -9,7 +9,7 @@ using SkyUtils;
 
 namespace WPFComponents.Model.Commands
 {
-    internal class HideWindowCommand : ICommandAction
+    public class HideWindowCommand : ICommandAction
     {
         private ActiveWindowManager ActiveWindowManager = new ActiveWindowManager();
         public bool CanExecute()

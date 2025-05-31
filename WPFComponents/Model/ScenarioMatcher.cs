@@ -11,9 +11,9 @@ namespace WPFComponents.Model
 {
     public class ScenarioMatcher : IScenarioMatcher
     {
-        private readonly Dictionary<string, Scenario> _scenarios = new Dictionary<string, Scenario>(StringComparer.OrdinalIgnoreCase);
-        private readonly LevenshteinMatcher _levenshteinMatcher;
-        private readonly TfIdfMatcher _tfidfMatcher;
+        public Dictionary<string, Scenario> _scenarios = new Dictionary<string, Scenario>(StringComparer.OrdinalIgnoreCase);
+        public LevenshteinMatcher _levenshteinMatcher;
+        public TfIdfMatcher _tfidfMatcher;
 
         public ScenarioMatcher(Dictionary<string, Scenario> scenarios)
         {
@@ -25,9 +25,9 @@ namespace WPFComponents.Model
                 _scenarios[kvp.Key] = kvp.Value;
             }
 
-            _levenshteinMatcher = new LevenshteinMatcher(scenarios); // Если LevenshteinMatcher принимает Dictionary
+            _levenshteinMatcher = new LevenshteinMatcher(scenarios);
             _tfidfMatcher = new TfIdfMatcher();
-            _tfidfMatcher.AddScenarios(scenarioList); // Передаем список сценариев вместо словаря
+            _tfidfMatcher.AddScenarios(scenarioList);
         }
 
 

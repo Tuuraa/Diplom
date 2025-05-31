@@ -9,7 +9,7 @@ using WPFComponents.Model.Interfaces;
 
 namespace WPFComponents.Model.Commands
 {
-    internal class MoveMouseCommand : ICommandAction
+    public class MoveMouseCommand : ICommandAction
     {
         public string CommandType { get; set; }
         public int X { get; set; }

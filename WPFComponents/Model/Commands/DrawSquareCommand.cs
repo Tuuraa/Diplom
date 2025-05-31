@@ -9,7 +9,7 @@ using WPFComponents.Model.Interfaces;
 
 namespace WPFComponents.Model.Commands
 {
-    internal class DrawSquareCommand : ICommandAction
+    public class DrawSquareCommand : ICommandAction
     {
         public string CommandType { get; set; }
         public int SideLength { get; set; } // Длина стороны квадрата

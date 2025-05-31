@@ -8,7 +8,7 @@ using WPFComponents.Model.Interfaces;
 
 namespace WPFComponents.Model.Commands
 {
-    internal class OpenAppCommand : ICommandAction
+    public class OpenAppCommand : ICommandAction
     {
         public string CommandType { get; set; }
         public string PathToExe { get; set; }

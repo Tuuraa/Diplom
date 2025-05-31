@@ -9,7 +9,7 @@ using WPFComponents.Model.Interfaces;
 
 namespace WPFComponents.Model.Commands
 {
-    internal class DrawCircleCommand : ICommandAction
+    public class DrawCircleCommand : ICommandAction
     {
         public string CommandType { get; set; }
         public int Radius { get; set; } // Радиус круга

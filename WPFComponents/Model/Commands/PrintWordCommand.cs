@@ -5,7 +5,7 @@ using SkyUtils;
 
 namespace WPFComponents.Model.Commands
 {
-    internal class PrintWordCommand : ICommandAction
+    public class PrintWordCommand : ICommandAction
     {
         public readonly string Word;
         private readonly InputSimulator _inputSimulator;
@@ -18,7 +18,6 @@ namespace WPFComponents.Model.Commands
 
         public bool CanExecute()
         {
-            // Добавьте здесь проверку условий, если требуется
             return !string.IsNullOrEmpty(Word);
         }
 
@@ -26,17 +25,14 @@ namespace WPFComponents.Model.Commands
         {
             if (!CanExecute())
             {
-                // Если команда не может быть выполнена, можно выдать сообщение
                 return;
             }
 
-            // Используем InputSimulator для печати слова по буквам
             foreach (char letter in Word)
             {
                 _inputSimulator.Keyboard.TextEntry(letter);
             }
 
-            // Добавьте здесь любые действия после печати, если нужно
         }
     }
 }

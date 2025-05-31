@@ -35,7 +35,6 @@ namespace WPFComponents.Model
         }
     }
 
-    // Базовый класс для сопоставления команд
     public interface ICommandMatcher
     {
         MatchResult Match(string phrase);
@@ -46,7 +45,6 @@ namespace WPFComponents.Model
         MatchResult Match(string phrase);
     }
 
-    // Реализация CommandMatcher
     public class CommandMatcher : ICommandMatcher
     {
         private readonly Dictionary<string, Command> _exactMatches = new Dictionary<string, Command>(StringComparer.OrdinalIgnoreCase);
@@ -85,7 +83,7 @@ namespace WPFComponents.Model
         }
     }
 
-    public class LevenshteinMatcher : ICommandMatcher
+    public class LevenshteinMatcher : ILevenshteinMatcher
     {
         private readonly Dictionary<string, Command>? _commands = new Dictionary<string, Command>(StringComparer.OrdinalIgnoreCase);
         private readonly Dictionary<string, Scenario>? _scenarios;
@@ -138,4 +136,9 @@ namespace WPFComponents.Model
             return new MatchResult(bestMatch, bestScore);
         }
     }
+    public interface ILevenshteinMatcher
+    {
+        MatchResult MatchScenario(string input);
+    }
+
 }
